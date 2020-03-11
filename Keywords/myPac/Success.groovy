@@ -154,7 +154,7 @@ public class Success {
 	}
 
 	@Keyword
-	def CancelBtn(Integer flow_type) {
+	def CancelBtn(String flow_type) {
 		def status_cancel = 'N/A'
 		MobileElement cancelBtn = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/order_detail_bt_cancel')
 		cancelBtn.click()
