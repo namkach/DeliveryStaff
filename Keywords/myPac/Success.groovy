@@ -242,9 +242,7 @@ public class Success {
 				return true
 				break
 			case '2' :
-				println ('paymentType is : ' + paymentType)
-				MobileElement confirm = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/order_detail_bt_confirm')
-				confirm.click()
+				println ('paymentType isssss : ' + paymentType)
 				MobileElement confirmYes = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/dialog_confirm_yes')
 				confirmYes.click()
 				KeywordUtil.markPassed('Payment success')

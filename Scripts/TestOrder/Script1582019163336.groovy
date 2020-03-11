@@ -7,7 +7,7 @@ import com.kms.katalon.core.util.KeywordUtil
 import io.appium.java_client.AppiumDriver as AppiumDriver
 import io.appium.java_client.MobileElement as MobileElement
 
-def path = 'D:\\Users\\sunitakac\\Desktop\\apk\\staff_uat_1.2.6m_RIDER_05032020.apk'
+def path = 'D:\\Users\\sunitakac\\Desktop\\apk\\staff_uat_1.2.6m_COD_05032020.apk'
 Mobile.startApplication(path, true)
 Mobile.setText(findTestObject('Staff/Store Id'), '00882', 0)
 Mobile.setText(findTestObject('Staff/Staff Id'), '1010101', 0)
@@ -27,74 +27,74 @@ try {
         println(order_id.length())
 		KeywordUtil.logInfo(order_id)
     }
-	checkOrder = CustomKeywords.'myPac.Success.FindOrder'(order_id)
+//	checkOrder = CustomKeywords.'myPac.Success.FindOrder'(order_id)
+//	
+//	List<MobileElement> prods = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/row_order_detail_tv_name')
+//	println ('Product size : ' + prods.size().toString())
+//	println ('Total product : ' + total_product.toString())
+//	assert prods.size().toString() == total_product.toString()
+//	String[] products = new String[Double.parseDouble(total_product)]
+//	println ('product size : ' + products.size())
+//	
+//	def name = ''
+//	int qty = 0
+//	def unitPrice = ''
+//	int countQty = 0
+//	int countTotalPrice = 0
+//	int statusProduct = 1
+//	
+//	for(int i = 1; i <= products.size(); i++) {
+//		switch (i) {
+//			case 1 :
+//				name = product_name1
+//				qty = Integer.parseInt(qty1)
+//				unitPrice = unit_price1
+//				break
+//			case 2 :
+//				name = product_name2
+//				qty = Integer.parseInt(qty2)
+//				unitPrice = unit_price2
+//				break
+//			case 3 :
+//				name = product_name3
+//				qty = Integer.parseInt(qty3)
+//				unitPrice = unit_price3
+//				break
+//		}
+//		println ('qty : ' + qty)
+//		(countQty, countTotalPrice) = CustomKeywords.'myPac.Success.checkProduct'(name, qty, unitPrice, countQty, countTotalPrice, statusProduct)
+//		println ('countQty : ' + countQty)
+//		println ('countTotalPrice : ' + countTotalPrice)
+//	}
+//	CustomKeywords.'myPac.Success.checkProductAssert'(countTotalPrice, total_price, countQty)
+//	KeywordUtil.markPassed('Check products : Pass')
+//
+//    status_id = '1'
+//    println('Check outside found order :' + checkOrder)
+//	KeywordUtil.logInfo('flow_type :' + flow_type)
+//	switch (flow_type) {
+//		//new order
+//		case '1' :
+//			statusOrder = CustomKeywords.'myPac.Success.CancelBtn'(flow_type)
+//			status_id = '6'
+//			KeywordUtil.markPassed('Cancel : Pass')
+//			break
+//			
+//		//new order
+//		case '0'..'7' :
+//			(statusOrder, status_id, paymentType, deliveryType) = CustomKeywords.'myPac.Success.ConfirmBtn'(status_id, paymentType)
+//			println ('Check statusOrder :' + statusOrder)
+//			println ('Check status_id :' + status_id)
+//			println ('Check paymentType :' + paymentType)
+//			println ('Check deliveryType :' + deliveryType)
+//			assert deliveryType.toString() == delivery_type.toString()
+//			KeywordUtil.markPassed('Confirm : Pass')
+//			break
+//		default :
+//			println 'Error at New Order'
+//	}
 	
-	List<MobileElement> prods = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/row_order_detail_tv_name')
-	println ('Product size : ' + prods.size().toString())
-	println ('Total product : ' + total_product.toString())
-	assert prods.size().toString() == total_product.toString()
-	String[] products = new String[Double.parseDouble(total_product)]
-	println ('product size : ' + products.size())
-	
-	def name = ''
-	int qty = 0
-	def unitPrice = ''
-	int countQty = 0
-	int countTotalPrice = 0
-	int statusProduct = 1
-	
-	for(int i = 1; i <= products.size(); i++) {
-		switch (i) {
-			case 1 :
-				name = product_name1
-				qty = Integer.parseInt(qty1)
-				unitPrice = unit_price1
-				break
-			case 2 :
-				name = product_name2
-				qty = Integer.parseInt(qty2)
-				unitPrice = unit_price2
-				break
-			case 3 :
-				name = product_name3
-				qty = Integer.parseInt(qty3)
-				unitPrice = unit_price3
-				break
-		}
-		println ('qty : ' + qty)
-		(countQty, countTotalPrice) = CustomKeywords.'myPac.Success.checkProduct'(name, qty, unitPrice, countQty, countTotalPrice, statusProduct)
-		println ('countQty : ' + countQty)
-		println ('countTotalPrice : ' + countTotalPrice)
-	}
-	CustomKeywords.'myPac.Success.checkProductAssert'(countTotalPrice, total_price, countQty)
-	KeywordUtil.markPassed('Check products : Pass')
-
-    status_id = '1'
-    println('Check outside found order :' + checkOrder)
-	KeywordUtil.logInfo('flow_type :' + flow_type)
-	switch (flow_type) {
-		//new order
-		case '1' :
-			statusOrder = CustomKeywords.'myPac.Success.CancelBtn'(flow_type)
-			status_id = '6'
-			KeywordUtil.markPassed('Cancel : Pass')
-			break
-			
-		//new order
-		case '0'..'7' :
-			(statusOrder, status_id, paymentType, deliveryType) = CustomKeywords.'myPac.Success.ConfirmBtn'(status_id, paymentType)
-			println ('Check statusOrder :' + statusOrder)
-			println ('Check status_id :' + status_id)
-			println ('Check paymentType :' + paymentType)
-			println ('Check deliveryType :' + deliveryType)
-			assert deliveryType.toString() == delivery_type.toString()
-			KeywordUtil.markPassed('Confirm : Pass')
-			break
-		default :
-			println 'Error at New Order'
-	}
-	
-//	status_id = '2'
+	status_id = '2'
 	//------------------------------ processing ----------------------------//
 	KeywordUtil.logInfo('------------- processing -----------')
 	if (flow_type != '1') {
