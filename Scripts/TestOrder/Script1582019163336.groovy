@@ -33,7 +33,7 @@ try {
 	println ('Product size : ' + prods.size().toString())
 	println ('Total product : ' + total_product.toString())
 	assert prods.size().toString() == total_product.toString()
-	String[] products = new String[Double.parseDouble(total_product)]
+	String[] products = new String[Integer.parseInt(total_product)]
 	println ('product size : ' + products.size())
 	
 	def name = ''
@@ -161,7 +161,7 @@ try {
 						oldQty = Integer.parseInt(qty3)
 						break
 				}
-				CustomKeywords.'myPac.Success.edit_qty'(edit_product, edit_qty, oldQty)
+				CustomKeywords.'myPac.Success.editQty'(edit_product, edit_qty, oldQty)
 			} else if (flow_type == '6') {
 				println ('Add product')
 				CustomKeywords.'myPac.Success.addProduct'(edit_product, edit_qty)
@@ -239,7 +239,7 @@ try {
 				}
 				if (flow_type == '6') {
 					qty = Integer.parseInt(edit_qty)
-					(countQty, countTotalPrice) = CustomKeywords.'myPac.Success.checkProduct'(edit_product, qty, edit_unit_price, countQty, countTotalPrice)
+					(countQty, countTotalPrice) = CustomKeywords.'myPac.Success.checkProduct'(edit_product, qty, edit_unit_price, countQty, countTotalPrice, statusProduct)
 				}
 				println ('countQty : ' + countQty)
 				println ('countTotalPrice : ' + countTotalPrice)
@@ -328,7 +328,7 @@ try {
 		}
 		if (flow_type == '6') {
 			qty = Integer.parseInt(edit_qty)
-			(countQty, countTotalPrice) = CustomKeywords.'myPac.Success.checkProduct'(edit_product, qty, edit_unit_price, countQty, countTotalPrice)
+			(countQty, countTotalPrice) = CustomKeywords.'myPac.Success.checkProduct'(edit_product, qty, edit_unit_price, countQty, countTotalPrice, statusProduct)
 		}
 		println ('countQty : ' + countQty)
 		println ('countTotalPrice : ' + countTotalPrice)
@@ -353,6 +353,20 @@ try {
 			println ('Check deliveryType :' + deliveryType)
 			assert deliveryType.toString() == delivery_type.toString()
 			KeywordUtil.markPassed('Confirm : Pass')
+			KeywordUtil.logInfo('delivery_type : ' + delivery_type)
+			if (delivery_type == 2) {
+				MobileElement walk = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/delivery_confirm_rd_walk')
+				walk.click()
+				MobileElement confirmOrder = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/delivery_confirm_bt_confirm')
+				confirmOrder.click()
+				MobileElement confirmSign = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/main_toolbar_tv_menu_right2')
+				if (confirmSign.isDisplayed()) {
+					CustomKeywords.'myPac.Success.swipeUp'()
+					confirmSign.click()
+					MobileElement confirmSignYes = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/dialog_confirm_yes')
+					confirmSignYes.click()
+				}
+			}
 		}
 	}
 	
@@ -411,7 +425,7 @@ try {
 	}
 	if (flow_type == '6') {
 		qty = Integer.parseInt(edit_qty)
-		(countQty, countTotalPrice) = CustomKeywords.'myPac.Success.checkProduct'(edit_product, qty, edit_unit_price, countQty, countTotalPrice)
+		(countQty, countTotalPrice) = CustomKeywords.'myPac.Success.checkProduct'(edit_product, qty, edit_unit_price, countQty, countTotalPrice, statusProduct)
 	}
 	println ('countQty : ' + countQty)
 	println ('countTotalPrice : ' + countTotalPrice)
