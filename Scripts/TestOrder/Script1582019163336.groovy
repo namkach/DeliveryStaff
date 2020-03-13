@@ -419,6 +419,8 @@ try {
 		} else if (statusProduct == 0) {
 			statusProduct = -1	
 		} else if (flow_type == '7' && name == edit_product) {
+			println ('skip deleted product : ' + edit_product)
+			statusProduct = -2
 			continue
 		}
 		(countQty, countTotalPrice) = CustomKeywords.'myPac.Success.checkProduct'(name, qty, unitPrice, countQty, countTotalPrice, statusProduct)

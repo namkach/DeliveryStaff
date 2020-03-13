@@ -403,7 +403,7 @@ public class Success {
 					KeywordUtil.logInfo('qty : ' + qty)
 					KeywordUtil.logInfo('numQty : ' + numQty)
 					println '-----------'
-					assert numQty == qty
+					assert numQty.toString() == qty.toString()
 
 					double numPrice = 0.0
 					//check each total price
