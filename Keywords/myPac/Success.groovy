@@ -242,7 +242,7 @@ public class Success {
 				return true
 				break
 			case '2' :
-				println ('paymentType isssss : ' + paymentType)
+				println ('paymentType is : ' + paymentType)
 				MobileElement confirmYes = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/dialog_confirm_yes')
 				confirmYes.click()
 				KeywordUtil.markPassed('Payment success')
@@ -430,14 +430,19 @@ public class Success {
 
 	@Keyword
 	def checkProductAssert(Integer countTotalPrice, String totalPrice, Integer countQty) {
+		KeywordUtil.logInfo ('countTotalPrice : ' + countTotalPrice)
+		KeywordUtil.logInfo ('totalPrice : ' + totalPrice)
+		KeywordUtil.logInfo ('countQty : ' + countQty)
+
 		MobileElement allTotalPrice = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/order_detail_tv_total_price')
 		MobileElement allQty = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/order_detail_tv_total_list')
 		String numAllTotalPrice = ''
 		if (allTotalPrice.getText().contains('บาท')) {
 			numAllTotalPrice = allTotalPrice.getText().replace('บาท','')
 		}
-		println ('total price : ' + Double.parseDouble(numAllTotalPrice))
-		println ('All QTY : ' + extractInt(allQty.getText()))
+		KeywordUtil.logInfo ('total price : ' + Double.parseDouble(numAllTotalPrice))
+		KeywordUtil.logInfo ('All QTY : ' + extractInt(allQty.getText()))
+
 		assert Double.parseDouble(numAllTotalPrice) == countTotalPrice
 		assert Double.parseDouble(numAllTotalPrice) == Double.parseDouble(totalPrice)
 		assert extractInt(allQty.getText()) == countQty
