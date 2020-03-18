@@ -24,9 +24,19 @@ Mobile.startApplication('D:\\Users\\sunitakac\\Desktop\\apk\\staff_uat_1.2.10a_R
 //def text = ''
 //println text.length()
 
-CustomKeywords.'myPac.writeExcel.write'(1,1,'test3')
-CustomKeywords.'myPac.writeExcel.write'(1,4,'test4')
+//CustomKeywords.'myPac.writeExcel.write'(1,1,'test3')
+CustomKeywords.'myPac.writeExcel.write'('ssss','aaaa','test4')
 
-
+//try {
+//	println 'hihihihihihi'
+//	boolean t = true
+//	if (t) {
+//		return '2'
+//	}
+//	
+//	println 'nnononon'
+//} catch (Exception e) {
+//	println e
+//}
  
  

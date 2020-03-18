@@ -19,16 +19,24 @@ try {
 	def paymentType = '0'
 	int oldQty = 0
 	def deliveryType = '0'
+	def remark = ''
+	def status = ''
 	
     println(order_id.length())
     while (order_id.length() < 4) {
         order_id = ('0' + order_id)
-
         println(order_id.length())
 		KeywordUtil.logInfo(order_id)
     }
+	
 	KeywordUtil.logInfo('------------- new order -----------')
 	checkOrder = CustomKeywords.'myPac.StaffKeyword.FindOrder'(order_id)
+	
+	if (!checkOrder) {
+		status = 'Fail'
+		remark = 'Fail to find order' + order_id + ' at status_id ' + status_id
+		return remark
+	}
 	
 	List<MobileElement> prods = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/row_order_detail_tv_name')
 	println ('Product size : ' + prods.size().toString())
@@ -44,26 +52,13 @@ try {
 	int countTotalPrice = 0
 	int statusProduct = 1
 	
-	for(int i = 1; i <= products.size(); i++) {
-		switch (i) {
-			case 1 :
-				name = product_name1
-				qty = Integer.parseInt(qty1)
-				unitPrice = unit_price1
-				break
-			case 2 :
-				name = product_name2
-				qty = Integer.parseInt(qty2)
-				unitPrice = unit_price2
-				break
-			case 3 :
-				name = product_name3
-				qty = Integer.parseInt(qty3)
-				unitPrice = unit_price3
-				break
-		}
-		println ('qty : ' + qty)
-		(countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeyword.checkProduct'(name, qty, unitPrice, countQty, countTotalPrice, statusProduct)
+	String[] productName = [product_name1, product_name2, product_name3]
+	String[] productQty = [qty1, qty2, qty3]
+	String[] productUnitPrice = [unit_price1, unit_price2, unit_price3]
+	
+	for(int i = 0; i < products.size(); i++) {
+		println ('qty : ' + Integer.parseInt(productQty[i]))
+		(countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeyword.checkProduct'(productName[i], Integer.parseInt(productQty[i]), productUnitPrice[i], countQty, countTotalPrice, statusProduct)
 		println ('countQty : ' + countQty)
 		println ('countTotalPrice : ' + countTotalPrice)
 	}
@@ -95,13 +90,24 @@ try {
 			println 'Error at New Order'
 	}
 	
-	//------------------------------ processing ----------------------------//
+	if (!statusOrder) {
+		status = 'Fail'
+		remark = 'Fail to confirm/cancel order' + order_id + ' at status_id ' + status_id
+		return remark
+	}
+	
 	KeywordUtil.logInfo('------------- processing -----------')
 	if (flow_type != '1') {
 		Mobile.tap(findTestObject('Staff/ProcessingTab'), 30)
 		checkOrder2 = CustomKeywords.'myPac.StaffKeyword.FindOrder'(order_id)
 		println ('Check outside found order :' + checkOrder2)
 		println ('status_id : ' + status_id)
+		
+		if (!checkOrder2) {
+			status = 'Fail'
+			remark = 'Fail to find order' + order_id + ' at status_id ' + status_id
+			return remark
+		}
 		
 		List<MobileElement> prods2 = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/row_order_detail_tv_name')
 		println ('Product size : ' + prods2.size().toString())
@@ -116,28 +122,13 @@ try {
 		countQty = 0
 		countTotalPrice = 0
 		
-		for(int i = 1; i <= products2.size(); i++) {
-			switch (i) {
-				case 1 :
-					name = product_name1
-					qty = Integer.parseInt(qty1)
-					unitPrice = unit_price1
-					break
-				case 2 :
-					name = product_name2
-					qty = Integer.parseInt(qty2)
-					unitPrice = unit_price2
-					break
-				case 3 :
-					name = product_name3
-					qty = Integer.parseInt(qty3)
-					unitPrice = unit_price3
-					break
-			}
-			(countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeyword.checkProduct'(name, qty, unitPrice, countQty, countTotalPrice, statusProduct)
+		for(int i = 0; i < products2.size(); i++) {
+			println ('qty : ' + Integer.parseInt(productQty[i]))
+			(countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeyword.checkProduct'(productName[i], Integer.parseInt(productQty[i]), productUnitPrice[i], countQty, countTotalPrice, statusProduct)
 			println ('countQty : ' + countQty)
 			println ('countTotalPrice : ' + countTotalPrice)
 		}
+		
 		CustomKeywords.'myPac.StaffKeyword.checkProductAssert'(countTotalPrice, total_price, countQty)
 		KeywordUtil.markPassed('Check products : Pass')
 		
@@ -171,7 +162,6 @@ try {
 				println 'out-------'
 			}
 						
-			//---------------------- check after edit product ----------------------//
 			KeywordUtil.logInfo('------------- check after edit product -----------')
 			if (flow_type == '5' || flow_type == '6' || flow_type == '7') {
 				List<MobileElement> prods22 = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/row_order_detail_tv_name')
@@ -203,39 +193,18 @@ try {
 					size -= 1
 				}
 				
-				for(int i = 1; i <= size; i++) {
+				for(int i = 0; i < size; i++) {
 					println 'i is : ' + i
-					switch (i) {
-						case 1 :
-							name = product_name1
-							qty = Integer.parseInt(qty1)
-							unitPrice = unit_price1
-							break
-						case 2 :
-							name = product_name2
-							qty = Integer.parseInt(qty2)
-							unitPrice = unit_price2
-							break
-						case 3 :
-							name = product_name3
-							qty = Integer.parseInt(qty3)
-							unitPrice = unit_price3
-							break
-					}
-					
-					println ('name : ' + name)
-					println ('qty : ' + qty)
-					println ('unitPrice : ' + unitPrice)
-					
-					if (flow_type == '5' && name == edit_product) {
+					qty = Integer.parseInt(productQty[i])
+					if (flow_type == '5' && productName[i] == edit_product) {
 						qty += oldQty
 					} else if (statusProduct == 0) {
 						statusProduct = -1	
-					} else if (flow_type == '7' && name == edit_product) {
+					} else if (flow_type == '7' && productName[i] == edit_product) {
 						statusProduct = 0
 						continue
 					}
-					(countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeyword.checkProduct'(name, qty, unitPrice, countQty, countTotalPrice, statusProduct)
+					(countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeyword.checkProduct'(productName[i], qty, productUnitPrice[i], countQty, countTotalPrice, statusProduct)
 				}
 				if (flow_type == '6') {
 					qty = Integer.parseInt(edit_qty)
@@ -260,15 +229,26 @@ try {
 			assert deliveryType.toString() == delivery_type.toString()
 			assert paymentType.toString() == payment_type.toString()
 			KeywordUtil.markPassed('Confirm : Pass')
+			
+			if (!statusOrder2) {
+				status = 'Fail'
+				remark = 'Fail to confirm/cancel order ' + order_id + ' at status_id ' + status_id
+				return remark
+			}
 		}
 	}
 	
-	//------------------------ processed -----------------------------//
 	KeywordUtil.logInfo('------------- processed -----------')
 	Mobile.tap(findTestObject('Staff/Processed'), 30)
 	if (flow_type != '1' && flow_type != '2') {
 		checkOrder3 = CustomKeywords.'myPac.StaffKeyword.FindOrder'(order_id)
 		println ('Check outside found order :' + checkOrder3)
+		
+		if (!checkOrder3) {
+			status = 'Fail'
+			remark = 'Fail to find order ' + order_id + ' at status_id ' + status_id
+			return remark
+		}
 		
 		List<MobileElement> prods3 = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/row_order_detail_tv_name')
 		println ('Product size : ' + prods3.size().toString())
@@ -291,41 +271,20 @@ try {
 			size -= 1
 		}
 		
-		for(int i = 1; i <= size; i++) {
-			switch (i) {
-				case 1 :
-					name = product_name1
-					qty = Integer.parseInt(qty1)
-					unitPrice = unit_price1
-					break
-				case 2 :
-					name = product_name2
-					qty = Integer.parseInt(qty2)
-					unitPrice = unit_price2
-					break
-				case 3 :
-					name = product_name3
-					qty = Integer.parseInt(qty3)
-					unitPrice = unit_price3
-					break
-			}
-			
-			println ('name : ' + name)
-			println ('qty : ' + qty)
-			println ('unitPrice : ' + unitPrice)
-			
-			if (flow_type == '5' && name == edit_product) {
+		for(int i = 0; i < size; i++) {
+			qty = Integer.parseInt(productQty[i])
+			if (flow_type == '5' && productName[i] == edit_product) {
 				qty += oldQty
 			} else if (statusProduct == 0) {
 				statusProduct = -1	
-			} else if (flow_type == '7' && name == edit_product) {
+			} else if (flow_type == '7' && productName[i] == edit_product) {
 				println ('skip deleted product : ' + edit_product)
 				statusProduct = -2
 				continue
 			}
-			(countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeyword.checkProduct'(name, qty, unitPrice, countQty, countTotalPrice, statusProduct)
-			
+			(countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeyword.checkProduct'(productName[i], qty, productUnitPrice[i], countQty, countTotalPrice, statusProduct)
 		}
+		
 		if (flow_type == '6') {
 			qty = Integer.parseInt(edit_qty)
 			(countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeyword.checkProduct'(edit_product, qty, edit_unit_price, countQty, countTotalPrice, statusProduct)
@@ -344,7 +303,6 @@ try {
 			statusOrder3 = CustomKeywords.'myPac.StaffKeyword.CancelBtn'(flow_type)
 			status_id = '6'
 			KeywordUtil.markPassed('Cancel : Pass')
-//			Mobile.pressBack()
 		} else {
 			(statusOrder3, status_id, paymentType, deliveryType) = CustomKeywords.'myPac.StaffKeyword.ConfirmBtn'(status_id, paymentType)
 			println ('Check statusOrder :' + statusOrder3)
@@ -368,12 +326,24 @@ try {
 				}
 			}
 		}
+		
+		if (!statusOrder3) {
+			status = 'Fail'
+			remark = 'Fail to confirm/cancel order ' + order_id + ' at status_id ' + status_id
+			return remark
+		}
 	}
 	
 	KeywordUtil.logInfo('------------- Check final -----------')
 	println order_id
 	checkOrder4 = CustomKeywords.'myPac.StaffKeyword.FindOrder'(order_id)
 	println ('checkOrder4 : ' + checkOrder4)
+	
+	if (!checkOrder4) {
+		status = 'Fail'
+		remark = 'Fail to find order ' + order_id + ' at status_id ' + status_id
+		return remark
+	}
 	
 	List<MobileElement> prods4 = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/row_order_detail_tv_name')
 	println ('Product size : ' + prods4.size().toString())
@@ -396,34 +366,18 @@ try {
 		size -= 1
 	}
 	
-	for(int i = 1; i <= size; i++) {
-		switch (i) {
-			case 1 :
-				name = product_name1
-				qty = Integer.parseInt(qty1)
-				unitPrice = unit_price1
-				break
-			case 2 :
-				name = product_name2
-				qty = Integer.parseInt(qty2)
-				unitPrice = unit_price2
-				break
-			case 3 :
-				name = product_name3
-				qty = Integer.parseInt(qty3)
-				unitPrice = unit_price3
-				break
-		}
-		if (flow_type == '5' && name == edit_product) {
+	for(int i = 0; i < size; i++) {
+		qty = Integer.parseInt(productQty[i])
+		if (flow_type == '5' && productName[i] == edit_product) {
 			qty += oldQty
 		} else if (statusProduct == 0) {
 			statusProduct = -1	
-		} else if (flow_type == '7' && name == edit_product) {
+		} else if (flow_type == '7' && productName[i] == edit_product) {
 			println ('skip deleted product : ' + edit_product)
 			statusProduct = -2
 			continue
 		}
-		(countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeyword.checkProduct'(name, qty, unitPrice, countQty, countTotalPrice, statusProduct)
+		(countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeyword.checkProduct'(productName[i], qty, productUnitPrice[i], countQty, countTotalPrice, statusProduct)
 	}
 	if (flow_type == '6') {
 		qty = Integer.parseInt(edit_qty)
@@ -444,30 +398,26 @@ try {
 	
 	if (isSuccess) {
 		if (status_id == '5' || status_id == '6') {
-			statusOrder4 = 'Pass'
+			statusOrder4 = true
 		} else {
-			statusOrder4 = 'Fail at status : ' + status_id + ' isSuccess'
+			statusOrder4 = false
 		}
 	} else {
-		statusOrder4 = 'Fail at status : ' + status_id
+		statusOrder4 = false
 	}
-			
-	/////
-//		}
-//	}
-	////
-    String order = order_id.toString()
-    KeywordUtil.logInfo('order :  ---- ' + order)
-    KeywordUtil.logInfo('checkOrder : ' + checkOrder)
-    KeywordUtil.logInfo('statusOrder : ' + statusOrder)
-    KeywordUtil.logInfo('checkOrder2 : ' + checkOrder2)
-    KeywordUtil.logInfo('statusOrder2 : ' + statusOrder2)
-    KeywordUtil.logInfo('checkOrder3 : ' + checkOrder3)
-    KeywordUtil.logInfo('statusOrder3 : ' + statusOrder3)
-    KeywordUtil.logInfo('checkOrder4 : ' + checkOrder4)
-    KeywordUtil.logInfo('statusOrder4 : ' + statusOrder4)
 	
-	//	CustomKeywords.'myPac.Excel.writeExcel'(order_id, checkOrder, statusOrder, checkOrder2, statusOrder2, checkOrder3, statusOrder3, checkOrder4, statusOrder4)
+	if (!statusOrder4) {
+		status = 'Fail'
+		remark = 'Fail to find order ' + order_id + ' at status_id ' + status_id
+		return remark
+	} else {
+		status = 'Pass'
+	}
+	
+	KeywordUtil.logInfo(order_id)
+	KeywordUtil.logInfo(status)
+	KeywordUtil.logInfo(remark)
+	CustomKeywords.'myPac.writeExcel.write'(order_id, status, remark)
 }
 catch (Exception e) {
     KeywordUtil.markFailed('crashed... ' + e)

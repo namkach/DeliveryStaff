@@ -13,12 +13,14 @@ import io.appium.java_client.MobileElement
 
 public class StaffKeyword {
 	def sid = '0'
+	boolean checkOrder = false
 	AppiumDriver<MobileElement> driver = MobileDriverFactory.getDriver()
 
 	@Keyword
 	def FindOrder(String order_id) {
 		Mobile.scrollToText(order_id)
 		List<MobileElement> orders = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/txt_order_no')
+		checkOrder = false
 		for (int j = 0; j < orders.size(); j++) {
 			println('Order in the screen is : ' + orders.get(j).getText())
 			if (order_id == orders.get(j).getText()) {
@@ -31,7 +33,8 @@ public class StaffKeyword {
 
 				println ('order name size : ' + names.size())
 				println 'Order Found'
-				return 'Order Found'
+				checkOrder = true
+				return checkOrder
 				break
 			}
 		}
@@ -94,11 +97,10 @@ public class StaffKeyword {
 		MobileElement confirmOrder = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/order_detail_bt_confirm')
 		println confirmOrder.getText()
 		assert confirmOrder.getText() == btnName
-		def status_confirm = 'N/A'
 		if (confirmOrder.getText() == btnName) {
-			status_confirm = 'PASS CONFIRM'
+			checkOrder = true
 		} else {
-			status_confirm = 'FAIL CONFIRM'
+			checkOrder = false
 		}
 		confirmOrder.click()
 		KeywordUtil.logInfo ('Order confirmed')
@@ -161,12 +163,12 @@ public class StaffKeyword {
 			default :
 				KeywordUtil.logInfo ('error status_id : ' + status_id)
 		}
-		return [status_confirm, sid, paymentType, deliveryType]
+		return [checkOrder, sid, paymentType, deliveryType]
 	}
 
 	@Keyword
 	def CancelBtn(String flow_type) {
-		def status_cancel = 'N/A'
+		checkOrder = false
 		MobileElement cancelBtn = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/order_detail_bt_cancel')
 		cancelBtn.click()
 		List<MobileElement> cancelOption = driver.findElementsByClassName('android.widget.RadioButton')
@@ -179,9 +181,9 @@ public class StaffKeyword {
 				MobileElement cancelConfirm = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/dialog_order_cancel_confirm_bt_yes')
 				assert cancelConfirm.getText() == 'ยืนยัน'
 				cancelConfirm.click()
-				KeywordUtil.logInfo('Order cancel status_id ' + flow_type)
-				status_cancel = 'PASS CANCEL Status : ' + flow_type
-				return status_cancel
+				KeywordUtil.logInfo('PASS CANCEL Status : ' + flow_type)
+				checkOrder = true
+				return checkOrder
 				break
 			}
 		}
