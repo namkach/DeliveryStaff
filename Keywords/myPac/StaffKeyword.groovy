@@ -11,7 +11,7 @@ import com.kms.katalon.core.util.KeywordUtil
 import io.appium.java_client.AppiumDriver
 import io.appium.java_client.MobileElement
 
-public class Success {
+public class StaffKeyword {
 	def sid = '0'
 	AppiumDriver<MobileElement> driver = MobileDriverFactory.getDriver()
 
@@ -76,11 +76,16 @@ public class Success {
 			countItem()
 		} else if (status_id == '3' || status_id == '4') {
 			println ('payment : ' + paymentType)
-			if (paymentType == '1') {
-				btnName = 'ชำระเงิน'
-			} else if (paymentType == '2') {
-				btnName = 'ยืนยันการส่งสินค้า'
-			}
+
+			//for RIDER
+			btnName = 'ยืนยันการส่งสินค้า'
+
+			//for COD
+			//			if (paymentType == '1') {
+			//				btnName = 'ชำระเงิน'
+			//			} else if (paymentType == '2') {
+			//				btnName = 'ยืนยันการส่งสินค้า'
+			//			}
 		} else {
 			KeywordUtil.markFailed('error dont find status id : ' + status_id)
 		}
@@ -137,15 +142,21 @@ public class Success {
 
 			//check payment
 			case '3'..'4' :
-				KeywordUtil.logInfo ('status id : ' + status_id)
-				boolean checkPayment = CheckPaymentType(paymentType)
-				KeywordUtil.logInfo('checkPayment : ' + checkPayment)
-				if (checkPayment) {
-					sid = '5'
-				} else {
-					sid = '7'
-					KeywordUtil.markFailed('error sid = 7 payment Function')
-				}
+			// for Rider
+				MobileElement confirmYes = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/dialog_confirm_yes')
+				confirmYes.click()
+				sid = '5'
+
+			//for COD
+			//				KeywordUtil.logInfo ('status id : ' + status_id)
+			//				boolean checkPayment = CheckPaymentType(paymentType)
+			//				KeywordUtil.logInfo('checkPayment : ' + checkPayment)
+			//				if (checkPayment) {
+			//					sid = '5'
+			//				} else {
+			//					sid = '7'
+			//					KeywordUtil.markFailed('error sid = 7 payment Function')
+			//				}
 				break
 			default :
 				KeywordUtil.logInfo ('error status_id : ' + status_id)
