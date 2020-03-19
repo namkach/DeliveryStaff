@@ -13,8 +13,8 @@ public class writeExcel {
 	@Keyword
 	def write(String order_id, String flow_type, String delivery_type, String payment_type, String status, String remark) {
 
-		Workbook existingWorkbook = Workbook.getWorkbook(new File('D:\\Users\\sunitakac\\Desktop\\1.xls'))
-		WritableWorkbook workbookCopy = Workbook.createWorkbook(new File('D:\\Users\\sunitakac\\Desktop\\1.xls'), existingWorkbook)
+		Workbook existingWorkbook = Workbook.getWorkbook(new File('D:\\Users\\sunitakac\\Desktop\\result.xls'))
+		WritableWorkbook workbookCopy = Workbook.createWorkbook(new File('D:\\Users\\sunitakac\\Desktop\\result.xls'), existingWorkbook)
 		WritableSheet sheetToEdit = workbookCopy.getSheet(0)
 
 		String[] header = ['Order','Flow Type', 'Delivery Type', 'Payment Type', 'Result', 'Remark']
@@ -27,51 +27,9 @@ public class writeExcel {
 			sheetToEdit.addCell(cellHeader)
 		}
 
-//		for (int j = 1; j < text.size() + 1; j++) {
-//			WritableCell cellText = sheetToEdit.getCell(0, j)
-//			def textCell = sheetToEdit.getCell(0, j).getContents()
-//			if (cellText == null || textCell == order_id) {
-//				for (int k = 0; k < text.size(); k++) {
-//					Label l = new Label(k, j, text[k])
-//					cellText = (WritableCell) l
-//					sheetToEdit.addCell(cellText)
-//				}
-//			}
-//		}
-		
-		
-		 
-		
-
-//		boolean isFilled = true
-//		int j = 1 
-//		while (isFilled) {
-//			boolean isEmpty = cellText.getType().equals(CellType.EMPTY)
-//			if (!isEmpty) {
-//				
-//			}
-//			
-//			
-//			println ('text cell : ' + textCell)
-//			if ((textCell != null && textCell == order_id) || (textCell == null)) {
-//				for (int k = 0; k < text.size(); k++) {
-//					Label l = new Label(k, j, text[k])
-//					cellText = (WritableCell) l
-//					sheetToEdit.addCell(cellText)
-//				}
-//				break
-//			} else {
-//				j++
-//			}
-//		}
-		
-		
 		WritableCell cellText
 		def textCell
 		int row = sheetToEdit.getRows()
-//		cellText = sheetToEdit.getCell(0, row)
-		
-		
 		boolean isEmpty
 		for (int j = 1; j <= row + 1; j++) {
 			cellText = sheetToEdit.getCell(0, j)
@@ -85,22 +43,7 @@ public class writeExcel {
 				}
 				break
 			}
-			
-//			if ((textCell != null && textCell == order_id) || (textCell == null)) {
-//				for (int k = 0; k < text.size(); k++) {
-//					Label l = new Label(k, j, text[k])
-//					cellText = (WritableCell) l
-//					sheetToEdit.addCell(cellText)
-//				}
-//				break
-//			}
 		}
-		
-		
-		
-
-		
-		
 		workbookCopy.write()
 		workbookCopy.close()
 		existingWorkbook.close()
