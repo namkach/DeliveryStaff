@@ -417,7 +417,7 @@ try {
 	KeywordUtil.logInfo(order_id)
 	KeywordUtil.logInfo(status)
 	KeywordUtil.logInfo(remark)
-	CustomKeywords.'myPac.writeExcel.write'(order_id, status, remark)
+	CustomKeywords.'myPac.writeExcel.write'(order_id, flow_type, deliveryType, payment_type, status, remark)
 }
 catch (Exception e) {
     KeywordUtil.markFailed('crashed... ' + e)

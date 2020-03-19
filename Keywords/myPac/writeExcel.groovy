@@ -11,14 +11,14 @@ import jxl.write.WritableWorkbook
 
 public class writeExcel {
 	@Keyword
-	def write(String order_id, String status, String remark) {
+	def write(String order_id, String flow_type, String delivery_type, String payment_type, String status, String remark) {
 
 		Workbook existingWorkbook = Workbook.getWorkbook(new File('D:\\Users\\sunitakac\\Desktop\\1.xls'))
 		WritableWorkbook workbookCopy = Workbook.createWorkbook(new File('D:\\Users\\sunitakac\\Desktop\\1.xls'), existingWorkbook)
 		WritableSheet sheetToEdit = workbookCopy.getSheet(0)
 
-		String[] header = ['Order', 'Result', 'Remark']
-		String[] text = [order_id, status, remark]
+		String[] header = ['Order','Flow Type', 'Delivery Type', 'Payment Type', 'Result', 'Remark']
+		String[] text = [order_id, flow_type, delivery_type, payment_type, status, remark]
 
 		for (int i = 0; i < header.size(); i++) {
 			WritableCell cellHeader
