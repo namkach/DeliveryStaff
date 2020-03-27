@@ -1,8 +1,5 @@
 package myPac
 
-import org.openqa.selenium.By
-import org.openqa.selenium.support.ui.ExpectedConditions
-
 import com.kms.katalon.core.annotation.Keyword
 import com.kms.katalon.core.mobile.keyword.MobileBuiltInKeywords as Mobile
 import com.kms.katalon.core.mobile.keyword.internal.MobileDriverFactory
@@ -11,10 +8,21 @@ import com.kms.katalon.core.util.KeywordUtil
 import io.appium.java_client.AppiumDriver
 import io.appium.java_client.MobileElement
 
-public class StaffKeyword {
+public class StaffKeywords {
 	def sid = '0'
 	boolean checkOrder = false
 	AppiumDriver<MobileElement> driver = MobileDriverFactory.getDriver()
+
+	@Keyword
+	def checkOrderId(String order_id) {
+		println(order_id.length())
+		while (order_id.length() < 4) {
+			order_id = ('0' + order_id)
+			println(order_id.length())
+			KeywordUtil.logInfo(order_id)
+		}
+		return order_id
+	}
 
 	@Keyword
 	def FindOrder(String order_id) {
@@ -41,7 +49,7 @@ public class StaffKeyword {
 	}
 
 	@Keyword
-	def ConfirmBtn(String status_id, String paymentType) {
+	def ConfirmBtn(String status_id, String paymentType, String apkType) {
 		def btnName = ''
 		def deliveryType = '0'
 
@@ -79,16 +87,15 @@ public class StaffKeyword {
 			countItem()
 		} else if (status_id == '3' || status_id == '4') {
 			println ('payment : ' + paymentType)
-
-			//for RIDER
-			btnName = 'ยืนยันการส่งสินค้า'
-
-			//for COD
-			//			if (paymentType == '1') {
-			//				btnName = 'ชำระเงิน'
-			//			} else if (paymentType == '2') {
-			//				btnName = 'ยืนยันการส่งสินค้า'
-			//			}
+			if (apkType == 'rider') {
+				btnName = 'ยืนยันการส่งสินค้า'
+			} else if (apkType == 'cod') {
+				if (paymentType == '1') {
+					btnName = 'ชำระเงิน'
+				} else if (paymentType == '2') {
+					btnName = 'ยืนยันการส่งสินค้า'
+				}
+			}
 		} else {
 			KeywordUtil.markFailed('error dont find status id : ' + status_id)
 		}
@@ -144,21 +151,37 @@ public class StaffKeyword {
 
 			//check payment
 			case '3'..'4' :
-			// for Rider
+			if (apkType == 'rider') {
 				MobileElement confirmYes = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/dialog_confirm_yes')
 				confirmYes.click()
 				sid = '5'
+			} else if (apkType == 'cod') {
+				KeywordUtil.logInfo ('status id : ' + status_id)
+				boolean checkPayment = CheckPaymentType(paymentType)
+				KeywordUtil.logInfo('checkPayment : ' + checkPayment)
+				if (checkPayment) {
+					sid = '5'
+				} else {
+					sid = '7'
+					KeywordUtil.markFailed('error sid = 7 payment Function')
+				}
+			}
+			
+			// for Rider
+			//				MobileElement confirmYes = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/dialog_confirm_yes')
+			//				confirmYes.click()
+			//				sid = '5'
 
 			//for COD
-			//				KeywordUtil.logInfo ('status id : ' + status_id)
-			//				boolean checkPayment = CheckPaymentType(paymentType)
-			//				KeywordUtil.logInfo('checkPayment : ' + checkPayment)
-			//				if (checkPayment) {
-			//					sid = '5'
-			//				} else {
-			//					sid = '7'
-			//					KeywordUtil.markFailed('error sid = 7 payment Function')
-			//				}
+//				KeywordUtil.logInfo ('status id : ' + status_id)
+//				boolean checkPayment = CheckPaymentType(paymentType)
+//				KeywordUtil.logInfo('checkPayment : ' + checkPayment)
+//				if (checkPayment) {
+//					sid = '5'
+//				} else {
+//					sid = '7'
+//					KeywordUtil.markFailed('error sid = 7 payment Function')
+//				}
 				break
 			default :
 				KeywordUtil.logInfo ('error status_id : ' + status_id)
@@ -190,17 +213,15 @@ public class StaffKeyword {
 	}
 
 	@Keyword
-	def extractInt(String input) {
-		return Integer.parseInt(input.replaceAll("[^0-9]", ""))
-	}
-
-	@Keyword
 	def countItem() {
 		MobileElement totalAmountElement = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/order_detail_tv_total_list')
 		println totalAmountElement.getText()
 		List<MobileElement> eachItemAmount = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/row_order_detail_tv_amount')
 		println ('this element has : ' + eachItemAmount.size() + ' item(s)')
+
+		Keywords kw = new Keywords()
 		int totalamount = extractInt(totalAmountElement.getText())
+
 		int countItem = 0
 		List<MobileElement> checkbox = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/row_order_detail_cb_is_pick')
 		println ('checkbox size : ' + checkbox.size())
@@ -476,6 +497,11 @@ public class StaffKeyword {
 			println ('i is : ' + i)
 			println ('amounts : ' + amounts.get(i).getText())
 		}
+	}
+
+	@Keyword
+	def extractInt(String input) {
+		return Integer.parseInt(input.replaceAll("[^0-9]", ""))
 	}
 }
 

@@ -7,11 +7,12 @@ import com.kms.katalon.core.util.KeywordUtil
 import io.appium.java_client.AppiumDriver as AppiumDriver
 import io.appium.java_client.MobileElement as MobileElement
 
-def path = 'D:\\Users\\sunitakac\\Desktop\\apk\\staff_uat_1.2.10a_RIDER_17032020.apk'
+//def path = 'D:\\Users\\sunitakac\\Desktop\\apk\\staff_uat_1.2.10a_RIDER_17032020.apk'
+def path = 'D:\\Users\\sunitakac\\Desktop\\apk\\staff_uat_1.2.6m_COD_05032020.apk'
 Mobile.startApplication(path, true)
-Mobile.setText(findTestObject('Staff/Store Id'), '00882', 0)
-Mobile.setText(findTestObject('Staff/Staff Id'), '1010101', 0)
-Mobile.tap(findTestObject('Staff/Login Btn'), 0)
+Mobile.setText(findTestObject('Staff/StoreId'), '00882', 0)
+Mobile.setText(findTestObject('Staff/StaffId'), '1010101', 0)
+Mobile.tap(findTestObject('Staff/LoginBtn'), 0)
 
 try {
     AppiumDriver<MobileElement> driver = MobileDriverFactory.getDriver()
@@ -21,17 +22,20 @@ try {
 	def deliveryType = '0'
 	def remark = ''
 	def status = ''
+	def apkType = ''
 	
-    println(order_id.length())
-    while (order_id.length() < 4) {
-        order_id = ('0' + order_id)
-        println(order_id.length())
-		KeywordUtil.logInfo(order_id)
-    }
+	if (path.contains('COD')) {
+		apkType = 'cod'
+	} else if (path.contains('RIDER')) {
+		apkType = 'rider'
+	}
+	KeywordUtil.logInfo('apkType : ' + apkType)
+	
+	order_id = CustomKeywords.'myPac.StaffKeywords.checkOrderId'(order_id)
 	
 	KeywordUtil.logInfo('------------- new order -----------')
-	checkOrder = CustomKeywords.'myPac.StaffKeyword.FindOrder'(order_id)
-	
+	checkOrder = 
+	CustomKeywords.'myPac.StaffKeywords.FindOrder'(order_id)
 	if (!checkOrder) {
 		status = 'Fail'
 		remark = 'Fail to find order' + order_id + ' at status_id ' + status_id
@@ -58,11 +62,11 @@ try {
 	
 	for(int i = 0; i < products.size(); i++) {
 		println ('qty : ' + Integer.parseInt(productQty[i]))
-		(countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeyword.checkProduct'(productName[i], Integer.parseInt(productQty[i]), productUnitPrice[i], countQty, countTotalPrice, statusProduct)
+		(countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeywords.checkProduct'(productName[i], Integer.parseInt(productQty[i]), productUnitPrice[i], countQty, countTotalPrice, statusProduct)
 		println ('countQty : ' + countQty)
 		println ('countTotalPrice : ' + countTotalPrice)
 	}
-	CustomKeywords.'myPac.StaffKeyword.checkProductAssert'(countTotalPrice, total_price, countQty)
+	CustomKeywords.'myPac.StaffKeywords.checkProductAssert'(countTotalPrice, total_price, countQty)
 	KeywordUtil.markPassed('Check products : Pass')
 
     status_id = '1'
@@ -71,14 +75,14 @@ try {
 	switch (flow_type) {
 		//new order
 		case '1' :
-			statusOrder = CustomKeywords.'myPac.StaffKeyword.CancelBtn'(flow_type)
+			statusOrder = CustomKeywords.'myPac.StaffKeywords.CancelBtn'(flow_type)
 			status_id = '6'
 			KeywordUtil.markPassed('Cancel : Pass')
 			break
 			
 		//new order
 		case '0'..'7' :
-			(statusOrder, status_id, paymentType, deliveryType) = CustomKeywords.'myPac.StaffKeyword.ConfirmBtn'(status_id, paymentType)
+			(statusOrder, status_id, paymentType, deliveryType) = CustomKeywords.'myPac.StaffKeywords.ConfirmBtn'(status_id, paymentType, apkType)
 			println ('Check statusOrder :' + statusOrder)
 			println ('Check status_id :' + status_id)
 			println ('Check paymentType :' + paymentType)
@@ -99,7 +103,7 @@ try {
 	KeywordUtil.logInfo('------------- processing -----------')
 	if (flow_type != '1') {
 		Mobile.tap(findTestObject('Staff/ProcessingTab'), 30)
-		checkOrder2 = CustomKeywords.'myPac.StaffKeyword.FindOrder'(order_id)
+		checkOrder2 = CustomKeywords.'myPac.StaffKeywords.FindOrder'(order_id)
 		println ('Check outside found order :' + checkOrder2)
 		println ('status_id : ' + status_id)
 		
@@ -124,16 +128,16 @@ try {
 		
 		for(int i = 0; i < products2.size(); i++) {
 			println ('qty : ' + Integer.parseInt(productQty[i]))
-			(countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeyword.checkProduct'(productName[i], Integer.parseInt(productQty[i]), productUnitPrice[i], countQty, countTotalPrice, statusProduct)
+			(countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeywords.checkProduct'(productName[i], Integer.parseInt(productQty[i]), productUnitPrice[i], countQty, countTotalPrice, statusProduct)
 			println ('countQty : ' + countQty)
 			println ('countTotalPrice : ' + countTotalPrice)
 		}
 		
-		CustomKeywords.'myPac.StaffKeyword.checkProductAssert'(countTotalPrice, total_price, countQty)
+		CustomKeywords.'myPac.StaffKeywords.checkProductAssert'(countTotalPrice, total_price, countQty)
 		KeywordUtil.markPassed('Check products : Pass')
 		
 		if (flow_type == '2') {
-			statusOrder2 = CustomKeywords.'myPac.StaffKeyword.CancelBtn'(flow_type)
+			statusOrder2 = CustomKeywords.'myPac.StaffKeywords.CancelBtn'(flow_type)
 			status_id = '6'
 			KeywordUtil.markPassed('Cancel : Pass')
 		} else {
@@ -152,13 +156,13 @@ try {
 						oldQty = Integer.parseInt(qty3)
 						break
 				}
-				CustomKeywords.'myPac.StaffKeyword.editQty'(edit_product, edit_qty, oldQty)
+				CustomKeywords.'myPac.StaffKeywords.editQty'(edit_product, edit_qty, oldQty)
 			} else if (flow_type == '6') {
 				println ('Add product')
-				CustomKeywords.'myPac.StaffKeyword.addProduct'(edit_product, edit_qty)
+				CustomKeywords.'myPac.StaffKeywords.addProduct'(edit_product, edit_qty)
 			} else if (flow_type == '7') {
 				println ('Delete product')
-				CustomKeywords.'myPac.StaffKeyword.deleteProduct'(edit_product)
+				CustomKeywords.'myPac.StaffKeywords.deleteProduct'(edit_product)
 				println 'out-------'
 			}
 						
@@ -204,24 +208,24 @@ try {
 						statusProduct = 0
 						continue
 					}
-					(countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeyword.checkProduct'(productName[i], qty, productUnitPrice[i], countQty, countTotalPrice, statusProduct)
+					(countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeywords.checkProduct'(productName[i], qty, productUnitPrice[i], countQty, countTotalPrice, statusProduct)
 				}
 				if (flow_type == '6') {
 					qty = Integer.parseInt(edit_qty)
-					(countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeyword.checkProduct'(edit_product, qty, edit_unit_price, countQty, countTotalPrice, statusProduct)
+					(countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeywords.checkProduct'(edit_product, qty, edit_unit_price, countQty, countTotalPrice, statusProduct)
 				}
 				println ('countQty : ' + countQty)
 				println ('countTotalPrice : ' + countTotalPrice)
 				
 				if (flow_type == '5' || flow_type == '6' || flow_type == '7') {
-					CustomKeywords.'myPac.StaffKeyword.checkProductAssert'(countTotalPrice, edit_total_price, countQty)
+					CustomKeywords.'myPac.StaffKeywords.checkProductAssert'(countTotalPrice, edit_total_price, countQty)
 				} else {
-					CustomKeywords.'myPac.StaffKeyword.checkProductAssert'(countTotalPrice, total_price, countQty)
+					CustomKeywords.'myPac.StaffKeywords.checkProductAssert'(countTotalPrice, total_price, countQty)
 				}
 				KeywordUtil.markPassed('Check products : Pass')
 			}
 			
-			(statusOrder2, status_id, paymentType, deliveryType) = CustomKeywords.'myPac.StaffKeyword.ConfirmBtn'(status_id, paymentType)
+			(statusOrder2, status_id, paymentType, deliveryType) = CustomKeywords.'myPac.StaffKeywords.ConfirmBtn'(status_id, paymentType, apkType)
 			println ('Check statusOrder :' + statusOrder2)
 			println ('Check status_id :' + status_id)
 			println ('Check paymentType :' + paymentType)
@@ -241,7 +245,7 @@ try {
 	KeywordUtil.logInfo('------------- processed -----------')
 	Mobile.tap(findTestObject('Staff/Processed'), 30)
 	if (flow_type != '1' && flow_type != '2') {
-		checkOrder3 = CustomKeywords.'myPac.StaffKeyword.FindOrder'(order_id)
+		checkOrder3 = CustomKeywords.'myPac.StaffKeywords.FindOrder'(order_id)
 		println ('Check outside found order :' + checkOrder3)
 		
 		if (!checkOrder3) {
@@ -282,29 +286,29 @@ try {
 				statusProduct = -2
 				continue
 			}
-			(countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeyword.checkProduct'(productName[i], qty, productUnitPrice[i], countQty, countTotalPrice, statusProduct)
+			(countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeywords.checkProduct'(productName[i], qty, productUnitPrice[i], countQty, countTotalPrice, statusProduct)
 		}
 		
 		if (flow_type == '6') {
 			qty = Integer.parseInt(edit_qty)
-			(countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeyword.checkProduct'(edit_product, qty, edit_unit_price, countQty, countTotalPrice, statusProduct)
+			(countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeywords.checkProduct'(edit_product, qty, edit_unit_price, countQty, countTotalPrice, statusProduct)
 		}
 		println ('countQty : ' + countQty)
 		println ('countTotalPrice : ' + countTotalPrice)
 		
 		if (flow_type == '5' || flow_type == '6' || flow_type == '7') {
-			CustomKeywords.'myPac.StaffKeyword.checkProductAssert'(countTotalPrice, edit_total_price, countQty)
+			CustomKeywords.'myPac.StaffKeywords.checkProductAssert'(countTotalPrice, edit_total_price, countQty)
 		} else {
-			CustomKeywords.'myPac.StaffKeyword.checkProductAssert'(countTotalPrice, total_price, countQty)
+			CustomKeywords.'myPac.StaffKeywords.checkProductAssert'(countTotalPrice, total_price, countQty)
 		}
 		KeywordUtil.markPassed('Check products : Pass') 
 	
 		if (flow_type == '3' || flow_type == '4') {
-			statusOrder3 = CustomKeywords.'myPac.StaffKeyword.CancelBtn'(flow_type)
+			statusOrder3 = CustomKeywords.'myPac.StaffKeywords.CancelBtn'(flow_type)
 			status_id = '6'
 			KeywordUtil.markPassed('Cancel : Pass')
 		} else {
-			(statusOrder3, status_id, paymentType, deliveryType) = CustomKeywords.'myPac.StaffKeyword.ConfirmBtn'(status_id, paymentType)
+			(statusOrder3, status_id, paymentType, deliveryType) = CustomKeywords.'myPac.StaffKeywords.ConfirmBtn'(status_id, paymentType, apkType)
 			println ('Check statusOrder :' + statusOrder3)
 			println ('Check status_id :' + status_id)
 			println ('Check paymentType :' + paymentType)
@@ -319,7 +323,7 @@ try {
 				confirmOrder.click()
 				MobileElement confirmSign = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/main_toolbar_tv_menu_right2')
 				if (confirmSign.isDisplayed()) {
-					CustomKeywords.'myPac.StaffKeyword.swipeUp'()
+					CustomKeywords.'myPac.StaffKeywords.swipeUp'()
 					confirmSign.click()
 					MobileElement confirmSignYes = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/dialog_confirm_yes')
 					confirmSignYes.click()
@@ -336,7 +340,7 @@ try {
 	
 	KeywordUtil.logInfo('------------- Check final -----------')
 	println order_id
-	checkOrder4 = CustomKeywords.'myPac.StaffKeyword.FindOrder'(order_id)
+	checkOrder4 = CustomKeywords.'myPac.StaffKeywords.FindOrder'(order_id)
 	println ('checkOrder4 : ' + checkOrder4)
 	
 	if (!checkOrder4) {
@@ -377,24 +381,24 @@ try {
 			statusProduct = -2
 			continue
 		}
-		(countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeyword.checkProduct'(productName[i], qty, productUnitPrice[i], countQty, countTotalPrice, statusProduct)
+		(countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeywords.checkProduct'(productName[i], qty, productUnitPrice[i], countQty, countTotalPrice, statusProduct)
 	}
 	if (flow_type == '6') {
 		qty = Integer.parseInt(edit_qty)
-		(countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeyword.checkProduct'(edit_product, qty, edit_unit_price, countQty, countTotalPrice, statusProduct)
+		(countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeywords.checkProduct'(edit_product, qty, edit_unit_price, countQty, countTotalPrice, statusProduct)
 	}
 	println ('countQty : ' + countQty)
 	println ('countTotalPrice : ' + countTotalPrice)
 	
 	if (flow_type == '5' || flow_type == '6' || flow_type == '7') {
-		CustomKeywords.'myPac.StaffKeyword.checkProductAssert'(countTotalPrice, edit_total_price, countQty)
+		CustomKeywords.'myPac.StaffKeywords.checkProductAssert'(countTotalPrice, edit_total_price, countQty)
 	} else {
-		CustomKeywords.'myPac.StaffKeyword.checkProductAssert'(countTotalPrice, total_price, countQty)
+		CustomKeywords.'myPac.StaffKeywords.checkProductAssert'(countTotalPrice, total_price, countQty)
 	}
 	KeywordUtil.markPassed('Check products : Pass')
 	
 	boolean isSuccess = false
-	isSuccess = CustomKeywords.'myPac.StaffKeyword.checkStatusId'(status_id)
+	isSuccess = CustomKeywords.'myPac.StaffKeywords.checkStatusId'(status_id)
 	
 	if (isSuccess) {
 		if (status_id == '5' || status_id == '6') {
