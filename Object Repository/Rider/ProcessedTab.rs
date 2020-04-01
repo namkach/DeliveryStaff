@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>Processed</name>
+   <name>ProcessedTab</name>
    <tag></tag>
    <elementGuidId>00000000-0000-0000-0000-000000000000</elementGuidId>
    <selectorMethod>BASIC</selectorMethod>
@@ -25,14 +25,14 @@
       <matchCondition>equals</matchCondition>
       <name>resource-id</name>
       <type>Main</type>
-      <value>th.co.gosoft.storemobile.sevendelivery.staff:id/smallLabel</value>
+      <value>th.co.gosoft.storemobile.sevendelivery.rider:id/smallLabel</value>
    </webElementProperties>
    <webElementProperties>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>package</name>
       <type>Main</type>
-      <value>th.co.gosoft.storemobile.sevendelivery.staff</value>
+      <value>th.co.gosoft.storemobile.sevendelivery.rider</value>
    </webElementProperties>
    <webElementProperties>
       <isSelected>false</isSelected>

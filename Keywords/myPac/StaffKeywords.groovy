@@ -151,37 +151,37 @@ public class StaffKeywords {
 
 			//check payment
 			case '3'..'4' :
-			if (apkType == 'rider') {
-				MobileElement confirmYes = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/dialog_confirm_yes')
-				confirmYes.click()
-				sid = '5'
-			} else if (apkType == 'cod') {
-				KeywordUtil.logInfo ('status id : ' + status_id)
-				boolean checkPayment = CheckPaymentType(paymentType)
-				KeywordUtil.logInfo('checkPayment : ' + checkPayment)
-				if (checkPayment) {
+				if (apkType == 'rider') {
+					MobileElement confirmYes = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/dialog_confirm_yes')
+					confirmYes.click()
 					sid = '5'
-				} else {
-					sid = '7'
-					KeywordUtil.markFailed('error sid = 7 payment Function')
+				} else if (apkType == 'cod') {
+					KeywordUtil.logInfo ('status id : ' + status_id)
+					boolean checkPayment = CheckPaymentType(paymentType)
+					KeywordUtil.logInfo('checkPayment : ' + checkPayment)
+					if (checkPayment) {
+						sid = '5'
+					} else {
+						sid = '7'
+						KeywordUtil.markFailed('error sid = 7 payment Function')
+					}
 				}
-			}
-			
+
 			// for Rider
 			//				MobileElement confirmYes = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/dialog_confirm_yes')
 			//				confirmYes.click()
 			//				sid = '5'
 
 			//for COD
-//				KeywordUtil.logInfo ('status id : ' + status_id)
-//				boolean checkPayment = CheckPaymentType(paymentType)
-//				KeywordUtil.logInfo('checkPayment : ' + checkPayment)
-//				if (checkPayment) {
-//					sid = '5'
-//				} else {
-//					sid = '7'
-//					KeywordUtil.markFailed('error sid = 7 payment Function')
-//				}
+			//				KeywordUtil.logInfo ('status id : ' + status_id)
+			//				boolean checkPayment = CheckPaymentType(paymentType)
+			//				KeywordUtil.logInfo('checkPayment : ' + checkPayment)
+			//				if (checkPayment) {
+			//					sid = '5'
+			//				} else {
+			//					sid = '7'
+			//					KeywordUtil.markFailed('error sid = 7 payment Function')
+			//				}
 				break
 			default :
 				KeywordUtil.logInfo ('error status_id : ' + status_id)
@@ -219,7 +219,7 @@ public class StaffKeywords {
 		List<MobileElement> eachItemAmount = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/row_order_detail_tv_amount')
 		println ('this element has : ' + eachItemAmount.size() + ' item(s)')
 
-		Keywords kw = new Keywords()
+		RiderKeywords kw = new RiderKeywords()
 		int totalamount = extractInt(totalAmountElement.getText())
 
 		int countItem = 0

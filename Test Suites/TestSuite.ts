@@ -192,5 +192,23 @@
       <isReuseDriver>false</isReuseDriver>
       <isRun>false</isRun>
       <testCaseId>Test Cases/TestRider</testCaseId>
+      <variableLink>
+         <testDataLinkId></testDataLinkId>
+         <type>DEFAULT</type>
+         <value></value>
+         <variableId>8cefbed3-84d2-4322-94e5-3e4b687a39df</variableId>
+      </variableLink>
+      <variableLink>
+         <testDataLinkId></testDataLinkId>
+         <type>DEFAULT</type>
+         <value></value>
+         <variableId>628c653f-1dd8-4bf0-a1b4-f7242c35232d</variableId>
+      </variableLink>
+      <variableLink>
+         <testDataLinkId></testDataLinkId>
+         <type>DEFAULT</type>
+         <value></value>
+         <variableId>8a3d29dc-caff-4119-a090-b6717811ffdd</variableId>
+      </variableLink>
    </testCaseLink>
 </TestSuiteEntity>

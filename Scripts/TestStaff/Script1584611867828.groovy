@@ -34,8 +34,7 @@ try {
 	order_id = CustomKeywords.'myPac.StaffKeywords.checkOrderId'(order_id)
 	
 	KeywordUtil.logInfo('------------- new order -----------')
-	checkOrder = 
-	CustomKeywords.'myPac.StaffKeywords.FindOrder'(order_id)
+	checkOrder = CustomKeywords.'myPac.StaffKeywords.FindOrder'(order_id)
 	if (!checkOrder) {
 		status = 'Fail'
 		remark = 'Fail to find order' + order_id + ' at status_id ' + status_id
@@ -243,7 +242,7 @@ try {
 	}
 	
 	KeywordUtil.logInfo('------------- processed -----------')
-	Mobile.tap(findTestObject('Staff/Processed'), 30)
+	Mobile.tap(findTestObject('Staff/ProcessedTab'), 30)
 	if (flow_type != '1' && flow_type != '2') {
 		checkOrder3 = CustomKeywords.'myPac.StaffKeywords.FindOrder'(order_id)
 		println ('Check outside found order :' + checkOrder3)
@@ -398,17 +397,7 @@ try {
 	KeywordUtil.markPassed('Check products : Pass')
 	
 	boolean isSuccess = false
-	isSuccess = CustomKeywords.'myPac.StaffKeywords.checkStatusId'(status_id)
-	
-	if (isSuccess) {
-		if (status_id == '5' || status_id == '6') {
-			statusOrder4 = true
-		} else {
-			statusOrder4 = false
-		}
-	} else {
-		statusOrder4 = false
-	}
+	statusOrder4 = CustomKeywords.'myPac.StaffKeywords.checkStatusId'(status_id)
 	
 	if (!statusOrder4) {
 		status = 'Fail'

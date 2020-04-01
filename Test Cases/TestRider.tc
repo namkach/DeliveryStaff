@@ -5,4 +5,25 @@
    <tag></tag>
    <comment></comment>
    <testCaseGuid>fbfc84ba-9f94-47d8-a7c6-d205fc05469e</testCaseGuid>
+   <variable>
+      <defaultValue>''</defaultValue>
+      <description></description>
+      <id>8cefbed3-84d2-4322-94e5-3e4b687a39df</id>
+      <masked>false</masked>
+      <name>checkOrder</name>
+   </variable>
+   <variable>
+      <defaultValue>'9890'</defaultValue>
+      <description></description>
+      <id>628c653f-1dd8-4bf0-a1b4-f7242c35232d</id>
+      <masked>false</masked>
+      <name>order_id</name>
+   </variable>
+   <variable>
+      <defaultValue>'0'</defaultValue>
+      <description></description>
+      <id>8a3d29dc-caff-4119-a090-b6717811ffdd</id>
+      <masked>false</masked>
+      <name>flow_type</name>
+   </variable>
 </TestCaseEntity>
