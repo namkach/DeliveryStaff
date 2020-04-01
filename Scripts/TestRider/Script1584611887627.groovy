@@ -43,10 +43,11 @@ try {
 		return remark
 	}
 	
-	
 	if (flow_type == '0') {
 		status_id = CustomKeywords.'myPac.RiderKeywords.ConfirmBtn'(order_id, status_id)
 		KeywordUtil.logInfo('status_id : ' + status_id)
+		
+		
 	}
 	
 	KeywordUtil.logInfo('------------- processed -----------')
@@ -60,7 +61,7 @@ try {
 	}
 	
 	if (flow_type == '0') {
-		checkOrder = CustomKeywords.'myPac.RiderKeywords.checkStatusId'(order_id)
+		checkOrder = CustomKeywords.'myPac.RiderKeywords.checkStatusId'(status_id)
 	}
 	if (!(checkOrder)) {
 		status = 'Fail'

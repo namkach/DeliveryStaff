@@ -88,14 +88,36 @@ public class RiderKeywords {
 
 	@Keyword
 	def ConfirmBtn(String order_id, Integer status_id) {
-		MobileElement orderNo = (MobileElement) driver.findElementById(riderId + 'order_detail_bt_confirm')
+		KeywordUtil.logInfo(order_id)
+		MobileElement ConfirmOrder = (MobileElement) driver.findElementById(riderId + 'order_detail_bt_confirm')
 		if (status_id == 3) {
-			assert orderNo.getText() == 'รับรายการสั่งซื้อ'
+			assert ConfirmOrder.getText() == 'รับรายการสั่งซื้อ'
 		} else if (status_id == 4) {
-			assert orderNo.getText() == 'ชำระเงิน'
+			assert ConfirmOrder.getText() == 'ชำระเงิน'
 		}
-		orderNo.click()
-		return status_id + 1
+		ConfirmOrder.click()
+		
+		if (status_id == 4) {
+			MobileElement totalPrice = (MobileElement) driver.findElementById(riderId + 'txtCashPrice')
+			MobileElement payPrice = (MobileElement) driver.findElementById(riderId + 'txtCashMoney')
+			payPrice.sendKeys(totalPrice.getText())
+			MobileElement confirmPayment = (MobileElement) driver.findElementById(riderId + 'btnConfirm')
+			confirmPayment.click()
+			MobileElement btnSkip = (MobileElement) driver.findElementById(riderId + 'btnSkip')
+			btnSkip.click()
+			
+			MobileElement confirmDelivery = (MobileElement) driver.findElementById(riderId + 'delivery_confirm_bt_confirm')
+			confirmDelivery.click()
+			
+			SwipeUp()
+			MobileElement signBtn = (MobileElement) driver.findElementById(riderId + 'main_toolbar_tv_menu_right2')
+			signBtn.click()
+			
+			MobileElement confirmSignBtn = (MobileElement) driver.findElementById(riderId + 'dialog_confirm_yes')
+			confirmSignBtn.click()
+		}
+		status_id += 1
+		return status_id
 	}
 
 	@Keyword
