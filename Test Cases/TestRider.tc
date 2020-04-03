@@ -6,63 +6,63 @@
    <comment></comment>
    <testCaseGuid>fbfc84ba-9f94-47d8-a7c6-d205fc05469e</testCaseGuid>
    <variable>
-      <defaultValue>3</defaultValue>
+      <defaultValue>''</defaultValue>
       <description></description>
       <id>8a3d29dc-caff-4119-a090-b6717811ffdd</id>
       <masked>false</masked>
       <name>flow_type</name>
    </variable>
    <variable>
-      <defaultValue>'9951'</defaultValue>
+      <defaultValue>''</defaultValue>
       <description></description>
       <id>628c653f-1dd8-4bf0-a1b4-f7242c35232d</id>
       <masked>false</masked>
       <name>order_id</name>
    </variable>
    <variable>
-      <defaultValue>2</defaultValue>
+      <defaultValue>0</defaultValue>
       <description></description>
       <id>79f391f9-92d4-4d67-9621-28c23409045d</id>
       <masked>false</masked>
       <name>total_product</name>
    </variable>
    <variable>
-      <defaultValue>'ไข่ไก่ต้มสุกตราซีพี'</defaultValue>
+      <defaultValue>''</defaultValue>
       <description></description>
       <id>88f44b56-e56c-4f25-b0b7-9979a56e7a8c</id>
       <masked>false</masked>
       <name>product_name1</name>
    </variable>
    <variable>
-      <defaultValue>3</defaultValue>
+      <defaultValue>0</defaultValue>
       <description></description>
       <id>b270bfc0-97b9-4866-856d-74bced4dad27</id>
       <masked>false</masked>
       <name>qty1</name>
    </variable>
    <variable>
-      <defaultValue>16.00</defaultValue>
+      <defaultValue>0.00</defaultValue>
       <description></description>
       <id>d8de819c-7e47-4bac-9719-2ac9a388c893</id>
       <masked>false</masked>
       <name>unit_price1</name>
    </variable>
    <variable>
-      <defaultValue>'น้ำดื่มสิงห์ 750 CC.'</defaultValue>
+      <defaultValue>''</defaultValue>
       <description></description>
       <id>787f8ca2-ff9e-41b1-ade5-2fa8b51e1a13</id>
       <masked>false</masked>
       <name>product_name2</name>
    </variable>
    <variable>
-      <defaultValue>2</defaultValue>
+      <defaultValue>0</defaultValue>
       <description></description>
       <id>21ad917d-c9af-4c24-a68c-ca0d0e8c5981</id>
       <masked>false</masked>
       <name>qty2</name>
    </variable>
    <variable>
-      <defaultValue>9.00</defaultValue>
+      <defaultValue>0.00</defaultValue>
       <description></description>
       <id>c384a9ed-5d8a-4de4-b44a-e420c4998527</id>
       <masked>false</masked>
@@ -90,7 +90,7 @@
       <name>unit_price3</name>
    </variable>
    <variable>
-      <defaultValue>'ไข่ไก่ต้มสุกตราซีพี'</defaultValue>
+      <defaultValue>''</defaultValue>
       <description></description>
       <id>240a94e6-05a4-492d-9df7-133dcb8d0a19</id>
       <masked>false</masked>
@@ -111,14 +111,14 @@
       <name>edit_unit_price</name>
    </variable>
    <variable>
-      <defaultValue>66.0</defaultValue>
+      <defaultValue>0.00</defaultValue>
       <description></description>
       <id>461babba-beb5-4820-98d1-f39d70764e85</id>
       <masked>false</masked>
       <name>total_price</name>
    </variable>
    <variable>
-      <defaultValue>18.00</defaultValue>
+      <defaultValue>0.00</defaultValue>
       <description></description>
       <id>4a15834b-a2c5-4b94-9973-409af81846ce</id>
       <masked>false</masked>

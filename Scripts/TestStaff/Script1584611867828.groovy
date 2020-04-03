@@ -20,7 +20,7 @@ try {
 	def paymentType = '0'
 	int oldQty = 0
 	def deliveryType = '0'
-	def remark = ''
+	def remark = '-'
 	def status = ''
 	def apkType = ''
 	

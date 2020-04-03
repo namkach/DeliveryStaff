@@ -76,7 +76,7 @@ public class RiderKeywords {
 			assert ConfirmOrder.getText() == 'ชำระเงิน'
 		}
 		ConfirmOrder.click()
-		
+
 		if (status_id == 4) {
 			ConfirmPayment()
 		}
@@ -85,7 +85,7 @@ public class RiderKeywords {
 		status_id += 1
 		return [checkOrder, status_id]
 	}
-	
+
 	@Keyword
 	def ConfirmPayment() {
 		MobileElement totalPrice = (MobileElement) driver.findElementById(riderId + 'txtCashPrice')
@@ -129,9 +129,9 @@ public class RiderKeywords {
 				break
 		}
 	}
-	
+
 	@Keyword
-	def checkTotalProduct(Integer total_product) {
+	def checkTotalProducts(Integer total_product) {
 		List<MobileElement> prods = driver.findElementsById(riderId + 'row_order_detail_tv_name')
 		println ('Product size : ' + prods.size().toString())
 		println ('Total product : ' + total_product.toString())
@@ -141,12 +141,13 @@ public class RiderKeywords {
 			return false
 		}
 	}
-	
+
 	@Keyword
 	def checkEachProduct (String name, Integer qty, Double unitPrice, Integer countQty, Double countTotalPrice, Integer statusProduct) {
 		List<MobileElement> prods = driver.findElementsById(riderId + 'row_order_detail_tv_name')
 		List<MobileElement> qtys = driver.findElementsById(riderId + 'row_order_detail_tv_amount')
 		List<MobileElement> prices = driver.findElementsById(riderId + 'row_order_detail_tv_price')
+		KeywordUtil.logInfo ('statusProduct : '+ statusProduct)
 		for (int k = 0; k <= prods.size(); k++) {
 			println ('product size : ' + prods.size())
 			println ('element product : ' + prods.get(k).getText())
@@ -156,22 +157,21 @@ public class RiderKeywords {
 			if (prods.get(k).getText().equals(name)) {
 				println (prods.get(k).getText() + ' : Found')
 				println ('k is : ' + k)
-				
 				switch (statusProduct) {
-					case -1 : 
-						//check each QTY
+					case -1 :
+					//check each QTY
 						KeywordUtil.logInfo('qtys : ' + qtys.get(k - 1).getText())
 						int numQty = extractInt(qtys.get(k - 1).getText())
 						KeywordUtil.logInfo('qty : ' + qty)
 						KeywordUtil.logInfo('numQty : ' + numQty)
 						assert numQty == qty
-	
-						//check each total price
+
+					//check each total price
 						double totalPrice = Double.parseDouble(prices.get(k - 1).getText())
-//						double checkUnitPrice = Integer.parseInt(unitPrice)
+					//						double checkUnitPrice = Integer.parseInt(unitPrice)
 						assert totalPrice == (qty * unitPrice)
 						totalPrice = (qty * unitPrice)
-	
+
 						countQty += qty
 						countTotalPrice += totalPrice
 						KeywordUtil.logInfo('countQty : ' + countQty)
@@ -179,17 +179,17 @@ public class RiderKeywords {
 						return [countQty, countTotalPrice]
 						break
 					case 1 :
-					case -2 : 
-						//check each QTY
+					case -2 :
+					//check each QTY
 						KeywordUtil.logInfo('qtys : ' + qtys.get(k).getText())
 						int numQty = extractInt(qtys.get(k).getText())
 						KeywordUtil.logInfo('qty : ' + qty)
 						KeywordUtil.logInfo('numQty : ' + numQty)
 						println '-----------'
 						assert numQty == qty
-	
+
 						double totalPrice = 0.00
-						//check each total price
+					//check each total price
 						if(statusProduct == 1) {
 							totalPrice = Double.parseDouble(prices.get(k).getText())
 						} else if (statusProduct == -2) {
@@ -198,8 +198,8 @@ public class RiderKeywords {
 						println '-----------'
 						assert totalPrice == (qty * unitPrice)
 						totalPrice = (qty * unitPrice)
-						
-	
+
+
 						countQty += qty
 						countTotalPrice += totalPrice
 						KeywordUtil.logInfo('countQty : ' + countQty)
@@ -210,7 +210,7 @@ public class RiderKeywords {
 			}
 		}
 	}
-	
+
 	@Keyword
 	def extractInt(String input) {
 		return Integer.parseInt(input.replaceAll("[^0-9]", ""))
@@ -225,7 +225,7 @@ public class RiderKeywords {
 	def printType(Double x) {
 		KeywordUtil.logInfo (x + " is a double");
 	}
-	
+
 	@Keyword
 	def checkAllProducts(Double countTotalPrice, Double totalPrice, Integer countQty) {
 		KeywordUtil.logInfo ('countTotalPrice : ' + countTotalPrice)
@@ -246,5 +246,10 @@ public class RiderKeywords {
 		assert numAllTotalPrice == totalPrice
 		assert extractInt(allQty.getText()) == countQty
 		KeywordUtil.markPassed('Check all products : Pass')
+	}
+	
+	@Keyword
+	def setDefault(Integer qty, Integer countQty, Double countTotalPrice, Integer statusProduct, Integer size, Double price) {
+		return [0, 0, 0.00, 1, size, 0.00]
 	}
 }
