@@ -131,11 +131,15 @@ public class RiderKeywords {
 	}
 
 	@Keyword
-	def checkTotalProducts(Integer total_product) {
+	def checkTotalProducts(String flow_type, Integer total_product) {
 		List<MobileElement> prods = driver.findElementsById(riderId + 'row_order_detail_tv_name')
-		println ('Product size : ' + prods.size().toString())
-		println ('Total product : ' + total_product.toString())
-		if (prods.size().toString() == total_product.toString()) {
+		println ('Product size : ' + prods.size())
+		int totalProduct = Integer.parseInt(total_product)
+		println ('Total product : ' + totalProduct)
+		if (flow_type == '2') {
+			totalProduct -= 1
+		}
+		if (prods.size() == totalProduct) {
 			return true
 		} else {
 			return false

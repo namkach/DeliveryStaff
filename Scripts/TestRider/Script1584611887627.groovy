@@ -41,7 +41,7 @@ try {
 		return remark
 	}
 	CustomKeywords.'myPac.RiderKeywords.printType'(size)
-	checkOrder = CustomKeywords.'myPac.RiderKeywords.checkTotalProducts'(size)
+	checkOrder = CustomKeywords.'myPac.RiderKeywords.checkTotalProducts'(flow_type, size)
 	if (!(checkOrder)) {
 		status = 'Fail'
 		remark = 'Fail to check total product at status_id ' + status_id
@@ -94,180 +94,156 @@ try {
 	}
 	CustomKeywords.'myPac.RiderKeywords.checkAllProducts'(countTotalPrice, price, countQty)
 	
-	(checkOrder,status_id) = CustomKeywords.'myPac.RiderKeywords.ConfirmBtn'(order_id, status_id)
-	KeywordUtil.logInfo('status_id : ' + status_id)
-	
-	if (!checkOrder) {
-		status = 'Fail'
-		remark = 'Fail to confirm ' + order_id + ' at status_id 1'
-		KeywordUtil.markFailed('error')
-		return remark
-	}
-				
-	KeywordUtil.logInfo('------------- processing -----------')
-	Mobile.tap(findTestObject('Rider/ProcessingTab'), 30)
-	
+//	(checkOrder,status_id) = CustomKeywords.'myPac.RiderKeywords.ConfirmBtn'(order_id, status_id)
+//	KeywordUtil.logInfo('status_id : ' + status_id)
+//	
+//	if (!checkOrder) {
+//		status = 'Fail'
+//		remark = 'Fail to confirm ' + order_id + ' at status_id 1'
+//		KeywordUtil.markFailed('error')
+//		return remark
+//	}
+//				
+//	KeywordUtil.logInfo('------------- processing -----------')
+//	Mobile.tap(findTestObject('Rider/ProcessingTab'), 30)
+//
 //	checkOrder = CustomKeywords.'myPac.RiderKeywords.FindOrder'(order_id)
 //	if (!(checkOrder)) {
 //		status = 'Fail'
-//		remark = 'Fail to find order' + order_id + ' at status_id 2'
+//		remark = 'Fail to find order' + order_id + ' at status_id ' + status_id
+//		KeywordUtil.markFailed('error')
 //		return remark
 //	}
-	
-//	if (flow_type == '0') {
-//		status_id = CustomKeywords.'myPac.RiderKeywords.ConfirmBtn'(order_id, status_id)
-//		KeywordUtil.logInfo('status_id : ' + status_id)
+//	
+//	(qty, countQty, countTotalPrice, statusProduct, size, price) = CustomKeywords.'myPac.RiderKeywords.setDefault'(qty, countQty, countTotalPrice, statusProduct, Integer.parseInt(total_product), price)
+//	
+//	CustomKeywords.'myPac.RiderKeywords.printType'(size)
+//	checkOrder = CustomKeywords.'myPac.RiderKeywords.checkTotalProducts'(size)
+//	if (!(checkOrder)) {
+//		status = 'Fail'
+//		remark = 'Fail to check total product at status_id ' + status_id
+//		KeywordUtil.markFailed('error')
+//		return remark
 //	}
-	
-	checkOrder = CustomKeywords.'myPac.RiderKeywords.FindOrder'(order_id)
-	if (!(checkOrder)) {
-		status = 'Fail'
-		remark = 'Fail to find order' + order_id + ' at status_id ' + status_id
-		KeywordUtil.markFailed('error')
-		return remark
-	}
-	
-	(qty, countQty, countTotalPrice, statusProduct, size, price) = CustomKeywords.'myPac.RiderKeywords.setDefault'(qty, countQty, countTotalPrice, statusProduct, Integer.parseInt(total_product), price)
-	
-	CustomKeywords.'myPac.RiderKeywords.printType'(size)
-	checkOrder = CustomKeywords.'myPac.RiderKeywords.checkTotalProducts'(size)
-	if (!(checkOrder)) {
-		status = 'Fail'
-		remark = 'Fail to check total product at status_id ' + status_id
-		KeywordUtil.markFailed('error')
-		return remark
-	}
-	
-	if (flow_type == '2') {
-		size -= 1
-	}
-	
-	for(int i = 0; i < size; i++) {
-		qty = productQty[i]
-		KeywordUtil.logInfo ('qty : ' + qty)
-		if (flow_type == '1' && productName[i].equals(edit_product)) {
-			KeywordUtil.logInfo ('edit_qty : ' + edit_qty)
-			qty += Integer.parseInt(edit_qty)
-			KeywordUtil.logInfo ('new qty : ' + qty)
-		}
-		else if (statusProduct == 0) {
-			statusProduct = -1
-		}
-		else if (flow_type == '3' && productName[i] == edit_product) {
-			println ('skip deleted product : ' + edit_product)
-			statusProduct = -2
-			continue
-		}
-		KeywordUtil.logInfo ('2. qty of product ' +  i + ' is : ' + qty)
-		(countQty, countTotalPrice) = CustomKeywords.'myPac.RiderKeywords.checkEachProduct'(productName[i], qty, productUnitPrice[i], countQty, countTotalPrice, statusProduct)
-	}
-	
-	if (flow_type == '2') {
-		qty = edit_qty
-		(countQty, countTotalPrice) = CustomKeywords.'myPac.RiderKeywords.checkEachProduct'(edit_product, qty, edit_unit_price, countQty, countTotalPrice, statusProduct)
-	}
-	println ('countQty : ' + countQty)
-	println ('countTotalPrice : ' + countTotalPrice)
-	
-	switch (flow_type) {
-		case '0' :
-			price = Double.parseDouble(total_price)
-			break
-		case '1'..'3' :
-			price = Double.parseDouble(edit_total_price)
-			break
-	}
-	CustomKeywords.'myPac.RiderKeywords.checkAllProducts'(countTotalPrice, price, countQty)
-	
-	(checkOrder,status_id) = CustomKeywords.'myPac.RiderKeywords.ConfirmBtn'(order_id, status_id)
-	KeywordUtil.logInfo('status_id : ' + status_id)
-	
-	if (!checkOrder) {
-		status = 'Fail'
-		remark = 'Fail to confirm ' + order_id + ' at status_id ' + status_id
-		KeywordUtil.markFailed('error')
-		return remark
-	}
-	
-	KeywordUtil.logInfo('------------- processed -----------')
-	Mobile.tap(findTestObject('Rider/ProcessedTab'), 30)
-	
-	checkOrder = CustomKeywords.'myPac.RiderKeywords.FindOrder'(order_id)
-	if (!(checkOrder)) {
-		status = 'Fail'
-		remark = 'Fail to find order' + order_id + ' at status_id ' + status_id
-		return remark
-	}
-	
-	(qty, countQty, countTotalPrice, statusProduct, size, price) = CustomKeywords.'myPac.RiderKeywords.setDefault'(qty, countQty, countTotalPrice, statusProduct, Integer.parseInt(total_product), price)
-	
-	checkOrder = CustomKeywords.'myPac.RiderKeywords.checkTotalProducts'(size)
-	if (!(checkOrder)) {
-		status = 'Fail'
-		remark = 'Fail to check total product at status_id ' + status_id
-		KeywordUtil.markFailed('error')
-		return remark
-	}
-	
-	if (flow_type == '2') {
-		size -= 1
-	}
-	
-	for(int i = 0; i < size; i++) {
-		qty = productQty[i]
-		KeywordUtil.logInfo ('qty : ' + qty)
-		if (flow_type == '1' && productName[i].equals(edit_product)) {
-			KeywordUtil.logInfo ('edit_qty : ' + edit_qty)
-			qty += Integer.parseInt(edit_qty)
-			KeywordUtil.logInfo ('new qty : ' + qty)
-		}
-		else if (statusProduct == 0) {
-			statusProduct = -1
-		}
-		else if (flow_type == '3' && productName[i] == edit_product) {
-			println ('skip deleted product : ' + edit_product)
-			statusProduct = -2
-			continue
-		}
-		KeywordUtil.logInfo ('2. qty of product ' +  i + ' is : ' + qty)
-		(countQty, countTotalPrice) = CustomKeywords.'myPac.RiderKeywords.checkEachProduct'(productName[i], qty, productUnitPrice[i], countQty, countTotalPrice, statusProduct)
-	}
-	
-	if (flow_type == '2') {
-		qty = edit_qty
-		(countQty, countTotalPrice) = CustomKeywords.'myPac.RiderKeywords.checkEachProduct'(edit_product, qty, edit_unit_price, countQty, countTotalPrice, statusProduct)
-	}
-	println ('countQty : ' + countQty)
-	println ('countTotalPrice : ' + countTotalPrice)
-	
-	switch (flow_type) {
-		case '0' :
-			price = Double.parseDouble(total_price)
-			break
-		case '1'..'3' :
-			price = Double.parseDouble(edit_total_price)
-			break
-	}
-	CustomKeywords.'myPac.RiderKeywords.checkAllProducts'(countTotalPrice, price, countQty)
-	
-	(checkOrder,status_id) = CustomKeywords.'myPac.RiderKeywords.ConfirmBtn'(order_id, status_id)
-	KeywordUtil.logInfo('status_id : ' + status_id)
-	
-	if (!checkOrder) {
-		status = 'Fail'
-		remark = 'Fail to confirm ' + order_id + ' at status_id ' + status_id
-		KeywordUtil.markFailed('error')
-		return remark
-	}
-	
-	if (flow_type == '0') {
-		checkOrder = CustomKeywords.'myPac.RiderKeywords.checkStatusId'(status_id)
-	}
-	if (!(checkOrder)) {
-		status = 'Fail'
-		remark = 'Fail to check order ' + order_id + ' at status_id ' + status_id
-		return remark
-	}
+//	
+//	if (flow_type == '2') {
+//		size -= 1
+//	}
+//	
+//	for(int i = 0; i < size; i++) {
+//		qty = productQty[i]
+//		KeywordUtil.logInfo ('qty : ' + qty)
+//		if (flow_type == '1' && productName[i].equals(edit_product)) {
+//			KeywordUtil.logInfo ('edit_qty : ' + edit_qty)
+//			qty += Integer.parseInt(edit_qty)
+//			KeywordUtil.logInfo ('new qty : ' + qty)
+//		}
+//		else if (statusProduct == 0) {
+//			statusProduct = -1
+//		}
+//		else if (flow_type == '3' && productName[i] == edit_product) {
+//			println ('skip deleted product : ' + edit_product)
+//			statusProduct = -2
+//			continue
+//		}
+//		KeywordUtil.logInfo ('2. qty of product ' +  i + ' is : ' + qty)
+//		(countQty, countTotalPrice) = CustomKeywords.'myPac.RiderKeywords.checkEachProduct'(productName[i], qty, productUnitPrice[i], countQty, countTotalPrice, statusProduct)
+//	}
+//	
+//	if (flow_type == '2') {
+//		qty = edit_qty
+//		(countQty, countTotalPrice) = CustomKeywords.'myPac.RiderKeywords.checkEachProduct'(edit_product, qty, edit_unit_price, countQty, countTotalPrice, statusProduct)
+//	}
+//	println ('countQty : ' + countQty)
+//	println ('countTotalPrice : ' + countTotalPrice)
+//	
+//	switch (flow_type) {
+//		case '0' :
+//			price = Double.parseDouble(total_price)
+//			break
+//		case '1'..'3' :
+//			price = Double.parseDouble(edit_total_price)
+//			break
+//	}
+//	CustomKeywords.'myPac.RiderKeywords.checkAllProducts'(countTotalPrice, price, countQty)
+//	
+//	(checkOrder,status_id) = CustomKeywords.'myPac.RiderKeywords.ConfirmBtn'(order_id, status_id)
+//	KeywordUtil.logInfo('status_id : ' + status_id)
+//	
+//	if (!checkOrder) {
+//		status = 'Fail'
+//		remark = 'Fail to confirm ' + order_id + ' at status_id ' + status_id
+//		KeywordUtil.markFailed('error')
+//		return remark
+//	}
+//	
+//	KeywordUtil.logInfo('------------- processed -----------')
+//	Mobile.tap(findTestObject('Rider/ProcessedTab'), 30)
+//	
+//	checkOrder = CustomKeywords.'myPac.RiderKeywords.FindOrder'(order_id)
+//	if (!(checkOrder)) {
+//		status = 'Fail'
+//		remark = 'Fail to find order' + order_id + ' at status_id ' + status_id
+//		return remark
+//	}
+//	
+//	(qty, countQty, countTotalPrice, statusProduct, size, price) = CustomKeywords.'myPac.RiderKeywords.setDefault'(qty, countQty, countTotalPrice, statusProduct, Integer.parseInt(total_product), price)
+//	
+//	checkOrder = CustomKeywords.'myPac.RiderKeywords.checkTotalProducts'(size)
+//	if (!(checkOrder)) {
+//		status = 'Fail'
+//		remark = 'Fail to check total product at status_id ' + status_id
+//		KeywordUtil.markFailed('error')
+//		return remark
+//	}
+//	
+//	if (flow_type == '2') {
+//		size -= 1
+//	}
+//	
+//	for(int i = 0; i < size; i++) {
+//		qty = productQty[i]
+//		KeywordUtil.logInfo ('qty : ' + qty)
+//		if (flow_type == '1' && productName[i].equals(edit_product)) {
+//			KeywordUtil.logInfo ('edit_qty : ' + edit_qty)
+//			qty += Integer.parseInt(edit_qty)
+//			KeywordUtil.logInfo ('new qty : ' + qty)
+//		}
+//		else if (statusProduct == 0) {
+//			statusProduct = -1
+//		}
+//		else if (flow_type == '3' && productName[i] == edit_product) {
+//			println ('skip deleted product : ' + edit_product)
+//			statusProduct = -2
+//			continue
+//		}
+//		KeywordUtil.logInfo ('2. qty of product ' +  i + ' is : ' + qty)
+//		(countQty, countTotalPrice) = CustomKeywords.'myPac.RiderKeywords.checkEachProduct'(productName[i], qty, productUnitPrice[i], countQty, countTotalPrice, statusProduct)
+//	}
+//	
+//	if (flow_type == '2') {
+//		qty = edit_qty
+//		(countQty, countTotalPrice) = CustomKeywords.'myPac.RiderKeywords.checkEachProduct'(edit_product, qty, edit_unit_price, countQty, countTotalPrice, statusProduct)
+//	}
+//	println ('countQty : ' + countQty)
+//	println ('countTotalPrice : ' + countTotalPrice)
+//	
+//	switch (flow_type) {
+//		case '0' :
+//			price = Double.parseDouble(total_price)
+//			break
+//		case '1'..'3' :
+//			price = Double.parseDouble(edit_total_price)
+//			break
+//	}
+//	CustomKeywords.'myPac.RiderKeywords.checkAllProducts'(countTotalPrice, price, countQty)
+//
+//	checkOrder = CustomKeywords.'myPac.RiderKeywords.checkStatusId'(status_id)
+//	if (!(checkOrder)) {
+//		status = 'Fail'
+//		remark = 'Fail to check order ' + order_id + ' at status_id ' + status_id
+//		return remark
+//	}
 }
 catch (Exception e) {
     KeywordUtil.markFailed('Crashed... ' + e)
