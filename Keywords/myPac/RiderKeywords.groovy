@@ -30,6 +30,7 @@ public class RiderKeywords {
 	def FindOrder(String order_id) {
 		checkOrder = FindOrderId(order_id)
 		while(!checkOrder) {
+			Mobile.delay(2)
 			SwipeUp()
 			checkOrder = FindOrderId(order_id)
 			KeywordUtil.logInfo('checkOrder : ' + checkOrder)
@@ -149,82 +150,82 @@ public class RiderKeywords {
 		}
 	}
 
+	//	@Keyword
+	//	def checkEachProduct (String name, Integer qty, Double unitPrice, Integer countQty, Double countTotalPrice, Integer statusProduct) {
+	//		List<MobileElement> prods = driver.findElementsById(riderId + 'row_order_detail_tv_name')
+	//		List<MobileElement> qtys = driver.findElementsById(riderId + 'row_order_detail_tv_amount')
+	//		List<MobileElement> prices = driver.findElementsById(riderId + 'row_order_detail_tv_price')
+	//		KeywordUtil.logInfo ('statusProduct : '+ statusProduct)
+	//		for (int k = 0; k <= prods.size(); k++) {
+	//			println ('product size : ' + prods.size())
+	//			println ('element product : ' + prods.get(k).getText())
+	//			println ('have to found : ' + name)
+	//			println prods.get(k).getText().equals(name)
+	//			println 'Round : ' + k
+	//			if (prods.get(k).getText().equals(name)) {
+	//				println (prods.get(k).getText() + ' : Found')
+	//				println ('k is : ' + k)
+	//				switch (statusProduct) {
+	//					case -1 :
+	//					//check each QTY
+	//						KeywordUtil.logInfo('qtys : ' + qtys.get(k - 1).getText())
+	//						int numQty = extractInt(qtys.get(k - 1).getText())
+	//						KeywordUtil.logInfo('qty : ' + qty)
+	//						KeywordUtil.logInfo('numQty : ' + numQty)
+	//						assert numQty == qty
+	//
+	//					//check each total price
+	//						double totalPrice = Double.parseDouble(prices.get(k - 1).getText())
+	//					//						double checkUnitPrice = Integer.parseInt(unitPrice)
+	//						assert totalPrice == (qty * unitPrice)
+	//						totalPrice = (qty * unitPrice)
+	//
+	//						countQty += qty
+	//						countTotalPrice += totalPrice
+	//						KeywordUtil.logInfo('countQty : ' + countQty)
+	//						KeywordUtil.logInfo('countTotalPrice : ' + countTotalPrice)
+	//						return [countQty, countTotalPrice]
+	//						break
+	//					case 1 :
+	//					case -2 :
+	//					//check each QTY
+	//						KeywordUtil.logInfo('qtys : ' + qtys.get(k).getText())
+	//						int numQty = extractInt(qtys.get(k).getText())
+	//						KeywordUtil.logInfo('qty : ' + qty)
+	//						KeywordUtil.logInfo('numQty : ' + numQty)
+	//						println '-----------'
+	//						assert numQty == qty
+	//
+	//						double totalPrice = 0.00
+	//					//check each total price
+	//						if(statusProduct == 1) {
+	//							totalPrice = Double.parseDouble(prices.get(k).getText())
+	//						} else if (statusProduct == -2) {
+	//							totalPrice = Double.parseDouble(prices.get(k-1).getText())
+	//						}
+	//						println '-----------'
+	//						assert totalPrice == (qty * unitPrice)
+	//						totalPrice = (qty * unitPrice)
+	//
+	//
+	//						countQty += qty
+	//						countTotalPrice += totalPrice
+	//						KeywordUtil.logInfo('countQty : ' + countQty)
+	//						KeywordUtil.logInfo('countTotalPrice : ' + countTotalPrice)
+	//						return [countQty, countTotalPrice]
+	//						break
+	//				}
+	//			}
+	//		}
+	//	}
+
+
 	@Keyword
-	def checkEachProduct (String name, Integer qty, Double unitPrice, Integer countQty, Double countTotalPrice, Integer statusProduct) {
-		List<MobileElement> prods = driver.findElementsById(riderId + 'row_order_detail_tv_name')
-		List<MobileElement> qtys = driver.findElementsById(riderId + 'row_order_detail_tv_amount')
-		List<MobileElement> prices = driver.findElementsById(riderId + 'row_order_detail_tv_price')
-		KeywordUtil.logInfo ('statusProduct : '+ statusProduct)
-		for (int k = 0; k <= prods.size(); k++) {
-			println ('product size : ' + prods.size())
-			println ('element product : ' + prods.get(k).getText())
-			println ('have to found : ' + name)
-			println prods.get(k).getText().equals(name)
-			println 'Round : ' + k
-			if (prods.get(k).getText().equals(name)) {
-				println (prods.get(k).getText() + ' : Found')
-				println ('k is : ' + k)
-				switch (statusProduct) {
-					case -1 :
-					//check each QTY
-						KeywordUtil.logInfo('qtys : ' + qtys.get(k - 1).getText())
-						int numQty = extractInt(qtys.get(k - 1).getText())
-						KeywordUtil.logInfo('qty : ' + qty)
-						KeywordUtil.logInfo('numQty : ' + numQty)
-						assert numQty == qty
-
-					//check each total price
-						double totalPrice = Double.parseDouble(prices.get(k - 1).getText())
-					//						double checkUnitPrice = Integer.parseInt(unitPrice)
-						assert totalPrice == (qty * unitPrice)
-						totalPrice = (qty * unitPrice)
-
-						countQty += qty
-						countTotalPrice += totalPrice
-						KeywordUtil.logInfo('countQty : ' + countQty)
-						KeywordUtil.logInfo('countTotalPrice : ' + countTotalPrice)
-						return [countQty, countTotalPrice]
-						break
-					case 1 :
-					case -2 :
-					//check each QTY
-						KeywordUtil.logInfo('qtys : ' + qtys.get(k).getText())
-						int numQty = extractInt(qtys.get(k).getText())
-						KeywordUtil.logInfo('qty : ' + qty)
-						KeywordUtil.logInfo('numQty : ' + numQty)
-						println '-----------'
-						assert numQty == qty
-
-						double totalPrice = 0.00
-					//check each total price
-						if(statusProduct == 1) {
-							totalPrice = Double.parseDouble(prices.get(k).getText())
-						} else if (statusProduct == -2) {
-							totalPrice = Double.parseDouble(prices.get(k-1).getText())
-						}
-						println '-----------'
-						assert totalPrice == (qty * unitPrice)
-						totalPrice = (qty * unitPrice)
-
-
-						countQty += qty
-						countTotalPrice += totalPrice
-						KeywordUtil.logInfo('countQty : ' + countQty)
-						KeywordUtil.logInfo('countTotalPrice : ' + countTotalPrice)
-						return [countQty, countTotalPrice]
-						break
-				}
-			}
-		}
-	}
-
-
-	@Keyword
-	def test(String name, Integer qty, Double unitPrice, Integer countQty, Double countTotalPrice, Integer statusProduct) {
+	def checkEachProduct(String name, Integer qty, Double unitPrice, Integer countQty, Double countTotalPrice, Integer statusProduct) {
 		KeywordUtil.logInfo ('Get countQty : ' + countQty)
 		KeywordUtil.logInfo ('Get countTotalPrice : ' + countTotalPrice)
 		KeywordUtil.logInfo ('Get statusProduct : ' + statusProduct)
-		
+
 		List<MobileElement> prods = driver.findElementsById(riderId + 'row_order_detail_tv_name')
 		List<MobileElement> qtys = driver.findElementsById(riderId + 'row_order_detail_tv_amount')
 		List<MobileElement> prices = driver.findElementsById(riderId + 'row_order_detail_tv_price')
@@ -252,15 +253,7 @@ public class RiderKeywords {
 				return [countQty, countTotalPrice]
 			}
 		}
-
-
-
-
-
-
 	}
-
-
 
 	@Keyword
 	def extractInt(String input) {
@@ -300,7 +293,20 @@ public class RiderKeywords {
 	}
 
 	@Keyword
-	def setDefault(Integer qty, Double unitPrice, Integer countQty, Double countTotalPrice, Integer statusProduct, Integer size, Double price) {
-		return [0, 0.00, 0, 0.00, 1, size, 0.00]
+	def setDefault(Integer total_product) {
+		int qty = 0
+		double unitPrice = 0.00
+		int countQty = 0
+		double countTotalPrice = 0.00
+		int statusProduct = 1
+		int size = total_product
+		double price = 0.00
+		return [qty, unitPrice, countQty, countTotalPrice, statusProduct, size, price]
+	}
+	
+	@Keyword
+	def testtext(Integer w) {
+		w *= 0
+		return w
 	}
 }
