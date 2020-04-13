@@ -1,6 +1,7 @@
 package myPac
 
 import com.kms.katalon.core.annotation.Keyword
+import com.kms.katalon.core.util.KeywordUtil
 
 import jxl.CellType
 import jxl.Workbook
@@ -86,5 +87,6 @@ public class writeExcel {
 		workbookCopy.write()
 		workbookCopy.close()
 		existingWorkbook.close()
+		KeywordUtil.markPassed('Stamp Pass')
 	}
 }

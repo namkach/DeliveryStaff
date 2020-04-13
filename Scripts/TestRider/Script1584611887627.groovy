@@ -282,3 +282,4 @@ catch (Exception e) {
 } 
 
 CustomKeywords.'myPac.writeExcel.writeRider'(order_id, flow_type, payment_type, status, remark)
+KeywordUtil.logInfo('status : ' + status)
