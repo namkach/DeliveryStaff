@@ -97,7 +97,7 @@ try {
 	}
 	CustomKeywords.'myPac.RiderKeywords.checkAllProducts'(countTotalPrice, price, countQty)
 	
-	(checkOrder,status_id) = CustomKeywords.'myPac.RiderKeywords.ConfirmBtn'(order_id, status_id, payment_type)
+	(checkOrder,status_id) = CustomKeywords.'myPac.RiderKeywords.ConfirmBtn'(order_id, status_id, payment_type, price)
 	KeywordUtil.logInfo('status_id : ' + status_id)
 	
 	if (!checkOrder) {
@@ -182,7 +182,7 @@ try {
 	}
 	CustomKeywords.'myPac.RiderKeywords.checkAllProducts'(countTotalPrice, price, countQty)
 	
-	(checkOrder,status_id) = CustomKeywords.'myPac.RiderKeywords.ConfirmBtn'(order_id, status_id, payment_type)
+	(checkOrder,status_id) = CustomKeywords.'myPac.RiderKeywords.ConfirmBtn'(order_id, status_id, payment_type, price)
 	KeywordUtil.logInfo('status_id : ' + status_id)
 	
 	if (!checkOrder) {
@@ -277,7 +277,8 @@ try {
 }
 catch (Exception e) {
     KeywordUtil.markFailed('Crashed... ' + e)
-	remark = e
+	status = 'Fail'
+	remark = e.toString()
 } 
 
 CustomKeywords.'myPac.writeExcel.writeRider'(order_id, flow_type, payment_type, status, remark)

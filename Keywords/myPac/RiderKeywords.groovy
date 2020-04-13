@@ -29,8 +29,9 @@ public class RiderKeywords {
 	@Keyword
 	def FindOrder(String order_id, String payment_type) {
 		checkOrder = FindOrderId(order_id, payment_type)
+//		Mobile.delay(2)
+		Thread.sleep(2000)
 		while(!checkOrder) {
-			Mobile.delay(2)
 			SwipeUp()
 			checkOrder = FindOrderId(order_id, payment_type)
 			KeywordUtil.logInfo('checkOrder : ' + checkOrder)
@@ -41,8 +42,8 @@ public class RiderKeywords {
 	@Keyword
 	def SwipeUp() {
 		int x = Mobile.getDeviceWidth()/2
-		int startY = Mobile.getDeviceHeight()*0.8
-		int endY = Mobile.getDeviceHeight()*0.35
+		int startY = Mobile.getDeviceHeight()*0.7
+		int endY = Mobile.getDeviceHeight()*0.4
 		Mobile.swipe(x, startY, x, endY)
 	}
 
@@ -52,17 +53,18 @@ public class RiderKeywords {
 		List<MobileElement> orders = driver.findElementsById(riderId + 'txt_order_no')
 		for (int j = orders.size() - 1; j >= 0; j--) {
 			if (orders.get(j).getText() == order_id) {
-				MobileElement paymentIcon = (MobileElement) driver.findElementById(riderId + 'img_payment_type')
+				KeywordUtil.markPassed ('*** order found ***')
 				switch (payment_type) {
 					case '1' :
-						if (!paymentIcon.isDisplayed()) {
-							checkOrder = true
-						}
+						checkOrder = true
+						break
 					case '2' :
 					case '4' :
+						MobileElement paymentIcon = (MobileElement) driver.findElementById(riderId + 'img_payment_type')
 						if (paymentIcon.isDisplayed()) {
 							checkOrder = true
 						}
+						break
 				}
 				orders.get(j).click()
 				MobileElement orderNo = (MobileElement) driver.findElementById(riderId + 'main_toolbar_tv_order')
@@ -74,7 +76,7 @@ public class RiderKeywords {
 	}
 
 	@Keyword
-	def ConfirmBtn(String order_id, Integer status_id, String payment_type, Integer total_price) {
+	def ConfirmBtn(String order_id, Integer status_id, String payment_type, Double total_price) {
 		checkOrder = false
 		KeywordUtil.logInfo(order_id)
 		MobileElement ConfirmOrder = (MobileElement) driver.findElementById(riderId + 'order_detail_bt_confirm')
@@ -86,6 +88,7 @@ public class RiderKeywords {
 			case 4 :
 				assert ConfirmOrder.getText() == 'ชำระเงิน'
 				ConfirmOrder.click()
+				printType(total_price)
 				ConfirmPayment(payment_type, total_price)
 				break
 		}
@@ -96,7 +99,7 @@ public class RiderKeywords {
 	}
 
 	@Keyword
-	def ConfirmPayment(String payment_type, Integer total_price) {
+	def ConfirmPayment(String payment_type, Double total_price) {
 		switch (payment_type) {
 			case '1' :
 				MobileElement cashTab = (MobileElement) driver.findElementById(riderId + 'rdoCash')
@@ -109,22 +112,29 @@ public class RiderKeywords {
 				cashTab.click()
 				break
 		}
-
 		switch (payment_type) {
 			case '1' :
 			case '4' :
+				printType(total_price)
 				MobileElement totalPrice = (MobileElement) driver.findElementById(riderId + 'txtCashPrice')
 				MobileElement payPrice = (MobileElement) driver.findElementById(riderId + 'txtCashMoney')
-				if (total_price >= 100) {
-					assert Integer.parseInt(totalPrice.getText()) == total_price
-				} else {
-					assert Integer.parseInt(totalPrice.getText()) == (total_price + 20)
-				}
+				
+				//check delivery fee
+//				if (total_price >= 100) {
+//					assert Double.parseDouble(totalPrice.getText()) == total_price
+//				} else {
+//					assert Double.parseDouble(totalPrice.getText()) == (total_price + 20)
+//				}
+				
+				//dont check delivery fee
+				assert Double.parseDouble(totalPrice.getText()) == total_price
+				
 				payPrice.sendKeys(totalPrice.getText())
 				MobileElement confirmPayment = (MobileElement) driver.findElementById(riderId + 'btnConfirm')
 				confirmPayment.click()
 				MobileElement btnSkip = (MobileElement) driver.findElementById(riderId + 'btnSkip')
 				btnSkip.click()
+				break
 		}
 
 		MobileElement walk = (MobileElement) driver.findElementById(riderId + 'delivery_confirm_rd_walk')
