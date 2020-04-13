@@ -27,12 +27,12 @@ public class RiderKeywords {
 	}
 
 	@Keyword
-	def FindOrder(String order_id) {
-		checkOrder = FindOrderId(order_id)
+	def FindOrder(String order_id, String payment_type) {
+		checkOrder = FindOrderId(order_id, payment_type)
 		while(!checkOrder) {
 			Mobile.delay(2)
 			SwipeUp()
-			checkOrder = FindOrderId(order_id)
+			checkOrder = FindOrderId(order_id, payment_type)
 			KeywordUtil.logInfo('checkOrder : ' + checkOrder)
 		}
 		return checkOrder
@@ -47,39 +47,47 @@ public class RiderKeywords {
 	}
 
 	@Keyword
-	def FindOrderId(String order_id) {
+	def FindOrderId(String order_id, String payment_type) {
 		checkOrder = false
 		List<MobileElement> orders = driver.findElementsById(riderId + 'txt_order_no')
 		for (int j = orders.size() - 1; j >= 0; j--) {
 			if (orders.get(j).getText() == order_id) {
-				checkOrder = true
+				MobileElement paymentIcon = (MobileElement) driver.findElementById(riderId + 'img_payment_type')
+				switch (payment_type) {
+					case '1' :
+						if (!paymentIcon.isDisplayed()) {
+							checkOrder = true
+						}
+					case '2' :
+					case '4' :
+						if (paymentIcon.isDisplayed()) {
+							checkOrder = true
+						}
+				}
 				orders.get(j).click()
 				MobileElement orderNo = (MobileElement) driver.findElementById(riderId + 'main_toolbar_tv_order')
 				assert orderNo.getText() == order_id
 				break
 			}
 		}
-		if (checkOrder) {
-			return true
-		} else {
-			return false
-		}
+		return checkOrder
 	}
 
 	@Keyword
-	def ConfirmBtn(String order_id, Integer status_id) {
+	def ConfirmBtn(String order_id, Integer status_id, String payment_type, Integer total_price) {
 		checkOrder = false
 		KeywordUtil.logInfo(order_id)
 		MobileElement ConfirmOrder = (MobileElement) driver.findElementById(riderId + 'order_detail_bt_confirm')
-		if (status_id == 3) {
-			assert ConfirmOrder.getText() == 'รับรายการสั่งซื้อ'
-		} else if (status_id == 4) {
-			assert ConfirmOrder.getText() == 'ชำระเงิน'
-		}
-		ConfirmOrder.click()
-
-		if (status_id == 4) {
-			ConfirmPayment()
+		switch (status_id) {
+			case 3 :
+				assert ConfirmOrder.getText() == 'รับรายการสั่งซื้อ'
+				ConfirmOrder.click()
+				break
+			case 4 :
+				assert ConfirmOrder.getText() == 'ชำระเงิน'
+				ConfirmOrder.click()
+				ConfirmPayment(payment_type, total_price)
+				break
 		}
 		checkOrder = true
 		KeywordUtil.markPassed('ConfirmBtn : Pass')
@@ -88,14 +96,36 @@ public class RiderKeywords {
 	}
 
 	@Keyword
-	def ConfirmPayment() {
-		MobileElement totalPrice = (MobileElement) driver.findElementById(riderId + 'txtCashPrice')
-		MobileElement payPrice = (MobileElement) driver.findElementById(riderId + 'txtCashMoney')
-		payPrice.sendKeys(totalPrice.getText())
-		MobileElement confirmPayment = (MobileElement) driver.findElementById(riderId + 'btnConfirm')
-		confirmPayment.click()
-		MobileElement btnSkip = (MobileElement) driver.findElementById(riderId + 'btnSkip')
-		btnSkip.click()
+	def ConfirmPayment(String payment_type, Integer total_price) {
+		switch (payment_type) {
+			case '1' :
+				MobileElement cashTab = (MobileElement) driver.findElementById(riderId + 'rdoCash')
+				assert cashTab.getAttribute("checked")
+				break
+			case '4' :
+				MobileElement tmwTab = (MobileElement) driver.findElementById(riderId + 'rdoTMW')
+				assert tmwTab.getAttribute("checked")
+				MobileElement cashTab = (MobileElement) driver.findElementById(riderId + 'rdoCash')
+				cashTab.click()
+				break
+		}
+
+		switch (payment_type) {
+			case '1' :
+			case '4' :
+				MobileElement totalPrice = (MobileElement) driver.findElementById(riderId + 'txtCashPrice')
+				MobileElement payPrice = (MobileElement) driver.findElementById(riderId + 'txtCashMoney')
+				if (total_price >= 100) {
+					assert Integer.parseInt(totalPrice.getText()) == total_price
+				} else {
+					assert Integer.parseInt(totalPrice.getText()) == (total_price + 20)
+				}
+				payPrice.sendKeys(totalPrice.getText())
+				MobileElement confirmPayment = (MobileElement) driver.findElementById(riderId + 'btnConfirm')
+				confirmPayment.click()
+				MobileElement btnSkip = (MobileElement) driver.findElementById(riderId + 'btnSkip')
+				btnSkip.click()
+		}
 
 		MobileElement walk = (MobileElement) driver.findElementById(riderId + 'delivery_confirm_rd_walk')
 		walk.click()
@@ -115,14 +145,20 @@ public class RiderKeywords {
 		MobileElement statusElement = (MobileElement) driver.findElementById(riderId + 'order_detail_time_count_down')
 		switch (status_id) {
 			case 5 :
-				assert statusElement.getText() == 'เสร็จสมบูรณ์'
-				KeywordUtil.logInfo('เสร็จสมบูรณ์')
-				return true
+				if (statusElement.getText() == 'เสร็จสมบูรณ์') {
+					KeywordUtil.logInfo('เสร็จสมบูรณ์')
+					return true
+				} else {
+					return false
+				}
 				break
 			case 6 :
-				assert statusElement.getText() == 'ยกเลิกออเดอร์'
-				KeywordUtil.logInfo('ยกเลิกออเดอร์')
-				return true
+				if (statusElement.getText() == 'ยกเลิกออเดอร์') {
+					KeywordUtil.logInfo('ยกเลิกออเดอร์')
+					return true
+				} else {
+					return false
+				}
 				break
 			default :
 				KeywordUtil.markFailed('Error to check status_id')
@@ -149,76 +185,6 @@ public class RiderKeywords {
 			return false
 		}
 	}
-
-	//	@Keyword
-	//	def checkEachProduct (String name, Integer qty, Double unitPrice, Integer countQty, Double countTotalPrice, Integer statusProduct) {
-	//		List<MobileElement> prods = driver.findElementsById(riderId + 'row_order_detail_tv_name')
-	//		List<MobileElement> qtys = driver.findElementsById(riderId + 'row_order_detail_tv_amount')
-	//		List<MobileElement> prices = driver.findElementsById(riderId + 'row_order_detail_tv_price')
-	//		KeywordUtil.logInfo ('statusProduct : '+ statusProduct)
-	//		for (int k = 0; k <= prods.size(); k++) {
-	//			println ('product size : ' + prods.size())
-	//			println ('element product : ' + prods.get(k).getText())
-	//			println ('have to found : ' + name)
-	//			println prods.get(k).getText().equals(name)
-	//			println 'Round : ' + k
-	//			if (prods.get(k).getText().equals(name)) {
-	//				println (prods.get(k).getText() + ' : Found')
-	//				println ('k is : ' + k)
-	//				switch (statusProduct) {
-	//					case -1 :
-	//					//check each QTY
-	//						KeywordUtil.logInfo('qtys : ' + qtys.get(k - 1).getText())
-	//						int numQty = extractInt(qtys.get(k - 1).getText())
-	//						KeywordUtil.logInfo('qty : ' + qty)
-	//						KeywordUtil.logInfo('numQty : ' + numQty)
-	//						assert numQty == qty
-	//
-	//					//check each total price
-	//						double totalPrice = Double.parseDouble(prices.get(k - 1).getText())
-	//					//						double checkUnitPrice = Integer.parseInt(unitPrice)
-	//						assert totalPrice == (qty * unitPrice)
-	//						totalPrice = (qty * unitPrice)
-	//
-	//						countQty += qty
-	//						countTotalPrice += totalPrice
-	//						KeywordUtil.logInfo('countQty : ' + countQty)
-	//						KeywordUtil.logInfo('countTotalPrice : ' + countTotalPrice)
-	//						return [countQty, countTotalPrice]
-	//						break
-	//					case 1 :
-	//					case -2 :
-	//					//check each QTY
-	//						KeywordUtil.logInfo('qtys : ' + qtys.get(k).getText())
-	//						int numQty = extractInt(qtys.get(k).getText())
-	//						KeywordUtil.logInfo('qty : ' + qty)
-	//						KeywordUtil.logInfo('numQty : ' + numQty)
-	//						println '-----------'
-	//						assert numQty == qty
-	//
-	//						double totalPrice = 0.00
-	//					//check each total price
-	//						if(statusProduct == 1) {
-	//							totalPrice = Double.parseDouble(prices.get(k).getText())
-	//						} else if (statusProduct == -2) {
-	//							totalPrice = Double.parseDouble(prices.get(k-1).getText())
-	//						}
-	//						println '-----------'
-	//						assert totalPrice == (qty * unitPrice)
-	//						totalPrice = (qty * unitPrice)
-	//
-	//
-	//						countQty += qty
-	//						countTotalPrice += totalPrice
-	//						KeywordUtil.logInfo('countQty : ' + countQty)
-	//						KeywordUtil.logInfo('countTotalPrice : ' + countTotalPrice)
-	//						return [countQty, countTotalPrice]
-	//						break
-	//				}
-	//			}
-	//		}
-	//	}
-
 
 	@Keyword
 	def checkEachProduct(String name, Integer qty, Double unitPrice, Integer countQty, Double countTotalPrice, Integer statusProduct) {
@@ -302,11 +268,5 @@ public class RiderKeywords {
 		int size = total_product
 		double price = 0.00
 		return [qty, unitPrice, countQty, countTotalPrice, statusProduct, size, price]
-	}
-	
-	@Keyword
-	def testtext(Integer w) {
-		w *= 0
-		return w
 	}
 }

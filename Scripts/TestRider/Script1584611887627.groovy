@@ -8,15 +8,11 @@ import io.appium.java_client.AppiumDriver
 import io.appium.java_client.MobileElement
 
 def path = 'D:\\Users\\sunitakac\\Desktop\\apk\\rider_1.0.1b_uat_COD_17032020.apk'
-Mobile.startApplication(path, true)
-Mobile.setText(findTestObject('Rider/RiderUsername'), 'nam123', 0)
-Mobile.setText(findTestObject('Rider/RiderPassword'), '1234', 0)
-Mobile.tap(findTestObject('Rider/LoginBtn'), 0)
-
-int status_id = 3
 def riderId = 'th.co.gosoft.storemobile.sevendelivery.rider:id/'
+def status = ''
 def remark = '-'
 
+int status_id = 3
 int qty = 0
 double unitPrice = 0.00
 int countQty = 0
@@ -24,18 +20,27 @@ double countTotalPrice = 0.00
 int statusProduct = 1
 int size = Integer.parseInt(total_product)
 double price = 0.00
-def status = ''
+
+try {
+	Mobile.startApplication(path, true)
+	Mobile.setText(findTestObject('Rider/RiderUsername'), 'nam123', 0)
+	Mobile.setText(findTestObject('Rider/RiderPassword'), '1234', 0)
+	Mobile.tap(findTestObject('Rider/LoginBtn'), 0)
+} catch (Exception e) {
+    KeywordUtil.markFailed('Crashed... ' + e)
+	status = 'Fail'
+	remark = 'Cannot start application'
+} 
 
 try {
     AppiumDriver<MobileElement> driver = MobileDriverFactory.getDriver()
-
-    order_id = CustomKeywords.'myPac.RiderKeywords.checkOrderId'(order_id)
 	
+    order_id = CustomKeywords.'myPac.RiderKeywords.checkOrderId'(order_id)
 	KeywordUtil.logInfo ('size : ' + size)
 	KeywordUtil.logInfo ('flow_type : ' + flow_type)
 	
     KeywordUtil.logInfo('------------- new order -----------')
-	checkOrder = CustomKeywords.'myPac.RiderKeywords.FindOrder'(order_id)
+	checkOrder = CustomKeywords.'myPac.RiderKeywords.FindOrder'(order_id, payment_type)
 	if (!(checkOrder)) {
 		status = 'Fail'
 		remark = 'Fail to find order' + order_id + ' at status_id ' + status_id
@@ -92,7 +97,7 @@ try {
 	}
 	CustomKeywords.'myPac.RiderKeywords.checkAllProducts'(countTotalPrice, price, countQty)
 	
-	(checkOrder,status_id) = CustomKeywords.'myPac.RiderKeywords.ConfirmBtn'(order_id, status_id)
+	(checkOrder,status_id) = CustomKeywords.'myPac.RiderKeywords.ConfirmBtn'(order_id, status_id, payment_type)
 	KeywordUtil.logInfo('status_id : ' + status_id)
 	
 	if (!checkOrder) {
@@ -105,7 +110,7 @@ try {
 	KeywordUtil.logInfo('------------- processing -----------')
 	Mobile.tap(findTestObject('Rider/ProcessingTab'), 50)
 
-	checkOrder = CustomKeywords.'myPac.RiderKeywords.FindOrder'(order_id)
+	checkOrder = CustomKeywords.'myPac.RiderKeywords.FindOrder'(order_id, payment_type)
 	if (!(checkOrder)) {
 		status = 'Fail'
 		remark = 'Fail to find order' + order_id + ' at status_id ' + status_id
@@ -177,7 +182,7 @@ try {
 	}
 	CustomKeywords.'myPac.RiderKeywords.checkAllProducts'(countTotalPrice, price, countQty)
 	
-	(checkOrder,status_id) = CustomKeywords.'myPac.RiderKeywords.ConfirmBtn'(order_id, status_id)
+	(checkOrder,status_id) = CustomKeywords.'myPac.RiderKeywords.ConfirmBtn'(order_id, status_id, payment_type)
 	KeywordUtil.logInfo('status_id : ' + status_id)
 	
 	if (!checkOrder) {
@@ -190,7 +195,7 @@ try {
 	KeywordUtil.logInfo('------------- processed -----------')
 	Mobile.tap(findTestObject('Rider/ProcessedTab'), 50)
 	
-	checkOrder = CustomKeywords.'myPac.RiderKeywords.FindOrder'(order_id)
+	checkOrder = CustomKeywords.'myPac.RiderKeywords.FindOrder'(order_id, payment_type)
 	if (!(checkOrder)) {
 		status = 'Fail'
 		remark = 'Fail to find order' + order_id + ' at status_id ' + status_id
@@ -269,9 +274,6 @@ try {
 	} else {
 		status = 'Pass'
 	}
-	
-	
-	
 }
 catch (Exception e) {
     KeywordUtil.markFailed('Crashed... ' + e)
