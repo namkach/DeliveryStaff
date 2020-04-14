@@ -30,6 +30,7 @@ try {
     KeywordUtil.markFailed('Crashed... ' + e)
 	status = 'Fail'
 	remark = 'Cannot start application'
+	CustomKeywords.'myPac.writeExcel.writeRider'(order_id, flow_type, payment_type, status, remark)
 } 
 
 try {
@@ -267,19 +268,21 @@ try {
 	CustomKeywords.'myPac.RiderKeywords.checkAllProducts'(countTotalPrice, price, countQty)
 	
 	checkOrder = CustomKeywords.'myPac.RiderKeywords.checkStatusId'(status_id)
-	if (!(checkOrder)) {
-		status = 'Fail'
-		remark = 'Fail to check order ' + order_id + ' at status_id ' + status_id
-		return remark
-	} else {
+	KeywordUtil.logInfo('checkOrder : ' + checkOrder)
+	if (checkOrder) {
 		status = 'Pass'
+		KeywordUtil.markPassed('Pass')
+		
+	} else {
+		status = 'Fail'
+		remark = 'Fail to check status order ' + order_id + ' at status_id ' + status_id
+		KeywordUtil.markFailed('Fail')
 	}
+	CustomKeywords.'myPac.writeExcel.writeRider'(order_id, flow_type, payment_type, status, remark)
 }
 catch (Exception e) {
     KeywordUtil.markFailed('Crashed... ' + e)
 	status = 'Fail'
 	remark = e.toString()
+	CustomKeywords.'myPac.writeExcel.writeRider'(order_id, flow_type, payment_type, status, remark)
 } 
-
-CustomKeywords.'myPac.writeExcel.writeRider'(order_id, flow_type, payment_type, status, remark)
-KeywordUtil.logInfo('status : ' + status)

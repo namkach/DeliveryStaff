@@ -1,10 +1,11 @@
 package myPac
 
+import java.util.concurrent.TimeUnit
+
 import com.kms.katalon.core.annotation.Keyword
 import com.kms.katalon.core.mobile.keyword.MobileBuiltInKeywords as Mobile
 import com.kms.katalon.core.mobile.keyword.internal.MobileDriverFactory
 import com.kms.katalon.core.util.KeywordUtil
-import com.sun.org.apache.xpath.internal.compiler.Keywords
 
 import io.appium.java_client.AppiumDriver
 import io.appium.java_client.MobileElement
@@ -29,8 +30,8 @@ public class RiderKeywords {
 	@Keyword
 	def FindOrder(String order_id, String payment_type) {
 		checkOrder = FindOrderId(order_id, payment_type)
-//		Mobile.delay(2)
-		Thread.sleep(2000)
+		//		Mobile.delay(2)
+		//		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS)
 		while(!checkOrder) {
 			SwipeUp()
 			checkOrder = FindOrderId(order_id, payment_type)
@@ -42,7 +43,7 @@ public class RiderKeywords {
 	@Keyword
 	def SwipeUp() {
 		int x = Mobile.getDeviceWidth()/2
-		int startY = Mobile.getDeviceHeight()*0.7
+		int startY = Mobile.getDeviceHeight()*0.75
 		int endY = Mobile.getDeviceHeight()*0.4
 		Mobile.swipe(x, startY, x, endY)
 	}
@@ -52,7 +53,7 @@ public class RiderKeywords {
 		checkOrder = false
 		List<MobileElement> orders = driver.findElementsById(riderId + 'txt_order_no')
 		for (int j = orders.size() - 1; j >= 0; j--) {
-			if (orders.get(j).getText() == order_id) {
+			if (orders.get(j).getText().equals(order_id)) {
 				KeywordUtil.markPassed ('*** order found ***')
 				switch (payment_type) {
 					case '1' :
@@ -68,7 +69,7 @@ public class RiderKeywords {
 				}
 				orders.get(j).click()
 				MobileElement orderNo = (MobileElement) driver.findElementById(riderId + 'main_toolbar_tv_order')
-				assert orderNo.getText() == order_id
+				assert orderNo.getText().equals(order_id)
 				break
 			}
 		}
@@ -82,11 +83,11 @@ public class RiderKeywords {
 		MobileElement ConfirmOrder = (MobileElement) driver.findElementById(riderId + 'order_detail_bt_confirm')
 		switch (status_id) {
 			case 3 :
-				assert ConfirmOrder.getText() == 'รับรายการสั่งซื้อ'
+				assert ConfirmOrder.getText().equals('รับรายการสั่งซื้อ')
 				ConfirmOrder.click()
 				break
 			case 4 :
-				assert ConfirmOrder.getText() == 'ชำระเงิน'
+				assert ConfirmOrder.getText().equals('ชำระเงิน')
 				ConfirmOrder.click()
 				printType(total_price)
 				ConfirmPayment(payment_type, total_price)
@@ -118,17 +119,17 @@ public class RiderKeywords {
 				printType(total_price)
 				MobileElement totalPrice = (MobileElement) driver.findElementById(riderId + 'txtCashPrice')
 				MobileElement payPrice = (MobileElement) driver.findElementById(riderId + 'txtCashMoney')
-				
-				//check delivery fee
-//				if (total_price >= 100) {
-//					assert Double.parseDouble(totalPrice.getText()) == total_price
-//				} else {
-//					assert Double.parseDouble(totalPrice.getText()) == (total_price + 20)
-//				}
-				
-				//dont check delivery fee
-				assert Double.parseDouble(totalPrice.getText()) == total_price
-				
+
+			//check delivery fee
+			//				if (total_price >= 100) {
+			//					assert Double.parseDouble(totalPrice.getText()).equals(total_price)
+			//				} else {
+			//					assert Double.parseDouble(totalPrice.getText()).equals((total_price + 20))
+			//				}
+
+			//dont check delivery fee
+				assert Double.parseDouble(totalPrice.getText()).equals(total_price)
+
 				payPrice.sendKeys(totalPrice.getText())
 				MobileElement confirmPayment = (MobileElement) driver.findElementById(riderId + 'btnConfirm')
 				confirmPayment.click()
@@ -142,6 +143,7 @@ public class RiderKeywords {
 		MobileElement confirmDelivery = (MobileElement) driver.findElementById(riderId + 'delivery_confirm_bt_confirm')
 		confirmDelivery.click()
 
+		Mobile.delay(2)
 		SwipeUp()
 		MobileElement signBtn = (MobileElement) driver.findElementById(riderId + 'main_toolbar_tv_menu_right2')
 		signBtn.click()
@@ -152,29 +154,24 @@ public class RiderKeywords {
 
 	@Keyword
 	def checkStatusId(Integer status_id) {
+		checkOrder = false
 		MobileElement statusElement = (MobileElement) driver.findElementById(riderId + 'order_detail_time_count_down')
+		KeywordUtil.logInfo('status text : ' + statusElement.getText())
+		KeywordUtil.logInfo('status_id : ' + status_id)
+		def text = statusElement.getText()
 		switch (status_id) {
 			case 5 :
-				if (statusElement.getText() == 'เสร็จสมบูรณ์') {
-					KeywordUtil.logInfo('เสร็จสมบูรณ์')
-					return true
-				} else {
-					return false
+				if (text.equals('เสร็จสมบูรณ์')) {
+					checkOrder = true
 				}
 				break
 			case 6 :
-				if (statusElement.getText() == 'ยกเลิกออเดอร์') {
-					KeywordUtil.logInfo('ยกเลิกออเดอร์')
-					return true
-				} else {
-					return false
+				if (text.equals('ยกเลิกออเดอร์')) {
+					checkOrder = true
 				}
 				break
-			default :
-				KeywordUtil.markFailed('Error to check status_id')
-				return false
-				break
 		}
+		return checkOrder
 	}
 
 	@Keyword
@@ -182,12 +179,12 @@ public class RiderKeywords {
 		List<MobileElement> prods = driver.findElementsById(riderId + 'row_order_detail_tv_name')
 		println ('Product size : ' + prods.size())
 		println ('Total product : ' + total_product)
-		if (flow_type == '2') {
+		if (flow_type.equals('2')) {
 			total_product += 1
 		}
 		KeywordUtil.logInfo (printType(prods.size()))
 		KeywordUtil.logInfo (printType(total_product))
-		if (prods.size() == total_product) {
+		if (prods.size().equals(total_product)) {
 			KeywordUtil.logInfo ('true')
 			return true
 		} else {
@@ -211,7 +208,7 @@ public class RiderKeywords {
 			if (prods.get(k).getText().equals(name)) {
 				KeywordUtil.logInfo ('check qty before ' + name + ' : ' + countQty)
 				numQty = extractInt(qtys.get(k).getText())
-				assert numQty == qty
+				assert numQty.equals(qty)
 				switch (statusProduct) {
 					case 1:
 						totalPrice = Double.parseDouble(prices.get(k).getText())
@@ -220,7 +217,7 @@ public class RiderKeywords {
 						totalPrice = Double.parseDouble(prices.get(k - 1).getText())
 						break
 				}
-				assert totalPrice == (qty * unitPrice)
+				assert totalPrice.equals((qty * unitPrice))
 				totalPrice = (qty * unitPrice)
 				countQty += qty
 				countTotalPrice += totalPrice
@@ -262,9 +259,9 @@ public class RiderKeywords {
 		KeywordUtil.logInfo ('total price : ' + numAllTotalPrice)
 		KeywordUtil.logInfo ('All QTY : ' + extractInt(allQty.getText()))
 
-		assert numAllTotalPrice == countTotalPrice
-		assert numAllTotalPrice == totalPrice
-		assert extractInt(allQty.getText()) == countQty
+		assert numAllTotalPrice.equals(countTotalPrice)
+		assert numAllTotalPrice.equals(totalPrice)
+		assert extractInt(allQty.getText()).equals(countQty)
 		KeywordUtil.markPassed('Check all products : Pass')
 	}
 
