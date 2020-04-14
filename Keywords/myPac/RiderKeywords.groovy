@@ -161,12 +161,12 @@ public class RiderKeywords {
 		def text = statusElement.getText()
 		switch (status_id) {
 			case 5 :
-				if (text.equals('เสร็จสมบูรณ์')) {
+				if (text.contains('เสร็จสมบูรณ์')) {
 					checkOrder = true
 				}
 				break
 			case 6 :
-				if (text.equals('ยกเลิกออเดอร์')) {
+				if (text.contains('ยกเลิกออเดอร์')) {
 					checkOrder = true
 				}
 				break
@@ -230,7 +230,7 @@ public class RiderKeywords {
 
 	@Keyword
 	def extractInt(String input) {
-		return Integer.parseInt(input.replaceAll("[^0-9]", ""))
+		return Integer.parseInt(input.replaceAll('[^0-9]', ''))
 	}
 
 	def printType(Integer x) {
