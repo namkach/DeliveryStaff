@@ -43,7 +43,7 @@ public class RiderKeywords {
 	@Keyword
 	def SwipeUp() {
 		int x = Mobile.getDeviceWidth()/2
-		int startY = Mobile.getDeviceHeight()*0.75
+		int startY = Mobile.getDeviceHeight()*0.7
 		int endY = Mobile.getDeviceHeight()*0.4
 		Mobile.swipe(x, startY, x, endY)
 	}
@@ -87,7 +87,14 @@ public class RiderKeywords {
 				ConfirmOrder.click()
 				break
 			case 4 :
-				assert ConfirmOrder.getText().equals('ชำระเงิน')
+				switch (payment_type) {
+					case '1' : 
+						assert ConfirmOrder.getText().equals('ชำระเงิน')
+						break
+					case '2' :
+						assert ConfirmOrder.getText().equals('ยืนยันการส่งสินค้า')
+						break
+				}
 				ConfirmOrder.click()
 				printType(total_price)
 				ConfirmPayment(payment_type, total_price)
