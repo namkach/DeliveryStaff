@@ -51,7 +51,7 @@ public class writeExcel {
 	}
 
 	@Keyword
-	def writeRider(String order_id, String flow_type, String payment_type, String status, String remark) {
+	def writeResult(String order_id, String flow_type, String payment_type, String status, String remark) {
 		def path = 'D:\\Users\\sunitakac\\Desktop\\AutoTest\\resultRider.xls'
 		Workbook existingWorkbook = Workbook.getWorkbook(new File(path))
 		WritableWorkbook workbookCopy = Workbook.createWorkbook(new File(path), existingWorkbook)

@@ -1,7 +1,5 @@
 package myPac
 
-import java.util.concurrent.TimeUnit
-
 import com.kms.katalon.core.annotation.Keyword
 import com.kms.katalon.core.mobile.keyword.MobileBuiltInKeywords as Mobile
 import com.kms.katalon.core.mobile.keyword.internal.MobileDriverFactory
@@ -9,49 +7,79 @@ import com.kms.katalon.core.util.KeywordUtil
 
 import io.appium.java_client.AppiumDriver
 import io.appium.java_client.MobileElement
+import jxl.CellType
+import jxl.Workbook
+import jxl.write.Label
+import jxl.write.WritableCell
+import jxl.write.WritableSheet
+import jxl.write.WritableWorkbook
 
 public class RiderKeywords {
 	AppiumDriver<MobileElement> driver = MobileDriverFactory.getDriver()
 
 	def riderId = 'th.co.gosoft.storemobile.sevendelivery.rider:id/'
 	boolean checkOrder
+	def status = ''
+	def remark = ''
 
 	@Keyword
-	def checkOrderId(String order_id) {
-		println(order_id.length())
-		while (order_id.length() < 4) {
-			order_id = ('0' + order_id)
-			println(order_id.length())
-			KeywordUtil.logInfo(order_id)
+	def checkId(String id, Integer digits) {
+		println(id.length())
+		while (id.length() < digits) {
+			id = ('0' + id)
+			println(id.length())
+			KeywordUtil.logInfo(id)
 		}
-		return order_id
+		return id
 	}
 
 	@Keyword
-	def FindOrder(String order_id, String payment_type) {
-		checkOrder = FindOrderId(order_id, payment_type)
-		//		Mobile.delay(2)
-		//		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS)
+	def filterStoreId(String store_id) {
+		checkOrder = false
+		MobileElement filterTab = (MobileElement) driver.findElementById(riderId + 'layout_main_spinner_filter_store_tv_result')
+		KeywordUtil.logInfo (filterTab.getText())
+		filterTab.click()
+		List<MobileElement> filterTabs = driver.findElementsById(riderId + 'layout_main_spinner_filter_store_tv')
+		for (int i = 0; i < filterTabs.size(); i++) {
+			if (filterTabs.get(i).getText().contains(store_id)) {
+				KeywordUtil.logInfo('filter store id : ' + filterTabs.get(i).getText())
+				filterTabs.get(i).click()
+				checkOrder = true
+				status = ''
+				remark = ''
+				return [status, remark]
+			}
+		}
+		status = 'Fail'
+		remark = 'Fail to filter order ' + order_id + ' at status_id ' + status_id
+		KeywordUtil.markFailed(remark)
+		return [status, remark]
+	}
+
+	@Keyword
+	def findOrder(String order_id, String store_id, String payment_type) {
+		checkOrder = FindOrderId(order_id, store_id, payment_type)
 		while(!checkOrder) {
 			SwipeUp()
-			checkOrder = FindOrderId(order_id, payment_type)
+			checkOrder = FindOrderId(order_id, store_id, payment_type)
 			KeywordUtil.logInfo('checkOrder : ' + checkOrder)
 		}
-		return checkOrder
+		if (checkOrder) {
+			status = ''
+			remark = ''
+		} else {
+			status = 'Fail'
+			remark = 'Fail to filter order ' + order_id + ' at status_id ' + status_id
+			KeywordUtil.markFailed(remark)
+		}
+		return [status, remark]
 	}
 
 	@Keyword
-	def SwipeUp() {
-		int x = Mobile.getDeviceWidth()/2
-		int startY = Mobile.getDeviceHeight()*0.7
-		int endY = Mobile.getDeviceHeight()*0.4
-		Mobile.swipe(x, startY, x, endY)
-	}
-
-	@Keyword
-	def FindOrderId(String order_id, String payment_type) {
+	def FindOrderId(String order_id, String store_id, String payment_type) {
 		checkOrder = false
 		List<MobileElement> orders = driver.findElementsById(riderId + 'txt_order_no')
+		List<MobileElement> storeId = driver.findElementsById(riderId + 'txt_store_id')
 		for (int j = orders.size() - 1; j >= 0; j--) {
 			if (orders.get(j).getText().equals(order_id)) {
 				KeywordUtil.markPassed ('*** order found ***')
@@ -67,6 +95,7 @@ public class RiderKeywords {
 						}
 						break
 				}
+				assert storeId.get(j).getText() == store_id
 				orders.get(j).click()
 				MobileElement orderNo = (MobileElement) driver.findElementById(riderId + 'main_toolbar_tv_order')
 				assert orderNo.getText().equals(order_id)
@@ -75,6 +104,15 @@ public class RiderKeywords {
 		}
 		return checkOrder
 	}
+
+	@Keyword
+	def SwipeUp() {
+		int x = Mobile.getDeviceWidth()/2
+		int startY = Mobile.getDeviceHeight()*0.7
+		int endY = Mobile.getDeviceHeight()*0.4
+		Mobile.swipe(x, startY, x, endY)
+	}
+
 
 	@Keyword
 	def ConfirmBtn(String order_id, Integer status_id, String payment_type, Double total_price) {
@@ -88,12 +126,12 @@ public class RiderKeywords {
 				break
 			case 4 :
 				switch (payment_type) {
-					case '1' : 
-						assert ConfirmOrder.getText().equals('ชำระเงิน')
-						break
+					case '1' :
+					assert ConfirmOrder.getText().equals('ชำระเงิน')
+					break
 					case '2' :
-						assert ConfirmOrder.getText().equals('ยืนยันการส่งสินค้า')
-						break
+					assert ConfirmOrder.getText().equals('ยืนยันการส่งสินค้า')
+					break
 				}
 				ConfirmOrder.click()
 				printType(total_price)
@@ -105,6 +143,7 @@ public class RiderKeywords {
 		status_id += 1
 		return [checkOrder, status_id]
 	}
+
 
 	@Keyword
 	def ConfirmPayment(String payment_type, Double total_price) {
@@ -159,27 +198,6 @@ public class RiderKeywords {
 		confirmSignBtn.click()
 	}
 
-	@Keyword
-	def checkStatusId(Integer status_id) {
-		checkOrder = false
-		MobileElement statusElement = (MobileElement) driver.findElementById(riderId + 'order_detail_time_count_down')
-		KeywordUtil.logInfo('status text : ' + statusElement.getText())
-		KeywordUtil.logInfo('status_id : ' + status_id)
-		def text = statusElement.getText()
-		switch (status_id) {
-			case 5 :
-				if (text.contains('เสร็จสมบูรณ์')) {
-					checkOrder = true
-				}
-				break
-			case 6 :
-				if (text.contains('ยกเลิกออเดอร์')) {
-					checkOrder = true
-				}
-				break
-		}
-		return checkOrder
-	}
 
 	@Keyword
 	def checkTotalProducts(String flow_type, Integer total_product) {
@@ -199,6 +217,7 @@ public class RiderKeywords {
 			return false
 		}
 	}
+
 
 	@Keyword
 	def checkEachProduct(String name, Integer qty, Double unitPrice, Integer countQty, Double countTotalPrice, Integer statusProduct) {
@@ -235,10 +254,12 @@ public class RiderKeywords {
 		}
 	}
 
+
 	@Keyword
-	def extractInt(String input) {
-		return Integer.parseInt(input.replaceAll('[^0-9]', ''))
+	def extractInt(String text) {
+		return Integer.parseInt(text.replaceAll('[^0-9]', ''))
 	}
+
 
 	def printType(Integer x) {
 		KeywordUtil.logInfo (x + " is an int");
@@ -282,5 +303,67 @@ public class RiderKeywords {
 		int size = total_product
 		double price = 0.00
 		return [qty, unitPrice, countQty, countTotalPrice, statusProduct, size, price]
+	}
+
+	@Keyword
+	def checkStatusId(Integer status_id) {
+		checkOrder = false
+		MobileElement statusElement = (MobileElement) driver.findElementById(riderId + 'order_detail_time_count_down')
+		KeywordUtil.logInfo('status text : ' + statusElement.getText())
+		KeywordUtil.logInfo('status_id : ' + status_id)
+		def text = statusElement.getText()
+		switch (status_id) {
+			case 5 :
+				if (text.contains('เสร็จสมบูรณ์')) {
+					checkOrder = true
+				}
+				break
+			case 6 :
+				if (text.contains('ยกเลิกออเดอร์')) {
+					checkOrder = true
+				}
+				break
+		}
+		return checkOrder
+	}
+
+	@Keyword
+	def writeResult(String order_id, String flow_type, String payment_type, String status, String remark) {
+		def path = 'D:\\Users\\sunitakac\\Desktop\\AutoTest\\resultRider.xls'
+		Workbook existingWorkbook = Workbook.getWorkbook(new File(path))
+		WritableWorkbook workbookCopy = Workbook.createWorkbook(new File(path), existingWorkbook)
+		WritableSheet sheetToEdit = workbookCopy.getSheet(0)
+
+		String[] header = ['Order', 'Flow Type', 'Payment Type', 'Result', 'Remark']
+		String[] text = [order_id, flow_type, payment_type, status, remark]
+
+		for (int i = 0; i < header.size(); i++) {
+			WritableCell cellHeader
+			Label l = new Label(i, 0, header[i])
+			cellHeader = (WritableCell) l
+			sheetToEdit.addCell(cellHeader)
+		}
+
+		WritableCell cellText
+		def textCell
+		int row = sheetToEdit.getRows()
+		boolean isEmpty
+		for (int j = 1; j <= row + 1; j++) {
+			cellText = sheetToEdit.getCell(0, j)
+			textCell = sheetToEdit.getCell(0, j).getContents()
+			isEmpty = cellText.getType().equals(CellType.EMPTY)
+			if (isEmpty || (!isEmpty && textCell == order_id)) {
+				for (int k = 0; k < text.size(); k++) {
+					Label l = new Label(k, j, text[k])
+					cellText = (WritableCell) l
+					sheetToEdit.addCell(cellText)
+				}
+				break
+			}
+		}
+		workbookCopy.write()
+		workbookCopy.close()
+		existingWorkbook.close()
+		KeywordUtil.markPassed('Stamp Pass')
 	}
 }

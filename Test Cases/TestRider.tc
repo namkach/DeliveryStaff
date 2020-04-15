@@ -20,6 +20,13 @@
       <name>order_id</name>
    </variable>
    <variable>
+      <defaultValue>''</defaultValue>
+      <description></description>
+      <id>5e3a25fd-81d8-4d77-a271-1ac8c4f00451</id>
+      <masked>false</masked>
+      <name>store_id</name>
+   </variable>
+   <variable>
       <defaultValue>0</defaultValue>
       <description></description>
       <id>79f391f9-92d4-4d67-9621-28c23409045d</id>
@@ -41,7 +48,7 @@
       <name>qty1</name>
    </variable>
    <variable>
-      <defaultValue>0.00</defaultValue>
+      <defaultValue>0.0</defaultValue>
       <description></description>
       <id>d8de819c-7e47-4bac-9719-2ac9a388c893</id>
       <masked>false</masked>
@@ -62,7 +69,7 @@
       <name>qty2</name>
    </variable>
    <variable>
-      <defaultValue>0.00</defaultValue>
+      <defaultValue>0.0</defaultValue>
       <description></description>
       <id>c384a9ed-5d8a-4de4-b44a-e420c4998527</id>
       <masked>false</masked>
@@ -83,7 +90,7 @@
       <name>qty3</name>
    </variable>
    <variable>
-      <defaultValue>0.00</defaultValue>
+      <defaultValue>0.0</defaultValue>
       <description></description>
       <id>4f20e091-f12a-431f-9e8f-728467c4b0dd</id>
       <masked>false</masked>
@@ -104,28 +111,28 @@
       <name>edit_qty</name>
    </variable>
    <variable>
-      <defaultValue>0.00</defaultValue>
+      <defaultValue>0.0</defaultValue>
       <description></description>
       <id>3b0933d2-1fb2-4d8e-9158-ff98c8a77f2f</id>
       <masked>false</masked>
       <name>edit_unit_price</name>
    </variable>
    <variable>
-      <defaultValue>0.00</defaultValue>
+      <defaultValue>0.0</defaultValue>
       <description></description>
       <id>461babba-beb5-4820-98d1-f39d70764e85</id>
       <masked>false</masked>
       <name>total_price</name>
    </variable>
    <variable>
-      <defaultValue>0.00</defaultValue>
+      <defaultValue>0.0</defaultValue>
       <description></description>
       <id>4a15834b-a2c5-4b94-9973-409af81846ce</id>
       <masked>false</masked>
       <name>edit_total_price</name>
    </variable>
    <variable>
-      <defaultValue>0</defaultValue>
+      <defaultValue>''</defaultValue>
       <description></description>
       <id>345529ce-7c24-48f5-9114-676ad95d462e</id>
       <masked>false</masked>
@@ -137,5 +144,19 @@
       <id>8cefbed3-84d2-4322-94e5-3e4b687a39df</id>
       <masked>false</masked>
       <name>checkOrder</name>
+   </variable>
+   <variable>
+      <defaultValue>'nam123'</defaultValue>
+      <description></description>
+      <id>f938756b-a5f2-4fdd-8042-f9156b0aa20c</id>
+      <masked>false</masked>
+      <name>riderName</name>
+   </variable>
+   <variable>
+      <defaultValue>'1234'</defaultValue>
+      <description></description>
+      <id>304d6837-5bac-4bf3-b853-f9ffd450bd08</id>
+      <masked>false</masked>
+      <name>riderPass</name>
    </variable>
 </TestCaseEntity>

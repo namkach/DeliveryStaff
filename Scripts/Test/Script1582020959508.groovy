@@ -8,31 +8,24 @@ Mobile.startApplication('D:\\Users\\sunitakac\\Desktop\\apk\\rider_1.0.1b_uat_CO
 
 //Mobile.startApplication('D:\\Users\\sunitakac\\Desktop\\apk\\staff_uat_1.2.6m_COD_05032020.apk', true)
 
-//def test = '20'
-//int t = 5
-//KeywordUtil.logInfo('test : ' + t)
-//t = CustomKeywords.'myPac.RiderKeywords.testtext'(t)
-//KeywordUtil.logInfo('test : ' + t)
+boolean isTrue = false
+def x = 'a'
 
-int qty = 2
-double unitPrice = 40.00
-int countQty = 30
-double countTotalPrice = 10.00
-int statusProduct = 4
-def total_product = '5'
-double price = 6.00
-int size = 0
+try {
+	if (isTrue) {
+		KeywordUtil.logInfo('trueeeeeee')
+	} else {
+		KeywordUtil.logInfo('faillll')
+		x = 'aaaaaaa'
+		return x
+	} 
+	
+	x = 'b'
+} catch (Exception e) {
+	println (e)
+}
 
-
-(qty, unitPrice, countQty, countTotalPrice, statusProduct, size, price) = CustomKeywords.'myPac.RiderKeywords.setDefault'(Integer.parseInt(total_product))
-KeywordUtil.logInfo('qty : ' + qty)
-KeywordUtil.logInfo('countQty : ' + countQty)
-KeywordUtil.logInfo('countTotalPrice : ' + countTotalPrice)
-KeywordUtil.logInfo('statusProduct : ' + statusProduct)
-KeywordUtil.logInfo('size : ' + size)
-KeywordUtil.logInfo('price : ' + price)
-KeywordUtil.logInfo('unitPrice : ' + unitPrice)
-
+KeywordUtil.logInfo(x)
 
 
 

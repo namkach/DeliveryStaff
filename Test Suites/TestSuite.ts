@@ -193,7 +193,7 @@
       <isRun>true</isRun>
       <testCaseId>Test Cases/TestRider</testCaseId>
       <testDataLink>
-         <combinationType>ONE</combinationType>
+         <combinationType>MANY</combinationType>
          <id>caa67d85-df87-4738-b866-0d2af97548bb</id>
          <iterationEntity>
             <iterationType>ALL</iterationType>
@@ -314,6 +314,24 @@
          <type>DATA_COLUMN</type>
          <value>Payment_Type</value>
          <variableId>345529ce-7c24-48f5-9114-676ad95d462e</variableId>
+      </variableLink>
+      <variableLink>
+         <testDataLinkId></testDataLinkId>
+         <type>DEFAULT</type>
+         <value></value>
+         <variableId>f938756b-a5f2-4fdd-8042-f9156b0aa20c</variableId>
+      </variableLink>
+      <variableLink>
+         <testDataLinkId></testDataLinkId>
+         <type>DEFAULT</type>
+         <value></value>
+         <variableId>304d6837-5bac-4bf3-b853-f9ffd450bd08</variableId>
+      </variableLink>
+      <variableLink>
+         <testDataLinkId>caa67d85-df87-4738-b866-0d2af97548bb</testDataLinkId>
+         <type>DATA_COLUMN</type>
+         <value>Store_id</value>
+         <variableId>5e3a25fd-81d8-4d77-a271-1ac8c4f00451</variableId>
       </variableLink>
    </testCaseLink>
 </TestSuiteEntity>
