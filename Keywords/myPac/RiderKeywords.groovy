@@ -22,20 +22,19 @@ public class RiderKeywords {
 	def status = ''
 	def remark = ''
 
-	@Keyword
-	def checkId(String id, Integer digits) {
-		println(id.length())
-		while (id.length() < digits) {
-			id = ('0' + id)
-			println(id.length())
-			KeywordUtil.logInfo(id)
-		}
-		return id
-	}
+//	@Keyword
+//	def checkId(String id, Integer digits) {
+//		println(id.length())
+//		while (id.length() < digits) {
+//			id = ('0' + id)
+//			println(id.length())
+//			KeywordUtil.logInfo(id)
+//		}
+//		return id
+//	}
 
 	@Keyword
 	def filterStoreId(String store_id) {
-		checkOrder = false
 		MobileElement filterTab = (MobileElement) driver.findElementById(riderId + 'layout_main_spinner_filter_store_tv_result')
 		KeywordUtil.logInfo (filterTab.getText())
 		filterTab.click()
@@ -44,7 +43,6 @@ public class RiderKeywords {
 			if (filterTabs.get(i).getText().contains(store_id)) {
 				KeywordUtil.logInfo('filter store id : ' + filterTabs.get(i).getText())
 				filterTabs.get(i).click()
-				checkOrder = true
 				status = ''
 				remark = ''
 				return [status, remark]
@@ -58,10 +56,10 @@ public class RiderKeywords {
 
 	@Keyword
 	def findOrder(String order_id, String store_id, String payment_type) {
-		checkOrder = FindOrderId(order_id, store_id, payment_type)
+		checkOrder = findOrderId(order_id, store_id, payment_type)
 		while(!checkOrder) {
-			SwipeUp()
-			checkOrder = FindOrderId(order_id, store_id, payment_type)
+			swipeUp()
+			checkOrder = findOrderId(order_id, store_id, payment_type)
 			KeywordUtil.logInfo('checkOrder : ' + checkOrder)
 		}
 		if (checkOrder) {
@@ -76,7 +74,7 @@ public class RiderKeywords {
 	}
 
 	@Keyword
-	def FindOrderId(String order_id, String store_id, String payment_type) {
+	def findOrderId(String order_id, String store_id, String payment_type) {
 		checkOrder = false
 		List<MobileElement> orders = driver.findElementsById(riderId + 'txt_order_no')
 		List<MobileElement> storeId = driver.findElementsById(riderId + 'txt_store_id')
@@ -106,16 +104,15 @@ public class RiderKeywords {
 	}
 
 	@Keyword
-	def SwipeUp() {
+	def swipeUp() {
 		int x = Mobile.getDeviceWidth()/2
 		int startY = Mobile.getDeviceHeight()*0.7
 		int endY = Mobile.getDeviceHeight()*0.4
 		Mobile.swipe(x, startY, x, endY)
 	}
 
-
 	@Keyword
-	def ConfirmBtn(String order_id, Integer status_id, String payment_type, Double total_price) {
+	def confirmBtn(String order_id, Integer status_id, String payment_type, Double total_price) {
 		checkOrder = false
 		KeywordUtil.logInfo(order_id)
 		MobileElement ConfirmOrder = (MobileElement) driver.findElementById(riderId + 'order_detail_bt_confirm')
@@ -123,6 +120,7 @@ public class RiderKeywords {
 			case 3 :
 				assert ConfirmOrder.getText().equals('รับรายการสั่งซื้อ')
 				ConfirmOrder.click()
+				checkOrder = true
 				break
 			case 4 :
 				switch (payment_type) {
@@ -135,18 +133,24 @@ public class RiderKeywords {
 				}
 				ConfirmOrder.click()
 				printType(total_price)
-				ConfirmPayment(payment_type, total_price)
+				confirmPayment(payment_type, total_price)
+				checkOrder = true
 				break
 		}
-		checkOrder = true
-		KeywordUtil.markPassed('ConfirmBtn : Pass')
-		status_id += 1
-		return [checkOrder, status_id]
+		if (checkOrder) {
+			status_id += 1
+			status = ''
+			remark = ''
+		} else {
+			status = 'Fail'
+			remark = 'Fail to confirm order ' + order_id + ' at status_id ' + status_id
+			KeywordUtil.markFailed(remark)
+		}
+		return [status, remark, status_id]
 	}
 
-
 	@Keyword
-	def ConfirmPayment(String payment_type, Double total_price) {
+	def confirmPayment(String payment_type, Double total_price) {
 		switch (payment_type) {
 			case '1' :
 				MobileElement cashTab = (MobileElement) driver.findElementById(riderId + 'rdoCash')
@@ -190,14 +194,13 @@ public class RiderKeywords {
 		confirmDelivery.click()
 
 		Mobile.delay(2)
-		SwipeUp()
+		swipeUp()
 		MobileElement signBtn = (MobileElement) driver.findElementById(riderId + 'main_toolbar_tv_menu_right2')
 		signBtn.click()
 
 		MobileElement confirmSignBtn = (MobileElement) driver.findElementById(riderId + 'dialog_confirm_yes')
 		confirmSignBtn.click()
 	}
-
 
 	@Keyword
 	def checkTotalProducts(String flow_type, Integer total_product) {
@@ -211,13 +214,16 @@ public class RiderKeywords {
 		KeywordUtil.logInfo (printType(total_product))
 		if (prods.size().equals(total_product)) {
 			KeywordUtil.logInfo ('true')
-			return true
+			status = ''
+			remark = ''
 		} else {
 			KeywordUtil.logInfo ('false')
-			return false
+			status = 'Fail'
+			remark = 'Fail to Check Total Products order ' + order_id + ' at status_id ' + status_id
+			KeywordUtil.markFailed(remark)
 		}
+		return [status, remark]
 	}
-
 
 	@Keyword
 	def checkEachProduct(String name, Integer qty, Double unitPrice, Integer countQty, Double countTotalPrice, Integer statusProduct) {
@@ -228,6 +234,7 @@ public class RiderKeywords {
 		List<MobileElement> prods = driver.findElementsById(riderId + 'row_order_detail_tv_name')
 		List<MobileElement> qtys = driver.findElementsById(riderId + 'row_order_detail_tv_amount')
 		List<MobileElement> prices = driver.findElementsById(riderId + 'row_order_detail_tv_price')
+		
 		double totalPrice
 		int numQty
 		for (int k = 0; k < prods.size(); k++) {
@@ -243,23 +250,35 @@ public class RiderKeywords {
 						totalPrice = Double.parseDouble(prices.get(k - 1).getText())
 						break
 				}
-				assert totalPrice.equals((qty * unitPrice))
-				totalPrice = (qty * unitPrice)
-				countQty += qty
-				countTotalPrice += totalPrice
-				KeywordUtil.logInfo('countQty : ' + countQty)
-				KeywordUtil.logInfo('countTotalPrice : ' + countTotalPrice)
-				return [countQty, countTotalPrice]
+//				assert totalPrice.equals((qty * unitPrice))
+//				totalPrice = (qty * unitPrice)
+//				countQty += qty
+//				countTotalPrice += totalPrice
+//				KeywordUtil.logInfo('countQty : ' + countQty)
+//				KeywordUtil.logInfo('countTotalPrice : ' + countTotalPrice)
+
+				if (totalPrice.equals((qty * unitPrice))) {
+					countQty += qty
+					countTotalPrice += totalPrice
+					KeywordUtil.logInfo('countQty : ' + countQty)
+					KeywordUtil.logInfo('countTotalPrice : ' + countTotalPrice)
+					status = ''
+					remark = ''
+					
+				} else {
+					status = 'Fail'
+					remark = 'Fail to check each product in order ' + order_id + ' at status_id ' + status_id
+					KeywordUtil.markFailed(remark)
+				}
+				return [status, remark, countQty, countTotalPrice]
 			}
 		}
 	}
-
 
 	@Keyword
 	def extractInt(String text) {
 		return Integer.parseInt(text.replaceAll('[^0-9]', ''))
 	}
-
 
 	def printType(Integer x) {
 		KeywordUtil.logInfo (x + " is an int");
@@ -273,6 +292,7 @@ public class RiderKeywords {
 
 	@Keyword
 	def checkAllProducts(Double countTotalPrice, Double totalPrice, Integer countQty) {
+		checkOrder = false
 		KeywordUtil.logInfo ('countTotalPrice : ' + countTotalPrice)
 		KeywordUtil.logInfo ('totalPrice : ' + totalPrice)
 		KeywordUtil.logInfo ('countQty : ' + countQty)
@@ -286,15 +306,25 @@ public class RiderKeywords {
 		printType(numAllTotalPrice)
 		KeywordUtil.logInfo ('total price : ' + numAllTotalPrice)
 		KeywordUtil.logInfo ('All QTY : ' + extractInt(allQty.getText()))
-
-		assert numAllTotalPrice.equals(countTotalPrice)
-		assert numAllTotalPrice.equals(totalPrice)
-		assert extractInt(allQty.getText()).equals(countQty)
-		KeywordUtil.markPassed('Check all products : Pass')
+//		assert numAllTotalPrice.equals(countTotalPrice)
+//		assert numAllTotalPrice.equals(totalPrice)
+//		assert extractInt(allQty.getText()).equals(countQty)
+		if (numAllTotalPrice.equals(countTotalPrice)) {
+			assert numAllTotalPrice.equals(totalPrice)
+			assert extractInt(allQty.getText()).equals(countQty)
+			status = ''
+			remark = ''
+		} else {
+			KeywordUtil.logInfo ('false')
+			status = 'Fail'
+			remark = 'Fail to Check All Products order ' + order_id + ' at status_id ' + status_id
+			KeywordUtil.markFailed(remark)
+		}
+		return [status, remark]
 	}
 
 	@Keyword
-	def setDefault(Integer total_product) {
+	def setDefault(Double total_product) {
 		int qty = 0
 		double unitPrice = 0.00
 		int countQty = 0
@@ -324,7 +354,16 @@ public class RiderKeywords {
 				}
 				break
 		}
-		return checkOrder
+		if (checkOrder) {
+			status = 'Pass'
+			remark = '-'
+			KeywordUtil.markPassed('check Status : Pass')
+		} else {
+			status = 'Fail'
+			remark = 'Fail to check Status order ' + order_id + ' at status_id ' + status_id
+			KeywordUtil.markFailed(remark)
+		}
+		return [status, remark]
 	}
 
 	@Keyword
