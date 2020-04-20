@@ -22,17 +22,6 @@ public class RiderKeywords {
 	def status = ''
 	def remark = ''
 
-//	@Keyword
-//	def checkId(String id, Integer digits) {
-//		println(id.length())
-//		while (id.length() < digits) {
-//			id = ('0' + id)
-//			println(id.length())
-//			KeywordUtil.logInfo(id)
-//		}
-//		return id
-//	}
-
 	@Keyword
 	def filterStoreId(String store_id) {
 		MobileElement filterTab = (MobileElement) driver.findElementById(riderId + 'layout_main_spinner_filter_store_tv_result')
@@ -55,11 +44,11 @@ public class RiderKeywords {
 	}
 
 	@Keyword
-	def findOrder(String order_id, String store_id, String payment_type) {
-		checkOrder = findOrderId(order_id, store_id, payment_type)
+	def findOrder(String order_id, String store_id, String payment_type, Integer status_id) {
+		checkOrder = findOrderId(order_id, store_id, payment_type, status_id)
 		while(!checkOrder) {
 			swipeUp()
-			checkOrder = findOrderId(order_id, store_id, payment_type)
+			checkOrder = findOrderId(order_id, store_id, payment_type, status_id) 
 			KeywordUtil.logInfo('checkOrder : ' + checkOrder)
 		}
 		if (checkOrder) {
@@ -67,14 +56,14 @@ public class RiderKeywords {
 			remark = ''
 		} else {
 			status = 'Fail'
-			remark = 'Fail to filter order ' + order_id + ' at status_id ' + status_id
+			remark = 'Fail to find order ' + order_id + ' at status_id ' + status_id
 			KeywordUtil.markFailed(remark)
 		}
 		return [status, remark]
 	}
 
 	@Keyword
-	def findOrderId(String order_id, String store_id, String payment_type) {
+	def findOrderId(String order_id, String store_id, String payment_type, Integer status_id) {
 		checkOrder = false
 		List<MobileElement> orders = driver.findElementsById(riderId + 'txt_order_no')
 		List<MobileElement> storeId = driver.findElementsById(riderId + 'txt_store_id')
@@ -86,10 +75,19 @@ public class RiderKeywords {
 						checkOrder = true
 						break
 					case '2' :
-					case '4' :
 						MobileElement paymentIcon = (MobileElement) driver.findElementById(riderId + 'img_payment_type')
 						if (paymentIcon.isDisplayed()) {
 							checkOrder = true
+						}
+						break
+					case '4' :
+						if (status_id == 5 || status_id == 6) {
+							checkOrder = true
+						} else {
+							MobileElement paymentIcon = (MobileElement) driver.findElementById(riderId + 'img_payment_type')
+							if (paymentIcon.isDisplayed()) {
+								checkOrder = true
+							}
 						}
 						break
 				}
@@ -133,8 +131,7 @@ public class RiderKeywords {
 				}
 				ConfirmOrder.click()
 				printType(total_price)
-				confirmPayment(payment_type, total_price)
-				checkOrder = true
+				checkOrder = confirmPayment(payment_type, total_price)
 				break
 		}
 		if (checkOrder) {
@@ -170,14 +167,14 @@ public class RiderKeywords {
 				MobileElement totalPrice = (MobileElement) driver.findElementById(riderId + 'txtCashPrice')
 				MobileElement payPrice = (MobileElement) driver.findElementById(riderId + 'txtCashMoney')
 
-			//check delivery fee
+			//--- check delivery fee
 			//				if (total_price >= 100) {
 			//					assert Double.parseDouble(totalPrice.getText()).equals(total_price)
 			//				} else {
 			//					assert Double.parseDouble(totalPrice.getText()).equals((total_price + 20))
 			//				}
 
-			//dont check delivery fee
+			//--- don't check delivery fee
 				assert Double.parseDouble(totalPrice.getText()).equals(total_price)
 
 				payPrice.sendKeys(totalPrice.getText())
@@ -200,6 +197,7 @@ public class RiderKeywords {
 
 		MobileElement confirmSignBtn = (MobileElement) driver.findElementById(riderId + 'dialog_confirm_yes')
 		confirmSignBtn.click()
+		return true
 	}
 
 	@Keyword
@@ -219,7 +217,7 @@ public class RiderKeywords {
 		} else {
 			KeywordUtil.logInfo ('false')
 			status = 'Fail'
-			remark = 'Fail to Check Total Products order ' + order_id + ' at status_id ' + status_id
+			remark = 'Fail to check total products order ' + order_id + ' at status_id ' + status_id
 			KeywordUtil.markFailed(remark)
 		}
 		return [status, remark]
@@ -250,13 +248,7 @@ public class RiderKeywords {
 						totalPrice = Double.parseDouble(prices.get(k - 1).getText())
 						break
 				}
-//				assert totalPrice.equals((qty * unitPrice))
-//				totalPrice = (qty * unitPrice)
-//				countQty += qty
-//				countTotalPrice += totalPrice
-//				KeywordUtil.logInfo('countQty : ' + countQty)
-//				KeywordUtil.logInfo('countTotalPrice : ' + countTotalPrice)
-
+				
 				if (totalPrice.equals((qty * unitPrice))) {
 					countQty += qty
 					countTotalPrice += totalPrice
@@ -274,6 +266,38 @@ public class RiderKeywords {
 			}
 		}
 	}
+	
+	@Keyword
+	def checkAllProducts(Double countTotalPrice, Double totalPrice, Integer countQty) {
+		checkOrder = false
+		KeywordUtil.logInfo ('countTotalPrice : ' + countTotalPrice)
+		KeywordUtil.logInfo ('totalPrice : ' + totalPrice)
+		KeywordUtil.logInfo ('countQty : ' + countQty)
+
+		MobileElement allTotalPrice = (MobileElement) driver.findElementById(riderId + 'order_detail_tv_total_price')
+		MobileElement allQty = (MobileElement) driver.findElementById(riderId + 'order_detail_tv_total_list')
+		double numAllTotalPrice = 0.00
+		if (allTotalPrice.getText().contains('บาท')) {
+			numAllTotalPrice = Double.parseDouble(allTotalPrice.getText().replace(' บาท',''))
+		} else {
+			numAllTotalPrice = Double.parseDouble(allTotalPrice.getText())
+		}
+		printType(numAllTotalPrice)
+		KeywordUtil.logInfo ('total price : ' + numAllTotalPrice)
+		KeywordUtil.logInfo ('All QTY : ' + extractInt(allQty.getText()))
+		if (numAllTotalPrice.equals(countTotalPrice)) {
+			assert numAllTotalPrice.equals(totalPrice)
+			assert extractInt(allQty.getText()).equals(countQty)
+			status = ''
+			remark = ''
+		} else {
+			KeywordUtil.logInfo ('false')
+			status = 'Fail'
+			remark = 'Fail to Check All Products order ' + order_id + ' at status_id ' + status_id
+			KeywordUtil.markFailed(remark)
+		}
+		return [status, remark]
+	}
 
 	@Keyword
 	def extractInt(String text) {
@@ -288,39 +312,6 @@ public class RiderKeywords {
 	}
 	def printType(Double x) {
 		KeywordUtil.logInfo (x + " is a double");
-	}
-
-	@Keyword
-	def checkAllProducts(Double countTotalPrice, Double totalPrice, Integer countQty) {
-		checkOrder = false
-		KeywordUtil.logInfo ('countTotalPrice : ' + countTotalPrice)
-		KeywordUtil.logInfo ('totalPrice : ' + totalPrice)
-		KeywordUtil.logInfo ('countQty : ' + countQty)
-
-		MobileElement allTotalPrice = (MobileElement) driver.findElementById(riderId + 'order_detail_tv_total_price')
-		MobileElement allQty = (MobileElement) driver.findElementById(riderId + 'order_detail_tv_total_list')
-		double numAllTotalPrice = 0.00
-		if (allTotalPrice.getText().contains('บาท')) {
-			numAllTotalPrice = Double.parseDouble(allTotalPrice.getText().replace(' บาท',''))
-		}
-		printType(numAllTotalPrice)
-		KeywordUtil.logInfo ('total price : ' + numAllTotalPrice)
-		KeywordUtil.logInfo ('All QTY : ' + extractInt(allQty.getText()))
-//		assert numAllTotalPrice.equals(countTotalPrice)
-//		assert numAllTotalPrice.equals(totalPrice)
-//		assert extractInt(allQty.getText()).equals(countQty)
-		if (numAllTotalPrice.equals(countTotalPrice)) {
-			assert numAllTotalPrice.equals(totalPrice)
-			assert extractInt(allQty.getText()).equals(countQty)
-			status = ''
-			remark = ''
-		} else {
-			KeywordUtil.logInfo ('false')
-			status = 'Fail'
-			remark = 'Fail to Check All Products order ' + order_id + ' at status_id ' + status_id
-			KeywordUtil.markFailed(remark)
-		}
-		return [status, remark]
 	}
 
 	@Keyword
@@ -341,15 +332,15 @@ public class RiderKeywords {
 		MobileElement statusElement = (MobileElement) driver.findElementById(riderId + 'order_detail_time_count_down')
 		KeywordUtil.logInfo('status text : ' + statusElement.getText())
 		KeywordUtil.logInfo('status_id : ' + status_id)
-		def text = statusElement.getText()
+//		def text = statusElement.getText()
 		switch (status_id) {
 			case 5 :
-				if (text.contains('เสร็จสมบูรณ์')) {
+				if (statusElement.getText().contains('เสร็จสมบูรณ์')) {
 					checkOrder = true
 				}
 				break
 			case 6 :
-				if (text.contains('ยกเลิกออเดอร์')) {
+				if (statusElement.getText().contains('ยกเลิกออเดอร์')) {
 					checkOrder = true
 				}
 				break

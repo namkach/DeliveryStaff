@@ -48,7 +48,7 @@ try {
 		return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
 	}
 	
-	(status, remark) = CustomKeywords.'myPac.RiderKeywords.findOrder'(order_id, store_id, payment_type)
+	(status, remark) = CustomKeywords.'myPac.RiderKeywords.findOrder'(order_id, store_id, payment_type, status_id)
 	if (status.equals('Fail')) {
 		return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
 	}
@@ -120,8 +120,12 @@ try {
 				
 	KeywordUtil.logInfo('------------- processing -----------')
 	Mobile.tap(findTestObject('Rider/ProcessingTab'), 50)
-
-	(status, remark) = CustomKeywords.'myPac.RiderKeywords.findOrder'(order_id, store_id, payment_type)
+	(status, remark) = CustomKeywords.'myPac.RiderKeywords.filterStoreId'(store_id)
+	if (status.equals('Fail')) {
+		return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
+	}
+	
+	(status, remark) = CustomKeywords.'myPac.RiderKeywords.findOrder'(order_id, store_id, payment_type, status_id)
 	if (status.equals('Fail')) {
 		return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
 	}
@@ -191,8 +195,12 @@ try {
 	
 	KeywordUtil.logInfo('------------- processed -----------')
 	Mobile.tap(findTestObject('Rider/ProcessedTab'), 50)
-
-	(status, remark) = CustomKeywords.'myPac.RiderKeywords.findOrder'(order_id, store_id, payment_type)
+	(status, remark) = CustomKeywords.'myPac.RiderKeywords.filterStoreId'(store_id)
+	if (status.equals('Fail')) {
+		return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
+	}
+	
+	(status, remark) = CustomKeywords.'myPac.RiderKeywords.findOrder'(order_id, store_id, payment_type, status_id)
 	if (status.equals('Fail')) {
 		return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
 	}
