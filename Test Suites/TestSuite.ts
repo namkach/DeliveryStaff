@@ -13,7 +13,7 @@
    <testCaseLink>
       <guid>7937b198-2e80-4073-9d7b-3d9369ca213f</guid>
       <isReuseDriver>false</isReuseDriver>
-      <isRun>false</isRun>
+      <isRun>true</isRun>
       <testCaseId>Test Cases/TestStaff</testCaseId>
       <testDataLink>
          <combinationType>ONE</combinationType>
@@ -186,11 +186,17 @@
          <value>Payment_Type</value>
          <variableId>0e075eed-b664-4ade-858e-794aad95ec91</variableId>
       </variableLink>
+      <variableLink>
+         <testDataLinkId>ea1771d3-2bdd-46ab-82d9-97a0f09a92f1</testDataLinkId>
+         <type>DATA_COLUMN</type>
+         <value>Store_id</value>
+         <variableId>bf45edf1-c00c-4373-94fa-16b1511e643f</variableId>
+      </variableLink>
    </testCaseLink>
    <testCaseLink>
       <guid>e589c89c-a532-40c4-a8c7-9190d6b938d6</guid>
       <isReuseDriver>false</isReuseDriver>
-      <isRun>true</isRun>
+      <isRun>false</isRun>
       <testCaseId>Test Cases/TestRider</testCaseId>
       <testDataLink>
          <combinationType>MANY</combinationType>

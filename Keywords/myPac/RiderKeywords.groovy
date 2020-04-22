@@ -23,7 +23,7 @@ public class RiderKeywords {
 	def remark = ''
 
 	@Keyword
-	def filterStoreId(String store_id) {
+	def filterStoreId(String store_id, String status_id) {
 		MobileElement filterTab = (MobileElement) driver.findElementById(riderId + 'layout_main_spinner_filter_store_tv_result')
 		KeywordUtil.logInfo (filterTab.getText())
 		filterTab.click()
@@ -38,7 +38,7 @@ public class RiderKeywords {
 			}
 		}
 		status = 'Fail'
-		remark = 'Fail to filter order ' + order_id + ' at status_id ' + status_id
+		remark = 'Fail to filter order at status_id ' + status_id
 		KeywordUtil.markFailed(remark)
 		return [status, remark]
 	}
@@ -48,7 +48,7 @@ public class RiderKeywords {
 		checkOrder = findOrderId(order_id, store_id, payment_type, status_id)
 		while(!checkOrder) {
 			swipeUp()
-			checkOrder = findOrderId(order_id, store_id, payment_type, status_id) 
+			checkOrder = findOrderId(order_id, store_id, payment_type, status_id)
 			KeywordUtil.logInfo('checkOrder : ' + checkOrder)
 		}
 		if (checkOrder) {
@@ -201,7 +201,7 @@ public class RiderKeywords {
 	}
 
 	@Keyword
-	def checkTotalProducts(String flow_type, Integer total_product) {
+	def checkTotalProducts(String flow_type, Integer total_product, String status_id) {
 		List<MobileElement> prods = driver.findElementsById(riderId + 'row_order_detail_tv_name')
 		println ('Product size : ' + prods.size())
 		println ('Total product : ' + total_product)
@@ -217,14 +217,14 @@ public class RiderKeywords {
 		} else {
 			KeywordUtil.logInfo ('false')
 			status = 'Fail'
-			remark = 'Fail to check total products order ' + order_id + ' at status_id ' + status_id
+			remark = 'Fail to check total products at status_id ' + status_id
 			KeywordUtil.markFailed(remark)
 		}
 		return [status, remark]
 	}
 
 	@Keyword
-	def checkEachProduct(String name, Integer qty, Double unitPrice, Integer countQty, Double countTotalPrice, Integer statusProduct) {
+	def checkEachProduct(String name, Integer qty, Double unitPrice, Integer countQty, Double countTotalPrice, Integer statusProduct, String status_id) {
 		KeywordUtil.logInfo ('Get countQty : ' + countQty)
 		KeywordUtil.logInfo ('Get countTotalPrice : ' + countTotalPrice)
 		KeywordUtil.logInfo ('Get statusProduct : ' + statusProduct)
@@ -232,7 +232,7 @@ public class RiderKeywords {
 		List<MobileElement> prods = driver.findElementsById(riderId + 'row_order_detail_tv_name')
 		List<MobileElement> qtys = driver.findElementsById(riderId + 'row_order_detail_tv_amount')
 		List<MobileElement> prices = driver.findElementsById(riderId + 'row_order_detail_tv_price')
-		
+
 		double totalPrice
 		int numQty
 		for (int k = 0; k < prods.size(); k++) {
@@ -248,7 +248,7 @@ public class RiderKeywords {
 						totalPrice = Double.parseDouble(prices.get(k - 1).getText())
 						break
 				}
-				
+
 				if (totalPrice.equals((qty * unitPrice))) {
 					countQty += qty
 					countTotalPrice += totalPrice
@@ -256,19 +256,18 @@ public class RiderKeywords {
 					KeywordUtil.logInfo('countTotalPrice : ' + countTotalPrice)
 					status = ''
 					remark = ''
-					
 				} else {
 					status = 'Fail'
-					remark = 'Fail to check each product in order ' + order_id + ' at status_id ' + status_id
+					remark = 'Fail to check each product in order at status_id ' + status_id
 					KeywordUtil.markFailed(remark)
 				}
 				return [status, remark, countQty, countTotalPrice]
 			}
 		}
 	}
-	
+
 	@Keyword
-	def checkAllProducts(Double countTotalPrice, Double totalPrice, Integer countQty) {
+	def checkAllProducts(Double countTotalPrice, Double totalPrice, Integer countQty, String status_id) {
 		checkOrder = false
 		KeywordUtil.logInfo ('countTotalPrice : ' + countTotalPrice)
 		KeywordUtil.logInfo ('totalPrice : ' + totalPrice)
@@ -293,7 +292,7 @@ public class RiderKeywords {
 		} else {
 			KeywordUtil.logInfo ('false')
 			status = 'Fail'
-			remark = 'Fail to Check All Products order ' + order_id + ' at status_id ' + status_id
+			remark = 'Fail to Check All Products order at status_id ' + status_id
 			KeywordUtil.markFailed(remark)
 		}
 		return [status, remark]
@@ -332,7 +331,7 @@ public class RiderKeywords {
 		MobileElement statusElement = (MobileElement) driver.findElementById(riderId + 'order_detail_time_count_down')
 		KeywordUtil.logInfo('status text : ' + statusElement.getText())
 		KeywordUtil.logInfo('status_id : ' + status_id)
-//		def text = statusElement.getText()
+		//		def text = statusElement.getText()
 		switch (status_id) {
 			case 5 :
 				if (statusElement.getText().contains('เสร็จสมบูรณ์')) {
@@ -351,7 +350,7 @@ public class RiderKeywords {
 			KeywordUtil.markPassed('check Status : Pass')
 		} else {
 			status = 'Fail'
-			remark = 'Fail to check Status order ' + order_id + ' at status_id ' + status_id
+			remark = 'Fail to check Status order at status_id ' + status_id
 			KeywordUtil.markFailed(remark)
 		}
 		return [status, remark]

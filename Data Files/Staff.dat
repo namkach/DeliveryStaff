@@ -6,9 +6,15 @@
    <containsHeaders>true</containsHeaders>
    <csvSeperator></csvSeperator>
    <dataFileGUID>7706f938-2481-48af-accd-fbbc893cd364</dataFileGUID>
-   <dataSourceUrl>D:\Users\sunitakac\Desktop\Staff_AutoTest\Staff_order.xlsx</dataSourceUrl>
+   <dataSourceUrl>D:\Users\sunitakac\Desktop\AutoTest\Staff_order.xlsx</dataSourceUrl>
    <driver>ExcelFile</driver>
    <isInternalPath>false</isInternalPath>
+   <properties>
+      <entry>
+         <key>readAsString</key>
+         <value>false</value>
+      </entry>
+   </properties>
    <query></query>
    <secureUserAccount>false</secureUserAccount>
    <sheetName>Sheet1</sheetName>

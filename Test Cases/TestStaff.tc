@@ -20,6 +20,13 @@
       <name>flow_type</name>
    </variable>
    <variable>
+      <defaultValue>''</defaultValue>
+      <description></description>
+      <id>bf45edf1-c00c-4373-94fa-16b1511e643f</id>
+      <masked>false</masked>
+      <name>store_id</name>
+   </variable>
+   <variable>
       <defaultValue>0</defaultValue>
       <description></description>
       <id>3d4a09f7-32ac-4c46-adca-3c3b908f0a40</id>
@@ -125,7 +132,7 @@
       <name>edit_total_price</name>
    </variable>
    <variable>
-      <defaultValue>0</defaultValue>
+      <defaultValue>''</defaultValue>
       <description></description>
       <id>cdf1b0ff-239a-4ac2-8142-2356c0a0d485</id>
       <masked>false</masked>

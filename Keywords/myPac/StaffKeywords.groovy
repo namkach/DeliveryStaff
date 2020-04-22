@@ -9,174 +9,192 @@ import io.appium.java_client.AppiumDriver
 import io.appium.java_client.MobileElement
 
 public class StaffKeywords {
-	def sid = '0'
-	boolean checkOrder = false
 	AppiumDriver<MobileElement> driver = MobileDriverFactory.getDriver()
+	def staffId = 'th.co.gosoft.storemobile.sevendelivery.staff:id/'
+	int sid = 0
+	boolean checkOrder = false
+	def status = ''
+	def remark = ''
 
 	@Keyword
-	def checkOrderId(String order_id) {
-		println(order_id.length())
-		while (order_id.length() < 4) {
-			order_id = ('0' + order_id)
-			println(order_id.length())
-			KeywordUtil.logInfo(order_id)
+	def findOrder(String order_id, Integer status_id) {
+		checkOrder = findOrderId(order_id)
+		while(!checkOrder) {
+			swipeUp()
+			checkOrder = findOrderId(order_id)
+			KeywordUtil.logInfo('checkOrder : ' + checkOrder)
 		}
-		return order_id
+		if (checkOrder) {
+			status = ''
+			remark = ''
+		} else {
+			status = 'Fail'
+			remark = 'Fail to find order at status_id ' + status_id
+			KeywordUtil.markFailed(remark)
+		}
+		return [status, remark]
 	}
 
 	@Keyword
-	def FindOrder(String order_id) {
-		Mobile.scrollToText(order_id)
-		List<MobileElement> orders = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/txt_order_no')
-		checkOrder = false
-		for (int j = 0; j < orders.size(); j++) {
-			println('Order in the screen is : ' + orders.get(j).getText())
-			if (order_id == orders.get(j).getText()) {
-				assert orders.get(j).getText().isEmpty() != true
-				KeywordUtil.logInfo('scrollToText : Pass')
+	def findOrderId(String order_id) {
+		List<MobileElement> orders = driver.findElementsById(staffId + 'txt_order_no')
+		for (int j = orders.size() - 1; j >= 0; j--) {
+			if (orders.get(j).getText().equals(order_id)) {
+				KeywordUtil.markPassed ('*** order found ***')
 				orders.get(j).click()
-				MobileElement orderNo = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/main_toolbar_tv_order')
-				assert orderNo.getText() == order_id
-				List<MobileElement> names = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/row_order_detail_tv_name')
-
-				println ('order name size : ' + names.size())
-				println 'Order Found'
-				checkOrder = true
-				return checkOrder
-				break
+				MobileElement orderNo = (MobileElement) driver.findElementById(staffId + 'main_toolbar_tv_order')
+				assert orderNo.getText().equals(order_id)
+				return true
 			}
 		}
+		return false
 	}
 
 	@Keyword
-	def ConfirmBtn(String status_id, String paymentType, String apkType) {
+	def swipeUp() {
+		int x = Mobile.getDeviceWidth()/2
+		int startY = Mobile.getDeviceHeight()*0.7
+		int endY = Mobile.getDeviceHeight()*0.4
+		Mobile.swipe(x, startY, x, endY)
+	}
+
+	@Keyword
+	def checkTotalProducts(String flow_type, Integer total_product, Integer status_id, Integer statusCheck) {
+		List<MobileElement> prods = driver.findElementsById(staffId + 'row_order_detail_tv_name')
+		println ('Product size : ' + prods.size())
+		println ('Total product : ' + total_product)
+		for (int i = 0; i < prods.size(); i++) {
+			KeywordUtil.logInfo(prods.get(i).getText())
+		}
+		if (prods.size().equals(total_product)) {
+			if (statusCheck == 2 && flow_type == '6') {
+				total_product -= 1
+			}
+			status = ''
+			remark = ''
+		} else {
+			status = 'Fail'
+			remark = 'Fail to check total products order at status_id ' + status_id
+			KeywordUtil.markFailed(remark)
+		}
+		return [status, remark, total_product]
+	}
+
+	@Keyword
+	def ConfirmBtn(Integer status_id, String payment_type, String apkType, String delivery_type) {
 		def btnName = ''
-		def deliveryType = '0'
 
 		//get delivery type
-		MobileElement deliveryTypeElement = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/order_detail_tv_pickup_method')
+		MobileElement deliveryTypeElement = (MobileElement) driver.findElementById(staffId + 'order_detail_tv_pickup_method')
 		println ('deliveryTypeElement : ' + deliveryTypeElement.getText())
 		switch (deliveryTypeElement.getText()) {
 			case 'รับที่ร้าน' :
-				deliveryType = '1'
-				KeywordUtil.logInfo('check deliveryType : ' + deliveryType)
+				assert delivery_type == '1'
 				break
 			case 'จัดส่งถึงที่' :
-				deliveryType = '2'
-				KeywordUtil.logInfo('check deliveryType : ' + deliveryType)
+				assert delivery_type == '2'
 				break
 		}
-
-		if (status_id == '1') {
-			btnName = 'รับรายการสั่งซื้อ'
-		} else if (status_id == '2') {
-			btnName = 'ยืนยันการจัดสินค้า'
-			sid = status_id
-			println ('deliveryType : ' + deliveryType)
-			println ('sid : ' + sid)
-
-			if (deliveryType == '1') {
-				sid = '3'
-				KeywordUtil.logInfo('sid in deliveryType : ' + sid)
-			} else if (deliveryType == '2') {
-				sid = '4'
-				KeywordUtil.logInfo('sid in deliveryType : ' + sid)
-			} else {
-				KeywordUtil.markFailed('error to find sid in delivery')
-			}
-			countItem()
-		} else if (status_id == '3' || status_id == '4') {
-			println ('payment : ' + paymentType)
-			if (apkType == 'rider') {
-				btnName = 'ยืนยันการส่งสินค้า'
-			} else if (apkType == 'cod') {
-				if (paymentType == '1') {
-					btnName = 'ชำระเงิน'
-				} else if (paymentType == '2') {
+		switch (status_id) {
+			case 1 :
+				btnName = 'รับรายการสั่งซื้อ'
+				break
+			case 2 :
+				btnName = 'ยืนยันการจัดสินค้า'
+				countItem()
+				break
+			case 3..4 :
+				println ('payment : ' + payment_type)
+				if (apkType == 'rider') {
 					btnName = 'ยืนยันการส่งสินค้า'
+				} else if (apkType == 'cod') {
+					if (payment_type == '1') {
+						btnName = 'ชำระเงิน'
+					} else if (payment_type == '2') {
+						btnName = 'ยืนยันการส่งสินค้า'
+					}
 				}
-			}
-		} else {
-			KeywordUtil.markFailed('error dont find status id : ' + status_id)
+				break
 		}
-		println ('btn : ' + btnName)
+		println ('------ btn : ' + btnName)
 
-		MobileElement confirmOrder = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/order_detail_bt_confirm')
+		MobileElement confirmOrder = (MobileElement) driver.findElementById(staffId + 'order_detail_bt_confirm')
 		println confirmOrder.getText()
-		assert confirmOrder.getText() == btnName
-		if (confirmOrder.getText() == btnName) {
-			checkOrder = true
-		} else {
-			checkOrder = false
-		}
+		assert confirmOrder.getText().equals(btnName)
 		confirmOrder.click()
 		KeywordUtil.logInfo ('Order confirmed')
 		KeywordUtil.logInfo ('status_id : ' + status_id)
-		KeywordUtil.logInfo ('paymentType : ' + paymentType)
+		KeywordUtil.logInfo ('paymentType : ' + payment_type)
 		switch (status_id) {
-			case '1' :
-				sid = '2'
-				paymentType = '0'
-				println ('sid : ' + sid)
-				println ('paymentType : ' + paymentType)
+			case 1 :
+				status_id = 2
+				println ('sid : ' + status_id)
 				break
 
 			//confirm LP
-			case '2' :
+			case 2 :
 			//get payment type
-				println ('sid : ' + sid)
-				println ('paymentType : ' + paymentType)
-				MobileElement payment = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/dialog_lp_payment_type')
+				println ('sid : ' + status_id)
+				MobileElement payment = (MobileElement) driver.findElementById(staffId + 'dialog_lp_payment_type')
 				switch (payment.getText()) {
 					case 'ชำระเงินสด' :
-						paymentType = '1'
+						assert payment_type == '1'
 						break
 					case 'True Money' :
-						paymentType = '2'
+						assert payment_type == '2'
 						break
 					case 'ทรูมันนี่ปลายทาง' :
-						paymentType = '3'
-						break
-					default :
-						paymentType = '4'
-						println 'error'
-						KeywordUtil.markFailed('error to get payment type')
+						assert payment_type == '4'
 						break
 				}
-				println ('payment type : ' + paymentType)
+				println ('payment type : ' + payment_type)
 			//confirm LP
-				MobileElement confirmLp = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/dialog_lp_buy_button')
+				MobileElement confirmLp = (MobileElement) driver.findElementById(staffId + 'dialog_lp_buy_button')
 				confirmLp.click()
+				println ('deliveryType : ' + delivery_type)
+				println ('sid : ' + status_id)
+				if (delivery_type == '1') {
+					status_id = 3
+					KeywordUtil.logInfo('sid in deliveryType : ' + status_id)
+				} else if (delivery_type == '2') {
+					status_id = 4
+					KeywordUtil.logInfo('sid in deliveryType : ' + status_id)
+				} else {
+					KeywordUtil.markFailed('error to find sid in delivery')
+				}
 				break
 
 			//check payment
-			case '3'..'4' :
+			case 3..4 :
 				if (apkType == 'rider') {
-					MobileElement confirmYes = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/dialog_confirm_yes')
+					MobileElement confirmYes = (MobileElement) driver.findElementById(staffId + 'dialog_confirm_yes')
 					confirmYes.click()
-					sid = '5'
+					status_id = 5
+					status = ''
+					remark = ''
 				} else if (apkType == 'cod') {
 					KeywordUtil.logInfo ('status id : ' + status_id)
-					boolean checkPayment = CheckPaymentType(paymentType)
+					boolean checkPayment = CheckPaymentType(payment_type)
 					KeywordUtil.logInfo('checkPayment : ' + checkPayment)
 					if (checkPayment) {
-						sid = '5'
+						status_id = 5
+						status = ''
+						remark = ''
 					} else {
-						sid = '7'
+						status_id = 7
+						status = 'Fail'
+						remark = 'Fail to confirm order at status_id ' + status_id
 						KeywordUtil.markFailed('error sid = 7 payment Function')
 					}
 				}
 				break
-			default :
-				KeywordUtil.logInfo ('error status_id : ' + status_id)
 		}
-		return [checkOrder, sid, paymentType, deliveryType]
+		return [status, remark, status_id]
 	}
 
 	@Keyword
-	def CancelBtn(String flow_type) {
-		checkOrder = false
-		MobileElement cancelBtn = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/order_detail_bt_cancel')
+	def CancelBtn(String flow_type, Integer status_id) {
+		MobileElement cancelBtn = (MobileElement) driver.findElementById(staffId + 'order_detail_bt_cancel')
 		cancelBtn.click()
 		List<MobileElement> cancelOption = driver.findElementsByClassName('android.widget.RadioButton')
 		println cancelOption.size()
@@ -185,29 +203,32 @@ public class StaffKeywords {
 				println cancelOption.get(i).getText()
 				cancelOption.get(i).click()
 
-				MobileElement cancelConfirm = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/dialog_order_cancel_confirm_bt_yes')
+				MobileElement cancelConfirm = (MobileElement) driver.findElementById(staffId + 'dialog_order_cancel_confirm_bt_yes')
 				assert cancelConfirm.getText() == 'ยืนยัน'
 				cancelConfirm.click()
 				KeywordUtil.logInfo('PASS CANCEL Status : ' + flow_type)
-				checkOrder = true
-				return checkOrder
-				break
+				status = ''
+				remark = ''
+				return [status, remark]
 			}
 		}
+		status = 'Fail'
+		remark = 'Fail to cancel order at status id ' + status_id
+		return [status, remark]
 	}
 
 	@Keyword
 	def countItem() {
-		MobileElement totalAmountElement = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/order_detail_tv_total_list')
+		MobileElement totalAmountElement = (MobileElement) driver.findElementById(staffId + 'order_detail_tv_total_list')
 		println totalAmountElement.getText()
-		List<MobileElement> eachItemAmount = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/row_order_detail_tv_amount')
+		List<MobileElement> eachItemAmount = driver.findElementsById(staffId + 'row_order_detail_tv_amount')
 		println ('this element has : ' + eachItemAmount.size() + ' item(s)')
 
 		RiderKeywords kw = new RiderKeywords()
 		int totalamount = extractInt(totalAmountElement.getText())
 
 		int countItem = 0
-		List<MobileElement> checkbox = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/row_order_detail_cb_is_pick')
+		List<MobileElement> checkbox = driver.findElementsById(staffId + 'row_order_detail_cb_is_pick')
 		println ('checkbox size : ' + checkbox.size())
 		while (totalamount != countItem) {
 			for (int l = 0; l < checkbox.size(); l++) {
@@ -232,57 +253,57 @@ public class StaffKeywords {
 		}
 	}
 
-	@Keyword
-	def swipeUp() {
-		int device_Height = Mobile.getDeviceHeight()
-		int device_Width = Mobile.getDeviceWidth()
-		int x = device_Width / 2
-		int startY = device_Height * 0.80
-		int endY = device_Height * 0.20
-		println("Screen width = " + device_Width)
-		println("Screen height = " + device_Height)
-		Mobile.swipe(x, startY, x, endY)
-	}
+	//	@Keyword
+	//	def swipeUp() {
+	//		int device_Height = Mobile.getDeviceHeight()
+	//		int device_Width = Mobile.getDeviceWidth()
+	//		int x = device_Width / 2
+	//		int startY = device_Height * 0.80
+	//		int endY = device_Height * 0.20
+	//		println("Screen width = " + device_Width)
+	//		println("Screen height = " + device_Height)
+	//		Mobile.swipe(x, startY, x, endY)
+	//	}
 
 	@Keyword
 	def CheckPaymentType(String paymentType) {
 		switch (paymentType) {
 			case '1' :
 				println ('paymentType is : ' + paymentType)
-				MobileElement totalPrice = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/txtCashPrice')
-				MobileElement payPrice = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/txtCashMoney')
+				MobileElement totalPrice = (MobileElement) driver.findElementById(staffId + 'txtCashPrice')
+				MobileElement payPrice = (MobileElement) driver.findElementById(staffId + 'txtCashMoney')
 				payPrice.sendKeys(totalPrice.getText())
-				MobileElement confirmPayment = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/btnConfirm')
+				MobileElement confirmPayment = (MobileElement) driver.findElementById(staffId + 'btnConfirm')
 				confirmPayment.click()
-				MobileElement btnSkip = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/btnSkip')
+				MobileElement btnSkip = (MobileElement) driver.findElementById(staffId + 'btnSkip')
 				btnSkip.click()
 				KeywordUtil.markPassed('Payment success')
 				return true
 				break
 			case '2' :
 				println ('paymentType is : ' + paymentType)
-				MobileElement confirmYes = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/dialog_confirm_yes')
+				MobileElement confirmYes = (MobileElement) driver.findElementById(staffId + 'dialog_confirm_yes')
 				confirmYes.click()
 				KeywordUtil.markPassed('Payment success')
 				return true
 				break
-			case '3' :
+			case '4' :
 				println 'Payment error'
-				KeywordUtil.markFailed('Wrong payment type')
+				KeywordUtil.markFailed('TMW COD')
 				return false
 		}
 	}
 
 	@Keyword
-	def checkStatusId(String status_id) {
-		MobileElement statusElement = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/order_detail_time_count_down')
+	def checkStatusId(Integer status_id) {
+		MobileElement statusElement = (MobileElement) driver.findElementById(staffId + 'order_detail_time_count_down')
 		switch (status_id) {
-			case '5' :
+			case 5 :
 				assert statusElement.getText() == 'เสร็จสมบูรณ์'
 				KeywordUtil.logInfo('เสร็จสมบูรณ์')
 				return true
 				break
-			case '6' :
+			case 6 :
 				assert statusElement.getText() == 'ยกเลิกออเดอร์'
 				KeywordUtil.logInfo('ยกเลิกออเดอร์')
 				return true
@@ -298,29 +319,29 @@ public class StaffKeywords {
 	def editQty(String editProduct, String quantity, Integer oldQty) {
 		def qty = Integer.parseInt(quantity)
 		println qty
-		List<MobileElement> products = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/row_order_detail_tv_name')
+		List<MobileElement> products = driver.findElementsById(staffId + 'row_order_detail_tv_name')
 		println products.size()
 		for (int i = 0; i <= products.size(); i++) {
 			if (products.get(i).getText().equals(editProduct)) {
 				println products.get(i).getText()
 				if (qty > 0) {
 					println 'plus'
-					List<MobileElement> plus = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/row_order_detail_iv_plus')
+					List<MobileElement> plus = driver.findElementsById(staffId + 'row_order_detail_iv_plus')
 					for (int j = 1; j <= qty; j++) {
 						plus.get(i).click()
 						println j
 					}
-					List<MobileElement> amount = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/row_order_detail_tv_amount')
+					List<MobileElement> amount = driver.findElementsById(staffId + 'row_order_detail_tv_amount')
 					KeywordUtil.logInfo('amount : ' + amount.get(i).getText() )
 					assert Integer.parseInt(amount.get(i).getText()) == oldQty + qty
 				} else if (qty < 0) {
 					println 'minus'
-					List<MobileElement> minus = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/row_order_detail_iv_minus')
+					List<MobileElement> minus = driver.findElementsById(staffId + 'row_order_detail_iv_minus')
 					for (int k = -1; k >= qty; k--) {
 						minus.get(i).click()
 						println k
 					}
-					List<MobileElement> amount = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/row_order_detail_tv_amount')
+					List<MobileElement> amount = driver.findElementsById(staffId + 'row_order_detail_tv_amount')
 					KeywordUtil.logInfo('amount : ' + amount.get(i).getText())
 					assert Integer.parseInt(amount.get(i).getText()) == oldQty - qty
 				}
@@ -333,29 +354,29 @@ public class StaffKeywords {
 	def addProduct(String editProduct, String quantity) {
 		int qty = 0
 		qty = Integer.parseInt(quantity)
-		MobileElement cart = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/order_detail_cv_add')
+		MobileElement cart = (MobileElement) driver.findElementById(staffId + 'order_detail_cv_add')
 		cart.click()
-		MobileElement search = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/main_et_search')
+		MobileElement search = (MobileElement) driver.findElementById(staffId + 'main_et_search')
 		search.sendKeys(editProduct + '\\n')
-		MobileElement products = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/layout_product_name_tv_label')
+		MobileElement products = (MobileElement) driver.findElementById(staffId + 'layout_product_name_tv_label')
 		println products.getText()
 		products.click()
 		if (qty > 1) {
-			MobileElement plus = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/product_detail_iv_plus')
+			MobileElement plus = (MobileElement) driver.findElementById(staffId + 'product_detail_iv_plus')
 			for (int j = 2; j <= qty; j++) {
 				plus.click()
 				println ('qty : ' + qty + '    //   j : ' + j)
 			}
 		}
-		MobileElement addCart = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/product_detail_bt_add')
+		MobileElement addCart = (MobileElement) driver.findElementById(staffId + 'product_detail_bt_add')
 		addCart.click()
 	}
 
 	@Keyword
 	def deleteProduct (String editProduct) {
-		List<MobileElement> products = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/row_order_detail_tv_name')
-		List<MobileElement> amounts = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/row_order_detail_tv_amount')
-		List<MobileElement> minus = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/row_order_detail_iv_minus')
+		List<MobileElement> products = driver.findElementsById(staffId + 'row_order_detail_tv_name')
+		List<MobileElement> amounts = driver.findElementsById(staffId + 'row_order_detail_tv_amount')
+		List<MobileElement> minus = driver.findElementsById(staffId + 'row_order_detail_iv_minus')
 		println ('Product size : ' + products.size())
 		println ('minus btn have : ' + minus.size())
 		println ('editProduct : ' + editProduct)
@@ -381,10 +402,11 @@ public class StaffKeywords {
 	}
 
 	@Keyword
-	def checkProduct (String name, Integer qty, String unitPrice, Integer countQty, Integer countTotalPrice, Integer statusProduct) {
-		List<MobileElement> prods = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/row_order_detail_tv_name')
-		List<MobileElement> qtys = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/row_order_detail_tv_amount')
-		List<MobileElement> prices = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/row_order_detail_tv_price')
+	def checkProduct (String name, Integer qty, Double unitPrice, Integer countQty, Double countTotalPrice, Integer statusProduct, Integer status_id) {
+		List<MobileElement> prods = driver.findElementsById(staffId + 'row_order_detail_tv_name')
+		List<MobileElement> qtys = driver.findElementsById(staffId + 'row_order_detail_tv_amount')
+		List<MobileElement> prices = driver.findElementsById(staffId + 'row_order_detail_tv_price')
+		double numPrice = 0.0
 		for (int k = 0; k <= prods.size(); k++) {
 			println ('product size : ' + prods.size())
 			println ('element product : ' + prods.get(k).getText())
@@ -394,7 +416,8 @@ public class StaffKeywords {
 			if (prods.get(k).getText().equals(name)) {
 				println (prods.get(k).getText() + ' : Found')
 				println ('k is : ' + k)
-				if (statusProduct == -1) {
+				KeywordUtil.logInfo('statusProduct : ' + statusProduct)
+				if (statusProduct == 0) {
 					//check each QTY
 					KeywordUtil.logInfo('qtys : ' + qtys.get(k - 1).getText())
 					int numQty = extractInt(qtys.get(k - 1).getText())
@@ -403,74 +426,77 @@ public class StaffKeywords {
 					assert numQty == qty
 
 					//check each total price
-					double numPrice = Double.parseDouble(prices.get(k - 1).getText())
-					double checkUnitPrice = Double.parseDouble(unitPrice)
-					assert numPrice == (qty * checkUnitPrice)
-					numPrice = (qty * checkUnitPrice)
+					numPrice = Double.parseDouble(prices.get(k - 1).getText())
+					//					double checkUnitPrice = unitPrice
 
-					countQty += qty
-					countTotalPrice += numPrice
-					KeywordUtil.logInfo('countQty : ' + countQty)
-					KeywordUtil.logInfo('countTotalPrice : ' + countTotalPrice)
-					return [countQty, countTotalPrice]
-					break
-				} else if (statusProduct == 1 || statusProduct == -2) {
+				} else if (statusProduct == 1) {
 					//check each QTY
 					KeywordUtil.logInfo('qtys : ' + qtys.get(k).getText())
 					int numQty = extractInt(qtys.get(k).getText())
 					KeywordUtil.logInfo('qty : ' + qty)
 					KeywordUtil.logInfo('numQty : ' + numQty)
-					println '-----------'
 					assert numQty.toString() == qty.toString()
 
-					double numPrice = 0.0
 					//check each total price
 					if(statusProduct == 1) {
 						numPrice = Double.parseDouble(prices.get(k).getText())
 					} else if (statusProduct == -2) {
 						numPrice = Double.parseDouble(prices.get(k-1).getText())
 					}
-					double checkUnitPrice = Double.parseDouble(unitPrice)
-					println '-----------'
-					assert numPrice == (qty * checkUnitPrice)
-					numPrice = (qty * checkUnitPrice)
-
+				}
+				if (numPrice.equals(qty * unitPrice)) {
 					countQty += qty
 					countTotalPrice += numPrice
 					KeywordUtil.logInfo('countQty : ' + countQty)
 					KeywordUtil.logInfo('countTotalPrice : ' + countTotalPrice)
-					return [countQty, countTotalPrice]
-					break
+					status = ''
+					remark = ''
+				} else {
+					status = 'Fail'
+					remark = 'Fail to check each product in order at status_id ' + status_id
+					KeywordUtil.markFailed(remark)
 				}
+				return [status, remark, countQty, countTotalPrice]
 			}
 		}
 	}
 
 	@Keyword
-	def checkProductAssert(Integer countTotalPrice, String totalPrice, Integer countQty) {
+	def checkProductAssert(Double countTotalPrice, Double totalPrice, Integer countQty, Integer status_id) {
 		KeywordUtil.logInfo ('countTotalPrice : ' + countTotalPrice)
 		KeywordUtil.logInfo ('totalPrice : ' + totalPrice)
 		KeywordUtil.logInfo ('countQty : ' + countQty)
 
-		MobileElement allTotalPrice = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/order_detail_tv_total_price')
-		MobileElement allQty = (MobileElement) driver.findElementById('th.co.gosoft.storemobile.sevendelivery.staff:id/order_detail_tv_total_list')
-		String numAllTotalPrice = ''
+		MobileElement allTotalPrice = (MobileElement) driver.findElementById(staffId + 'order_detail_tv_total_price')
+		MobileElement allQty = (MobileElement) driver.findElementById(staffId + 'order_detail_tv_total_list')
+		double numAllTotalPrice = 0.00
 		if (allTotalPrice.getText().contains('บาท')) {
-			numAllTotalPrice = allTotalPrice.getText().replace('บาท','')
+			numAllTotalPrice = Double.parseDouble(allTotalPrice.getText().replace(' บาท',''))
+		} else {
+			numAllTotalPrice = Double.parseDouble(allTotalPrice.getText())
 		}
-		KeywordUtil.logInfo ('total price : ' + Double.parseDouble(numAllTotalPrice))
+		KeywordUtil.logInfo ('total price : ' + numAllTotalPrice)
 		KeywordUtil.logInfo ('All QTY : ' + extractInt(allQty.getText()))
 
-		assert Double.parseDouble(numAllTotalPrice) == countTotalPrice
-		assert Double.parseDouble(numAllTotalPrice) == Double.parseDouble(totalPrice)
-		assert extractInt(allQty.getText()) == countQty
+		if (numAllTotalPrice.equals(countTotalPrice)) {
+			assert numAllTotalPrice.equals(totalPrice)
+			assert extractInt(allQty.getText()).equals(countQty)
+			status = ''
+			remark = ''
+		} else {
+			KeywordUtil.logInfo ('false')
+			status = 'Fail'
+			remark = 'Fail to Check All Products at status_id ' + status_id
+			KeywordUtil.markFailed(remark)
+		}
+		return [status, remark]
 	}
 
 	@Keyword
 	def testDeleteProduct (String editProduct) {
-		List<MobileElement> products = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/row_order_detail_tv_name')
-		List<MobileElement> amounts = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/row_order_detail_tv_amount')
-		List<MobileElement> minus = driver.findElementsById('th.co.gosoft.storemobile.sevendelivery.staff:id/row_order_detail_iv_minus')
+		List<MobileElement> products = driver.findElementsById(staffId + 'row_order_detail_tv_name')
+		List<MobileElement> amounts = driver.findElementsById(staffId + 'row_order_detail_tv_amount')
+		List<MobileElement> minus = driver.findElementsById(staffId + 'row_order_detail_iv_minus')
 		println ('Product size : ' + products.size())
 		println ('minus btn have : ' + minus.size())
 		println ('editProduct : ' + editProduct)
@@ -487,9 +513,29 @@ public class StaffKeywords {
 	def extractInt(String input) {
 		return Integer.parseInt(input.replaceAll("[^0-9]", ""))
 	}
+
+	@Keyword
+	def setDefault(Double total_product, String flow_type, Integer statusCheck) {
+		int qty = 0
+		double unitPrice = 0.00
+		int countQty = 0
+		double countTotalPrice = 0.00
+		int statusProduct = 1
+		int size = total_product
+		double price = 0.00
+
+		switch (statusCheck) {
+			case 2 :
+				switch (flow_type) {
+					case '6' :
+					size = total_product + 1
+					break
+					default :
+					size = total_product
+					break
+				}
+				break
+		}
+		return [qty, unitPrice, countQty, countTotalPrice, statusProduct, size, price]
+	}
 }
-
-
-
-
-
