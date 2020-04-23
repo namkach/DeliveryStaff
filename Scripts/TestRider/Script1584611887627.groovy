@@ -267,8 +267,6 @@ try {
 	(status, remark) = CustomKeywords.'myPac.RiderKeywords.checkStatusId'(status_id)
 	KeywordUtil.logInfo('checkOrder : ' + checkOrder)
 	return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
-	
-	CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
 }
 catch (Exception e) {
     KeywordUtil.markFailed('Crashed... ' + e)

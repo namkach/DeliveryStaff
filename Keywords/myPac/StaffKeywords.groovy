@@ -67,7 +67,7 @@ public class StaffKeywords {
 			KeywordUtil.logInfo(prods.get(i).getText())
 		}
 		if (prods.size().equals(total_product)) {
-			if (statusCheck == 2 && flow_type == '6') {
+			if (statusCheck == 1 && flow_type == '6') {
 				total_product -= 1
 			}
 			status = ''
@@ -83,7 +83,6 @@ public class StaffKeywords {
 	@Keyword
 	def ConfirmBtn(Integer status_id, String payment_type, String apkType, String delivery_type) {
 		def btnName = ''
-
 		//get delivery type
 		MobileElement deliveryTypeElement = (MobileElement) driver.findElementById(staffId + 'order_detail_tv_pickup_method')
 		println ('deliveryTypeElement : ' + deliveryTypeElement.getText())
@@ -122,13 +121,26 @@ public class StaffKeywords {
 		println confirmOrder.getText()
 		assert confirmOrder.getText().equals(btnName)
 		confirmOrder.click()
-		KeywordUtil.logInfo ('Order confirmed')
-		KeywordUtil.logInfo ('status_id : ' + status_id)
-		KeywordUtil.logInfo ('paymentType : ' + payment_type)
+		(status_id, checkOrder) = confirmPayment(payment_type, status_id, apkType, delivery_type)
+		if (checkOrder) {
+			status = ''
+			remark = ''
+		} else {
+			status = 'Fail'
+			remark = 'Fail to confirm order at status_id ' + status_id
+			KeywordUtil.markFailed(remark)
+		}
+		return [status, remark, status_id]
+	}
+
+	@Keyword
+	def confirmPayment(String payment_type, Integer status_id, String apkType, String delivery_type) {
+		checkOrder = false
 		switch (status_id) {
 			case 1 :
 				status_id = 2
 				println ('sid : ' + status_id)
+				checkOrder = true
 				break
 
 			//confirm LP
@@ -155,12 +167,10 @@ public class StaffKeywords {
 				println ('sid : ' + status_id)
 				if (delivery_type == '1') {
 					status_id = 3
-					KeywordUtil.logInfo('sid in deliveryType : ' + status_id)
+					checkOrder = true
 				} else if (delivery_type == '2') {
 					status_id = 4
-					KeywordUtil.logInfo('sid in deliveryType : ' + status_id)
-				} else {
-					KeywordUtil.markFailed('error to find sid in delivery')
+					checkOrder = true
 				}
 				break
 
@@ -170,28 +180,41 @@ public class StaffKeywords {
 					MobileElement confirmYes = (MobileElement) driver.findElementById(staffId + 'dialog_confirm_yes')
 					confirmYes.click()
 					status_id = 5
-					status = ''
-					remark = ''
+					checkOrder = true
 				} else if (apkType == 'cod') {
 					KeywordUtil.logInfo ('status id : ' + status_id)
-					boolean checkPayment = CheckPaymentType(payment_type)
-					KeywordUtil.logInfo('checkPayment : ' + checkPayment)
-					if (checkPayment) {
+					checkOrder = CheckPaymentType(payment_type)
+					if (checkOrder) {
 						status_id = 5
-						status = ''
-						remark = ''
-					} else {
-						status_id = 7
-						status = 'Fail'
-						remark = 'Fail to confirm order at status_id ' + status_id
-						KeywordUtil.markFailed('error sid = 7 payment Function')
 					}
+				}
+				if (checkOrder) {
+					status_id = 5
+				}
+				switch (delivery_type) {
+					case '1' : 
+						status_id = 5
+						break
+					case '2' :
+						MobileElement walk = (MobileElement) driver.findElementById(staffId + 'delivery_confirm_rd_walk')
+						walk.click()
+						MobileElement confirmOrder = (MobileElement) driver.findElementById(staffId + 'delivery_confirm_bt_confirm')
+						confirmOrder.click()
+						MobileElement confirmSign = (MobileElement) driver.findElementById(staffId + 'main_toolbar_tv_menu_right2')
+						if (confirmSign.isDisplayed()) {
+							swipeUp()
+							confirmSign.click()
+							MobileElement confirmSignYes = (MobileElement) driver.findElementById(staffId + 'dialog_confirm_yes')
+							confirmSignYes.click()
+							status_id = 5
+						}
+						break
 				}
 				break
 		}
-		return [status, remark, status_id]
+		return [status_id, checkOrder]
 	}
-
+	
 	@Keyword
 	def CancelBtn(String flow_type, Integer status_id) {
 		MobileElement cancelBtn = (MobileElement) driver.findElementById(staffId + 'order_detail_bt_cancel')
@@ -266,10 +289,23 @@ public class StaffKeywords {
 	//	}
 
 	@Keyword
-	def CheckPaymentType(String paymentType) {
-		switch (paymentType) {
+	def CheckPaymentType(String payment_type) {
+		switch (payment_type) {
 			case '1' :
-				println ('paymentType is : ' + paymentType)
+				MobileElement cashTab = (MobileElement) driver.findElementById(staffId + 'rdoCash')
+				assert cashTab.getAttribute("checked")
+				break
+			case '4' :
+				MobileElement tmwTab = (MobileElement) driver.findElementById(staffId + 'rdoTMW')
+				assert tmwTab.getAttribute("checked")
+				MobileElement cashTab = (MobileElement) driver.findElementById(staffId + 'rdoCash')
+				cashTab.click()
+				break
+		}
+		switch (payment_type) {
+			case '1' :
+			case '4' :
+				println ('paymentType is : ' + payment_type)
 				MobileElement totalPrice = (MobileElement) driver.findElementById(staffId + 'txtCashPrice')
 				MobileElement payPrice = (MobileElement) driver.findElementById(staffId + 'txtCashMoney')
 				payPrice.sendKeys(totalPrice.getText())
@@ -277,48 +313,45 @@ public class StaffKeywords {
 				confirmPayment.click()
 				MobileElement btnSkip = (MobileElement) driver.findElementById(staffId + 'btnSkip')
 				btnSkip.click()
-				KeywordUtil.markPassed('Payment success')
 				return true
-				break
 			case '2' :
-				println ('paymentType is : ' + paymentType)
+				println ('paymentType is : ' + payment_type)
 				MobileElement confirmYes = (MobileElement) driver.findElementById(staffId + 'dialog_confirm_yes')
 				confirmYes.click()
-				KeywordUtil.markPassed('Payment success')
 				return true
-				break
-			case '4' :
-				println 'Payment error'
-				KeywordUtil.markFailed('TMW COD')
-				return false
 		}
 	}
 
 	@Keyword
 	def checkStatusId(Integer status_id) {
 		MobileElement statusElement = (MobileElement) driver.findElementById(staffId + 'order_detail_time_count_down')
+		checkOrder = false
 		switch (status_id) {
 			case 5 :
 				assert statusElement.getText() == 'เสร็จสมบูรณ์'
 				KeywordUtil.logInfo('เสร็จสมบูรณ์')
-				return true
+				checkOrder = true
 				break
 			case 6 :
 				assert statusElement.getText() == 'ยกเลิกออเดอร์'
 				KeywordUtil.logInfo('ยกเลิกออเดอร์')
-				return true
-				break
-			default :
-				KeywordUtil.markFailed('Error to check status_id')
-				return false
+				checkOrder = true
 				break
 		}
+		if (checkOrder) {
+			status = 'Pass'
+			remark = '-'
+			KeywordUtil.markPassed('check Status : Pass')
+		} else {
+			status = 'Fail'
+			remark = 'Fail to check Status order at status_id ' + status_id
+			KeywordUtil.markFailed(remark)
+		}
+		return [status, remark]
 	}
 
 	@Keyword
-	def editQty(String editProduct, String quantity, Integer oldQty) {
-		def qty = Integer.parseInt(quantity)
-		println qty
+	def editQty(String editProduct, Integer qty, Integer oldQty) {
 		List<MobileElement> products = driver.findElementsById(staffId + 'row_order_detail_tv_name')
 		println products.size()
 		for (int i = 0; i <= products.size(); i++) {
@@ -351,9 +384,7 @@ public class StaffKeywords {
 	}
 
 	@Keyword
-	def addProduct(String editProduct, String quantity) {
-		int qty = 0
-		qty = Integer.parseInt(quantity)
+	def addProduct(String editProduct, Integer qty) {
 		MobileElement cart = (MobileElement) driver.findElementById(staffId + 'order_detail_cv_add')
 		cart.click()
 		MobileElement search = (MobileElement) driver.findElementById(staffId + 'main_et_search')
@@ -406,44 +437,43 @@ public class StaffKeywords {
 		List<MobileElement> prods = driver.findElementsById(staffId + 'row_order_detail_tv_name')
 		List<MobileElement> qtys = driver.findElementsById(staffId + 'row_order_detail_tv_amount')
 		List<MobileElement> prices = driver.findElementsById(staffId + 'row_order_detail_tv_price')
+		println ('unitPrice : ' + unitPrice)
 		double numPrice = 0.0
 		for (int k = 0; k <= prods.size(); k++) {
 			println ('product size : ' + prods.size())
 			println ('element product : ' + prods.get(k).getText())
 			println ('productName : ' + name)
 			println prods.get(k).getText().equals(name)
-			println 'Round : ' + k
 			if (prods.get(k).getText().equals(name)) {
 				println (prods.get(k).getText() + ' : Found')
 				println ('k is : ' + k)
 				KeywordUtil.logInfo('statusProduct : ' + statusProduct)
-				if (statusProduct == 0) {
+				switch (statusProduct) {
+					case 0 :
 					//check each QTY
-					KeywordUtil.logInfo('qtys : ' + qtys.get(k - 1).getText())
-					int numQty = extractInt(qtys.get(k - 1).getText())
-					KeywordUtil.logInfo('qty : ' + qty)
-					KeywordUtil.logInfo('numQty : ' + numQty)
-					assert numQty == qty
+						KeywordUtil.logInfo('qtys : ' + qtys.get(k).getText())
+						int numQty = extractInt(qtys.get(k).getText())
+						KeywordUtil.logInfo('qty : ' + qty)
+						KeywordUtil.logInfo('numQty : ' + numQty)
+						assert numQty == qty
 
 					//check each total price
-					numPrice = Double.parseDouble(prices.get(k - 1).getText())
-					//					double checkUnitPrice = unitPrice
-
-				} else if (statusProduct == 1) {
-					//check each QTY
-					KeywordUtil.logInfo('qtys : ' + qtys.get(k).getText())
-					int numQty = extractInt(qtys.get(k).getText())
-					KeywordUtil.logInfo('qty : ' + qty)
-					KeywordUtil.logInfo('numQty : ' + numQty)
-					assert numQty.toString() == qty.toString()
-
-					//check each total price
-					if(statusProduct == 1) {
 						numPrice = Double.parseDouble(prices.get(k).getText())
-					} else if (statusProduct == -2) {
-						numPrice = Double.parseDouble(prices.get(k-1).getText())
-					}
+						break
+					case 1 :
+					//check each QTY
+						KeywordUtil.logInfo('qtys : ' + qtys.get(k - 1).getText())
+						int numQty = extractInt(qtys.get(k - 1).getText())
+						KeywordUtil.logInfo('qty : ' + qty)
+						KeywordUtil.logInfo('numQty : ' + numQty)
+						assert numQty == qty
+
+					//check each total price
+						numPrice = Double.parseDouble(prices.get(k - 1).getText())
+						break
 				}
+				KeywordUtil.logInfo('numPrice : ' + numPrice)
+				KeywordUtil.logInfo('qty / unitPrice : ' + qty + '   /   ' + unitPrice)
 				if (numPrice.equals(qty * unitPrice)) {
 					countQty += qty
 					countTotalPrice += numPrice
@@ -520,12 +550,12 @@ public class StaffKeywords {
 		double unitPrice = 0.00
 		int countQty = 0
 		double countTotalPrice = 0.00
-		int statusProduct = 1
+		int statusProduct = 0
 		int size = total_product
 		double price = 0.00
 
 		switch (statusCheck) {
-			case 2 :
+			case 1 :
 				switch (flow_type) {
 					case '6' :
 					size = total_product + 1
