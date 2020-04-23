@@ -70,8 +70,6 @@ try {
 		return CustomKeywords.'myPac.writeExcel.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
 	}
 	
-    println('Check outside found order :' + checkOrder)
-	KeywordUtil.logInfo('flow_type :' + flow_type)
 	switch (flow_type) {
 		//new order
 		case '1' :
@@ -209,15 +207,6 @@ try {
 						}
 						println ('countQty : ' + countQty)
 						println ('countTotalPrice : ' + countTotalPrice)
-						
-//						switch (flow_type) {
-//							case '5'..'7' :
-//								CustomKeywords.'myPac.StaffKeywords.checkProductAssert'(countTotalPrice, edit_total_price, countQty)
-//								break
-//							default :
-//								CustomKeywords.'myPac.StaffKeywords.checkProductAssert'(countTotalPrice, total_price, countQty)
-//								break
-//						}
 						(status, remark) = CustomKeywords.'myPac.StaffKeywords.checkProductAssert'(countTotalPrice, edit_total_price, countQty, status_id)
 						if (status.equals('Fail')) {
 							return CustomKeywords.'myPac.writeExcel.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)

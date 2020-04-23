@@ -352,33 +352,30 @@ public class StaffKeywords {
 	}
 
 	@Keyword
-	def editQty(String editProduct, Integer qty, Integer oldQty) {
+	def editQty(String editProduct, Integer editQty, Integer qty) {
 		List<MobileElement> products = driver.findElementsById(staffId + 'row_order_detail_tv_name')
 		println products.size()
 		for (int i = 0; i <= products.size(); i++) {
 			if (products.get(i).getText().equals(editProduct)) {
 				println products.get(i).getText()
-				if (qty > 0) {
+				if (editQty > 0) {
 					println 'plus'
 					List<MobileElement> plus = driver.findElementsById(staffId + 'row_order_detail_iv_plus')
-					for (int j = 1; j <= qty; j++) {
+					for (int j = 1; j <= editQty; j++) {
 						plus.get(i).click()
 						println j
 					}
-					List<MobileElement> amount = driver.findElementsById(staffId + 'row_order_detail_tv_amount')
-					KeywordUtil.logInfo('amount : ' + amount.get(i).getText() )
-					assert Integer.parseInt(amount.get(i).getText()) == oldQty + qty
-				} else if (qty < 0) {
+				} else if (editQty < 0) {
 					println 'minus'
 					List<MobileElement> minus = driver.findElementsById(staffId + 'row_order_detail_iv_minus')
-					for (int k = -1; k >= qty; k--) {
+					for (int k = -1; k >= editQty; k--) {
 						minus.get(i).click()
 						println k
 					}
-					List<MobileElement> amount = driver.findElementsById(staffId + 'row_order_detail_tv_amount')
-					KeywordUtil.logInfo('amount : ' + amount.get(i).getText())
-					assert Integer.parseInt(amount.get(i).getText()) == oldQty - qty
 				}
+				List<MobileElement> amount = driver.findElementsById(staffId + 'row_order_detail_tv_amount')
+				KeywordUtil.logInfo('amount : ' + amount.get(i).getText() )
+				assert Integer.parseInt(amount.get(i).getText()) == qty + editQty
 				break
 			}
 		}
@@ -440,6 +437,7 @@ public class StaffKeywords {
 		List<MobileElement> prices = driver.findElementsById(staffId + 'row_order_detail_tv_price')
 		println ('unitPrice : ' + unitPrice)
 		double numPrice = 0.0
+		int numQty = 0
 		for (int k = 0; k <= prods.size(); k++) {
 			println ('product size : ' + prods.size())
 			println ('element product : ' + prods.get(k).getText())
@@ -451,28 +449,25 @@ public class StaffKeywords {
 				KeywordUtil.logInfo('statusProduct : ' + statusProduct)
 				switch (statusProduct) {
 					case 0 :
-					//check each QTY
-						KeywordUtil.logInfo('qtys : ' + qtys.get(k).getText())
-						int numQty = extractInt(qtys.get(k).getText())
-						KeywordUtil.logInfo('qty : ' + qty)
-						KeywordUtil.logInfo('numQty : ' + numQty)
-						assert numQty == qty
-
-					//check each total price
+						numQty = extractInt(qtys.get(k).getText())
 						numPrice = Double.parseDouble(prices.get(k).getText())
 						break
 					case 1 :
-					//check each QTY
-						KeywordUtil.logInfo('qtys : ' + qtys.get(k - 1).getText())
-						int numQty = extractInt(qtys.get(k - 1).getText())
-						KeywordUtil.logInfo('qty : ' + qty)
-						KeywordUtil.logInfo('numQty : ' + numQty)
-						assert numQty == qty
-
-					//check each total price
+						switch (status_id) {
+							case 2 :
+								numQty = extractInt(qtys.get(k - 1).getText())
+								break
+							case 3..5 :
+								numQty = extractInt(qtys.get(k).getText())
+								break
+						}
 						numPrice = Double.parseDouble(prices.get(k - 1).getText())
 						break
 				}
+				KeywordUtil.logInfo('qty : ' + qty)
+				KeywordUtil.logInfo('numQty : ' + numQty)
+				assert numQty == qty
+				
 				KeywordUtil.logInfo('numPrice : ' + numPrice)
 				KeywordUtil.logInfo('qty / unitPrice : ' + qty + '   /   ' + unitPrice)
 				if (numPrice.equals(qty * unitPrice)) {
