@@ -176,7 +176,7 @@ try {
 							if (productName[i] == edit_product) {
 								switch (flow_type) {
 									case '5' :
-										qty += oldQty
+										qty += edit_qty
 										break
 									case '7' :
 										statusProduct = 1
@@ -241,7 +241,7 @@ try {
 			if (productName[i] == edit_product) {
 				switch (flow_type) {
 					case '5' :
-						qty += oldQty
+						qty += edit_qty
 						break
 					case '7' :
 						statusProduct = 1
@@ -317,7 +317,7 @@ try {
 		if (productName[i] == edit_product) {
 			switch (flow_type) {
 				case '5' :
-					qty += oldQty
+					qty += edit_qty
 					break
 				case '7' :
 					statusProduct = 1

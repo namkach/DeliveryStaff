@@ -352,30 +352,33 @@ public class StaffKeywords {
 	}
 
 	@Keyword
-	def editQty(String editProduct, Integer editQty, Integer qty) {
+	def editQty(String editProduct, Integer qty, Integer oldQty) {
 		List<MobileElement> products = driver.findElementsById(staffId + 'row_order_detail_tv_name')
 		println products.size()
 		for (int i = 0; i <= products.size(); i++) {
 			if (products.get(i).getText().equals(editProduct)) {
 				println products.get(i).getText()
-				if (editQty > 0) {
+				if (qty > 0) {
 					println 'plus'
 					List<MobileElement> plus = driver.findElementsById(staffId + 'row_order_detail_iv_plus')
-					for (int j = 1; j <= editQty; j++) {
+					for (int j = 1; j <= qty; j++) {
 						plus.get(i).click()
 						println j
 					}
-				} else if (editQty < 0) {
+					List<MobileElement> amount = driver.findElementsById(staffId + 'row_order_detail_tv_amount')
+					KeywordUtil.logInfo('amount : ' + amount.get(i).getText() )
+					assert Integer.parseInt(amount.get(i).getText()) == oldQty + qty
+				} else if (qty < 0) {
 					println 'minus'
 					List<MobileElement> minus = driver.findElementsById(staffId + 'row_order_detail_iv_minus')
-					for (int k = -1; k >= editQty; k--) {
+					for (int k = -1; k >= qty; k--) {
 						minus.get(i).click()
 						println k
 					}
+					List<MobileElement> amount = driver.findElementsById(staffId + 'row_order_detail_tv_amount')
+					KeywordUtil.logInfo('amount : ' + amount.get(i).getText())
+					assert Integer.parseInt(amount.get(i).getText()) == oldQty + qty
 				}
-				List<MobileElement> amount = driver.findElementsById(staffId + 'row_order_detail_tv_amount')
-				KeywordUtil.logInfo('amount : ' + amount.get(i).getText() )
-				assert Integer.parseInt(amount.get(i).getText()) == qty + editQty
 				break
 			}
 		}
