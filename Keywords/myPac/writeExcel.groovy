@@ -13,7 +13,7 @@ import jxl.write.WritableWorkbook
 public class writeExcel {
 	@Keyword
 	def writeStaff(String order_id, String flow_type, String delivery_type, String payment_type, String status, String remark) {
-		def path = 'D:\\Users\\sunitakac\\Desktop\\AutoTest\\result.xls'
+		def path = 'D:\\Users\\sunitakac\\Desktop\\AutoTest\\resultStaff.xls'
 		Workbook existingWorkbook = Workbook.getWorkbook(new File(path))
 		WritableWorkbook workbookCopy = Workbook.createWorkbook(new File(path), existingWorkbook)
 		WritableSheet sheetToEdit = workbookCopy.getSheet(0)

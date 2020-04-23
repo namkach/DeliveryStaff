@@ -324,18 +324,19 @@ public class StaffKeywords {
 
 	@Keyword
 	def checkStatusId(Integer status_id) {
-		MobileElement statusElement = (MobileElement) driver.findElementById(staffId + 'order_detail_time_count_down')
 		checkOrder = false
+		MobileElement statusElement = (MobileElement) driver.findElementById(staffId + 'order_detail_time_count_down')
+		KeywordUtil.logInfo('Status Element : ' + statusElement.getText())
 		switch (status_id) {
 			case 5 :
-				assert statusElement.getText() == 'เสร็จสมบูรณ์'
-				KeywordUtil.logInfo('เสร็จสมบูรณ์')
-				checkOrder = true
+				if (statusElement.getText().contains('เสร็จสมบูรณ์')) {
+					checkOrder = true
+				}
 				break
 			case 6 :
-				assert statusElement.getText() == 'ยกเลิกออเดอร์'
-				KeywordUtil.logInfo('ยกเลิกออเดอร์')
-				checkOrder = true
+				if (statusElement.getText().contains('ยกเลิกออเดอร์')) {
+					checkOrder = true
+				}
 				break
 		}
 		if (checkOrder) {
