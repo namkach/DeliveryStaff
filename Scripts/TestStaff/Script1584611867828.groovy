@@ -289,6 +289,7 @@ try {
 					return CustomKeywords.'myPac.writeExcel.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
 				}
 				status_id = 6
+				break
 			case '0' :
 			case '5'..'7' :
 				(status, remark, status_id) = CustomKeywords.'myPac.StaffKeywords.ConfirmBtn'(status_id, payment_type, apkType, delivery_type)
