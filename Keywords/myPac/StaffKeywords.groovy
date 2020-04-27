@@ -88,10 +88,6 @@ public class StaffKeywords {
 		double numPrice = 0.0
 		int numQty = 0
 		for (int k = 0; k <= prods.size(); k++) {
-			println ('product size : ' + prods.size())
-			println ('element product : ' + prods.get(k).getText())
-			println ('productName : ' + name)
-			println prods.get(k).getText().equals(name)
 			if (prods.get(k).getText().equals(name)) {
 				println (prods.get(k).getText() + ' : Found')
 				println ('k is : ' + k)

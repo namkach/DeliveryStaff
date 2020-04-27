@@ -23,6 +23,7 @@ try {
 
 try {
     AppiumDriver<MobileElement> driver = MobileDriverFactory.getDriver()
+	def staffId = 'th.co.gosoft.storemobile.sevendelivery.staff:id/'
 	int oldQty = 0
 	def remark = '-'
 	def status = ''
@@ -46,54 +47,54 @@ try {
 	
 //	order_id = CustomKeywords.'myPac.StaffKeywords.checkOrderId'(order_id)
 	
-	KeywordUtil.logInfo('------------- new order -----------')
-	(status, remark) = CustomKeywords.'myPac.StaffKeywords.findOrder'(order_id, status_id)
-	if (status.equals('Fail')) {
-		return CustomKeywords.'myPac.writeExcel.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
-	}
-	KeywordUtil.logInfo('size :' + size)
-	(status, remark, size) = CustomKeywords.'myPac.StaffKeywords.checkTotalProducts'(flow_type, size, status_id, statusCheck)
-	if (status.equals('Fail')) {
-		return CustomKeywords.'myPac.writeExcel.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
-	}
-	
+//	KeywordUtil.logInfo('------------- new order -----------')
+//	(status, remark) = CustomKeywords.'myPac.StaffKeywords.findOrder'(order_id, status_id)
+//	if (status.equals('Fail')) {
+//		return CustomKeywords.'myPac.writeExcel.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
+//	}
+//	KeywordUtil.logInfo('size :' + size)
+//	(status, remark, size) = CustomKeywords.'myPac.StaffKeywords.checkTotalProducts'(flow_type, size, status_id, statusCheck)
+//	if (status.equals('Fail')) {
+//		return CustomKeywords.'myPac.writeExcel.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
+//	}
+//	
 	String[] productName = [product_name1, product_name2, product_name3]
 	Integer[] productQty = [qty1, qty2, qty3]
 	Double[] productUnitPrice = [unit_price1, unit_price2, unit_price3]
-	
-	for(int i = 0; i < size; i++) {
-		KeywordUtil.logInfo ('qty : ' + productQty[i])
-		(status, remark, countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeywords.checkEachProduct'(productName[i], productQty[i], productUnitPrice[i], countQty, countTotalPrice, statusProduct, status_id)
-		if (status.equals('Fail')) {
-			return CustomKeywords.'myPac.writeExcel.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
-		}
-		println ('countQty : ' + countQty)
-		println ('countTotalPrice : ' + countTotalPrice)
-	}
-	(status, remark) = CustomKeywords.'myPac.StaffKeywords.checkAllProducts'(countTotalPrice, total_price, countQty, status_id)
-	if (status.equals('Fail')) {
-		return CustomKeywords.'myPac.writeExcel.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
-	}
-	
-	switch (flow_type) {
-		//new order
-		case '1' :
-			(status, remark) = CustomKeywords.'myPac.StaffKeywords.cancelBtn'(flow_type, status_id)
-			if (status.equals('Fail')) {
-				return CustomKeywords.'myPac.writeExcel.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
-			}
-			status_id = 6
-			break
-		//new order
-		case '0':
-		case '2'..'7' :
-			(status, remark, status_id) = CustomKeywords.'myPac.StaffKeywords.confirmBtn'(status_id, payment_type, apkType, delivery_type)
-			if (status.equals('Fail')) {
-				return CustomKeywords.'myPac.writeExcel.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
-			}
-			break
-	}
-	
+//	
+//	for(int i = 0; i < size; i++) {
+//		KeywordUtil.logInfo ('qty : ' + productQty[i])
+//		(status, remark, countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeywords.checkEachProduct'(productName[i], productQty[i], productUnitPrice[i], countQty, countTotalPrice, statusProduct, status_id)
+//		if (status.equals('Fail')) {
+//			return CustomKeywords.'myPac.writeExcel.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
+//		}
+//		println ('countQty : ' + countQty)
+//		println ('countTotalPrice : ' + countTotalPrice)
+//	}
+//	(status, remark) = CustomKeywords.'myPac.StaffKeywords.checkAllProducts'(countTotalPrice, total_price, countQty, status_id)
+//	if (status.equals('Fail')) {
+//		return CustomKeywords.'myPac.writeExcel.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
+//	}
+//	
+//	switch (flow_type) {
+//		//new order
+//		case '1' :
+//			(status, remark) = CustomKeywords.'myPac.StaffKeywords.cancelBtn'(flow_type, status_id)
+//			if (status.equals('Fail')) {
+//				return CustomKeywords.'myPac.writeExcel.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
+//			}
+//			status_id = 6
+//			break
+//		//new order
+//		case '0':
+//		case '2'..'7' :
+//			(status, remark, status_id) = CustomKeywords.'myPac.StaffKeywords.confirmBtn'(status_id, payment_type, apkType, delivery_type)
+//			if (status.equals('Fail')) {
+//				return CustomKeywords.'myPac.writeExcel.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
+//			}
+//			break
+//	}
+	status_id = 2
 	KeywordUtil.logInfo('------------- processing -----------')
 	if (flow_type != '1') {
 		Mobile.tap(findTestObject('Staff/ProcessingTab'), 80)
@@ -176,8 +177,21 @@ try {
 							return CustomKeywords.'myPac.writeExcel.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
 						}
 						
+						List<MobileElement> prods = driver.findElementsById(staffId + 'row_order_detail_tv_name')
 						for(int i = 0; i < size; i++) {
 							qty = productQty[i]
+//							name = prods.get(i).getText()
+//							if (name.equals(edit_product)) {
+//								switch (flow_type) {
+//									case '5' :
+//										qty += edit_qty
+//										break
+//									case '7' :
+////										statusProduct = 1
+//										continue
+//								}
+//							}
+							
 							if (productName[i] == edit_product) {
 								switch (flow_type) {
 									case '5' :
@@ -195,7 +209,7 @@ try {
 //								statusProduct = 1
 //								continue
 //							}
-							(status, remark, countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeywords.checkEachProduct'(productName[i], qty, productUnitPrice[i], countQty, countTotalPrice, statusProduct, status_id)
+							(status, remark, countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeywords.checkEachProduct'(name, qty, productUnitPrice[i], countQty, countTotalPrice, statusProduct, status_id)
 							if (status.equals('Fail')) {
 								return CustomKeywords.'myPac.writeExcel.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
 							}
