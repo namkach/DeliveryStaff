@@ -100,15 +100,31 @@ public class StaffKeywords {
 					case 1 :
 						switch (status_id) {
 							case 2 :
-							numQty = extractInt(qtys.get(k - 1).getText())
-							break
+								numQty = extractInt(qtys.get(k - 1).getText())
+								break
 							case 3..5 :
-							numQty = extractInt(qtys.get(k).getText())
-							break
+								numQty = extractInt(qtys.get(k).getText())
+								break
 						}
 						numPrice = Double.parseDouble(prices.get(k - 1).getText())
 						break
 				}
+				
+				
+//				if (statusCheck == 1 && statusProduct == 1) {
+//					switch (status_id) {
+//						case 2 :
+//						numQty = extractInt(qtys.get(k - 1).getText())
+//						break
+//						case 3..5 :
+//						numQty = extractInt(qtys.get(k).getText())
+//						break
+//					}
+//					numPrice = Double.parseDouble(prices.get(k - 1).getText())
+//				} else {
+//					numQty = extractInt(qtys.get(k).getText())
+//					numPrice = Double.parseDouble(prices.get(k).getText())
+//				}
 				KeywordUtil.logInfo('qty : ' + qty)
 				KeywordUtil.logInfo('numQty : ' + numQty)
 				assert numQty == qty
@@ -326,9 +342,9 @@ public class StaffKeywords {
 				btnSkip.click()
 				return true
 			case '2' :
-//				println ('paymentType is : ' + payment_type)
-//				MobileElement confirmYes = (MobileElement) driver.findElementById(staffId + 'dialog_confirm_yes')
-//				confirmYes.click()
+			//				println ('paymentType is : ' + payment_type)
+			//				MobileElement confirmYes = (MobileElement) driver.findElementById(staffId + 'dialog_confirm_yes')
+			//				confirmYes.click()
 				return true
 		}
 	}
@@ -365,7 +381,7 @@ public class StaffKeywords {
 		List<MobileElement> eachItemAmount = driver.findElementsById(staffId + 'row_order_detail_tv_amount')
 		println ('this element has : ' + eachItemAmount.size() + ' item(s)')
 
-		RiderKeywords kw = new RiderKeywords()
+//		RiderKeywords kw = new RiderKeywords()
 		int totalamount = extractInt(totalAmountElement.getText())
 
 		int countItem = 0
@@ -485,9 +501,9 @@ public class StaffKeywords {
 		double unitPrice = 0.00
 		int countQty = 0
 		double countTotalPrice = 0.00
-		int statusProduct = 0
 		int size = total_product
 		double price = 0.00
+		int statusProduct = 0
 
 		switch (statusCheck) {
 			case 1 :
