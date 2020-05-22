@@ -1,92 +1,88 @@
 [35m[Appium][39m Welcome to Appium v1.16.0
 [35m[Appium][39m Non-default server args:
-[35m[Appium][39m   port: 58586
+[35m[Appium][39m   port: 63018
 [35m[Appium][39m   loglevel: info
-[35m[Appium][39m   chromeDriverPort: 58587
-[35m[Appium][39m   tmpDir: D:\Users\sunitakac\AppData\Local\Temp\\Katalon\Appium\Temp1587974831063
-[35m[Appium][39m Appium REST http interface listener started on 0.0.0.0:58586
+[35m[Appium][39m   chromeDriverPort: 63019
+[35m[Appium][39m   tmpDir: D:\Users\sunitakac\AppData\Local\Temp\\Katalon\Appium\Temp1590142344768
+[35m[Appium][39m Appium REST http interface listener started on 0.0.0.0:63018
 [35m[HTTP][39m [37m-->[39m [37mGET[39m [37m/wd/hub/status[39m
 [35m[HTTP][39m [90m{}[39m
-[35m[HTTP][39m [37m<-- GET /wd/hub/status [39m[32m200[39m [90m7 ms - 68[39m
-[35m[HTTP][39m [90m[39m
-[35m[HTTP][39m [37m-->[39m [37mGET[39m [37m/wd/hub/status[39m
-[35m[HTTP][39m [90m{}[39m
-[35m[HTTP][39m [37m<-- GET /wd/hub/status [39m[32m200[39m [90m2 ms - 68[39m
-[35m[HTTP][39m [90m[39m
-[35m[HTTP][39m [37m-->[39m [37mPOST[39m [37m/wd/hub/session[39m
-[35m[HTTP][39m [90m{"desiredCapabilities":{"app":"D:\\Users\\sunitakac\\Desktop\\apk\\staff_uat_1.2.10h_COD_26032020.apk","noReset":true,"deviceName":"samsung SM-G970U1 (Android 10)","fullReset":false,"platform":"ANDROID","newCommandTimeout":1800,"platformVersion":"10","automationName":"uiautomator2","autoGrantPermissions":true,"platformName":"Android","udid":"R38M7035KNW","systemPort":58597},"capabilities":{"firstMatch":[{"appium:app":"D:\\Users\\sunitakac\\Desktop\\apk\\staff_uat_1.2.10h_COD_26032020.apk","appium:autoGrantPermissions":true,"appium:automationName":"uiautomator2","appium:deviceName":"samsung SM-G970U1 (Android 10)","appium:fullReset":false,"appium:newCommandTimeout":1800,"appium:noReset":true,"platform":"ANDROID","platformName":"android","appium:platformVersion":"10","appium:systemPort":58597,"appium:udid":"R38M7035KNW"}]}}[39m
-[35m[BaseDriver][39m The capabilities ["platform"] are not standard capabilities and should have an extension prefix
-[35m[Appium][39m Appium v1.16.0 creating new AndroidUiautomator2Driver (v1.40.0) session
-[35m[BaseDriver][39m The following capabilities were provided, but are not recognized by Appium:
-[35m[BaseDriver][39m   platform
-[35m[BaseDriver][39m Session created with session id: 367c41b9-9367-4c09-b548-28ad128f8f6a
-[35m[BaseDriver][39m Using local app 'D:\Users\sunitakac\Desktop\apk\staff_uat_1.2.10h_COD_26032020.apk'
-[35m[ADB][39m Found 1 'build-tools' folders under 'D:\Users\sunitakac\.katalon\tools\android_sdk' (newest first):
-[35m[ADB][39m     D:/Users/sunitakac/.katalon/tools/android_sdk/build-tools/29.0.3
-[35m[ADB][39m Using 'adb.exe' from 'D:\Users\sunitakac\.katalon\tools\android_sdk\platform-tools\adb.exe'
-[35m[AndroidDriver][39m Retrieving device list
-[35m[AndroidDriver][39m Using device: R38M7035KNW
-[35m[ADB][39m Using 'adb.exe' from 'D:\Users\sunitakac\.katalon\tools\android_sdk\platform-tools\adb.exe'
-[35m[UiAutomator2][39m Relaxing hidden api policy
-[35m[ADB][39m Package name: 'th.co.gosoft.storemobile.sevendelivery.staff'
-[35m[ADB][39m Main activity name: 'th.co.gosoft.storemobile.sevendelivery.staff.splash.SplashScreenActivity'
-[35m[ADB][39m Using 'apksigner.bat' from 'D:\Users\sunitakac\.katalon\tools\android_sdk\build-tools\29.0.3\apksigner.bat'
-[35m[UiAutomator2][39m Server packages are not going to be (re)installed
-[35m[ADB][39m The application at 'D:\Users\sunitakac\Desktop\apk\staff_uat_1.2.10h_COD_26032020.apk' is already cached to '/data/local/tmp/appium_cache/4596a2b0e0c73dc95280a1fb16e8ab7acef36633.apk'
-[35m[ADB][39m The installation of 'staff_uat_1.2.10h_COD_26032020.apk' took 14.477s
-[35m[UiAutomator2][39m Starting UIAutomator2 server 4.5.2
-[35m[UiAutomator2][39m Using UIAutomator2 server from 'D:\Users\sunitakac\AppData\Roaming\npm\node_modules\appium\node_modules\appium-uiautomator2-server\apks\appium-uiautomator2-server-v4.5.2.apk' and test from 'D:\Users\sunitakac\AppData\Roaming\npm\node_modules\appium\node_modules\appium-uiautomator2-server\apks\appium-uiautomator2-server-debug-androidTest.apk'
-[35m[UiAutomator2][39m Waiting up to 30000ms for UiAutomator2 to be online...
-[35m[WD Proxy][39m Got an unexpected response with status undefined: {"code":"ECONNRESET"}
-[35m[WD Proxy][39m Got an unexpected response with status undefined: {"code":"ECONNRESET"}
-[35m[WD Proxy][39m Determined the downstream protocol as 'W3C'
-[35m[AndroidDriver][39m Screen already unlocked, doing nothing
-[35m[UiAutomator2][39m Starting 'th.co.gosoft.storemobile.sevendelivery.staff/th.co.gosoft.storemobile.sevendelivery.staff.splash.SplashScreenActivity and waiting for 'th.co.gosoft.storemobile.sevendelivery.staff/th.co.gosoft.storemobile.sevendelivery.staff.splash.SplashScreenActivity'
-[35m[Appium][39m New AndroidUiautomator2Driver session created successfully, session 367c41b9-9367-4c09-b548-28ad128f8f6a added to master session list
-[35m[HTTP][39m [37m<-- POST /wd/hub/session [39m[32m200[39m [90m31223 ms - 1270[39m
-[35m[HTTP][39m [90m[39m
-[35m[HTTP][39m [37m-->[39m [37mGET[39m [37m/wd/hub/session/367c41b9-9367-4c09-b548-28ad128f8f6a[39m
-[35m[HTTP][39m [90m{}[39m
-[35m[HTTP][39m [37m<-- GET /wd/hub/session/367c41b9-9367-4c09-b548-28ad128f8f6a [39m[32m200[39m [90m13 ms - 1202[39m
-[35m[HTTP][39m [90m[39m
-[35m[HTTP][39m [37m-->[39m [37mGET[39m [37m/wd/hub/session/367c41b9-9367-4c09-b548-28ad128f8f6a[39m
-[35m[HTTP][39m [90m{}[39m
-[35m[HTTP][39m [37m<-- GET /wd/hub/session/367c41b9-9367-4c09-b548-28ad128f8f6a [39m[32m200[39m [90m12 ms - 1202[39m
+[35m[HTTP][39m [37m<-- GET /wd/hub/status [39m[32m200[39m [90m4 ms - 68[39m
 [35m[HTTP][39m [90m[39m
 [35m[HTTP][39m [37m-->[39m [37mGET[39m [37m/wd/hub/status[39m
 [35m[HTTP][39m [90m{}[39m
 [35m[HTTP][39m [37m<-- GET /wd/hub/status [39m[32m200[39m [90m1 ms - 68[39m
 [35m[HTTP][39m [90m[39m
-[35m[HTTP][39m [37m-->[39m [37mPOST[39m [37m/wd/hub/session/367c41b9-9367-4c09-b548-28ad128f8f6a/timeouts[39m
+[35m[HTTP][39m [37m-->[39m [37mPOST[39m [37m/wd/hub/session[39m
+[35m[HTTP][39m [90m{"desiredCapabilities":{"app":"D:\\Users\\sunitakac\\Desktop\\apk\\staff_uat_1.5.5c_COD_14052020.apk","noReset":true,"deviceName":"samsung SM-A505F (Android 9)","fullReset":false,"platform":"ANDROID","newCommandTimeout":1800,"platformVersion":"9","automationName":"uiautomator2","autoGrantPermissions":true,"platformName":"Android","udid":"R58M62HTB0R","systemPort":63027},"capabilities":{"firstMatch":[{"appium:app":"D:\\Users\\sunitakac\\Desktop\\apk\\staff_uat_1.5.5c_COD_14052020.apk","appium:autoGrantPermissions":true,"appium:automationName":"uiautomator2","appium:deviceName":"samsung SM-A505F (Android 9)","appium:fullReset":false,"appium:newCommandTimeout":1800,"appium:noReset":true,"platform":"ANDROID","platformName":"android","appium:platformVersion":"9","appium:systemPort":63027,"appium:udid":"R58M62HTB0R"}]}}[39m
+[35m[BaseDriver][39m The capabilities ["platform"] are not standard capabilities and should have an extension prefix
+[35m[Appium][39m Appium v1.16.0 creating new AndroidUiautomator2Driver (v1.40.0) session
+[35m[BaseDriver][39m The following capabilities were provided, but are not recognized by Appium:
+[35m[BaseDriver][39m   platform
+[35m[BaseDriver][39m Session created with session id: 1112141e-e86a-4f66-aded-07ee1f535a93
+[35m[BaseDriver][39m Using local app 'D:\Users\sunitakac\Desktop\apk\staff_uat_1.5.5c_COD_14052020.apk'
+[35m[ADB][39m Found 1 'build-tools' folders under 'D:\Users\sunitakac\.katalon\tools\android_sdk' (newest first):
+[35m[ADB][39m     D:/Users/sunitakac/.katalon/tools/android_sdk/build-tools/29.0.3
+[35m[ADB][39m Using 'adb.exe' from 'D:\Users\sunitakac\.katalon\tools\android_sdk\platform-tools\adb.exe'
+[35m[AndroidDriver][39m Retrieving device list
+[35m[AndroidDriver][39m Using device: R58M62HTB0R
+[35m[ADB][39m Using 'adb.exe' from 'D:\Users\sunitakac\.katalon\tools\android_sdk\platform-tools\adb.exe'
+[35m[UiAutomator2][39m Relaxing hidden api policy
+[35m[ADB][39m Package name: 'th.co.gosoft.storemobile.sevendelivery.staff'
+[35m[ADB][39m Main activity name: 'th.co.gosoft.storemobile.sevendelivery.staff.pin.PINLoginActivity'
+[35m[ADB][39m Using 'apksigner.bat' from 'D:\Users\sunitakac\.katalon\tools\android_sdk\build-tools\29.0.3\apksigner.bat'
+[35m[UiAutomator2][39m Server packages are not going to be (re)installed
+[35m[UiAutomator2][39m Starting UIAutomator2 server 4.5.2
+[35m[UiAutomator2][39m Using UIAutomator2 server from 'D:\Users\sunitakac\AppData\Roaming\npm\node_modules\appium\node_modules\appium-uiautomator2-server\apks\appium-uiautomator2-server-v4.5.2.apk' and test from 'D:\Users\sunitakac\AppData\Roaming\npm\node_modules\appium\node_modules\appium-uiautomator2-server\apks\appium-uiautomator2-server-debug-androidTest.apk'
+[35m[UiAutomator2][39m Waiting up to 30000ms for UiAutomator2 to be online...
+[35m[WD Proxy][39m Got an unexpected response with status undefined: {"code":"ECONNRESET"}
+[35m[WD Proxy][39m Got an unexpected response with status undefined: {"code":"ECONNRESET"}
+[35m[WD Proxy][39m Got an unexpected response with status undefined: {"code":"ECONNRESET"}
+[35m[WD Proxy][39m Determined the downstream protocol as 'W3C'
+[35m[AndroidDriver][39m Screen already unlocked, doing nothing
+[35m[UiAutomator2][39m Starting 'th.co.gosoft.storemobile.sevendelivery.staff/th.co.gosoft.storemobile.sevendelivery.staff.pin.PINLoginActivity and waiting for 'th.co.gosoft.storemobile.sevendelivery.staff/th.co.gosoft.storemobile.sevendelivery.staff.pin.PINLoginActivity'
+[35m[Appium][39m New AndroidUiautomator2Driver session created successfully, session 1112141e-e86a-4f66-aded-07ee1f535a93 added to master session list
+[35m[HTTP][39m [37m<-- POST /wd/hub/session [39m[32m200[39m [90m21294 ms - 1265[39m
+[35m[HTTP][39m [90m[39m
+[35m[HTTP][39m [37m-->[39m [37mGET[39m [37m/wd/hub/session/1112141e-e86a-4f66-aded-07ee1f535a93[39m
+[35m[HTTP][39m [90m{}[39m
+[35m[HTTP][39m [37m<-- GET /wd/hub/session/1112141e-e86a-4f66-aded-07ee1f535a93 [39m[32m200[39m [90m14 ms - 1197[39m
+[35m[HTTP][39m [90m[39m
+[35m[HTTP][39m [37m-->[39m [37mGET[39m [37m/wd/hub/session/1112141e-e86a-4f66-aded-07ee1f535a93[39m
+[35m[HTTP][39m [90m{}[39m
+[35m[HTTP][39m [37m<-- GET /wd/hub/session/1112141e-e86a-4f66-aded-07ee1f535a93 [39m[32m200[39m [90m14 ms - 1197[39m
+[35m[HTTP][39m [90m[39m
+[35m[HTTP][39m [37m-->[39m [37mGET[39m [37m/wd/hub/status[39m
+[35m[HTTP][39m [90m{}[39m
+[35m[HTTP][39m [37m<-- GET /wd/hub/status [39m[32m200[39m [90m1 ms - 68[39m
+[35m[HTTP][39m [90m[39m
+[35m[HTTP][39m [37m-->[39m [37mPOST[39m [37m/wd/hub/session/1112141e-e86a-4f66-aded-07ee1f535a93/timeouts[39m
 [35m[HTTP][39m [90m{"implicit":60000}[39m
-[35m[HTTP][39m [37m<-- POST /wd/hub/session/367c41b9-9367-4c09-b548-28ad128f8f6a/timeouts [39m[32m200[39m [90m3 ms - 14[39m
+[35m[HTTP][39m [37m<-- POST /wd/hub/session/1112141e-e86a-4f66-aded-07ee1f535a93/timeouts [39m[32m200[39m [90m3 ms - 14[39m
 [35m[HTTP][39m [90m[39m
-[35m[HTTP][39m [37m-->[39m [37mGET[39m [37m/wd/hub/session/367c41b9-9367-4c09-b548-28ad128f8f6a/source[39m
+[35m[HTTP][39m [37m-->[39m [37mGET[39m [37m/wd/hub/session/1112141e-e86a-4f66-aded-07ee1f535a93/source[39m
 [35m[HTTP][39m [90m{}[39m
-[35m[W3C (367c41b9)][39m Driver proxy active, passing request on via HTTP proxy
-[35m[WD Proxy][39m Replacing sessionId 66e6e96f-6341-4c07-a0bf-e8b7ceda0b29 with 367c41b9-9367-4c09-b548-28ad128f8f6a
-[35m[HTTP][39m [37m<-- GET /wd/hub/session/367c41b9-9367-4c09-b548-28ad128f8f6a/source [39m[32m200[39m [90m74 ms - 2902[39m
+[35m[W3C (1112141e)][39m Driver proxy active, passing request on via HTTP proxy
+[35m[WD Proxy][39m Replacing sessionId 4df0b3bd-84b7-4dbf-b863-29abf61a36df with 1112141e-e86a-4f66-aded-07ee1f535a93
+[35m[HTTP][39m [37m<-- GET /wd/hub/session/1112141e-e86a-4f66-aded-07ee1f535a93/source [39m[32m200[39m [90m491 ms - 16397[39m
 [35m[HTTP][39m [90m[39m
-[35m[HTTP][39m [37m-->[39m [37mGET[39m [37m/wd/hub/session/367c41b9-9367-4c09-b548-28ad128f8f6a/screenshot[39m
+[35m[HTTP][39m [37m-->[39m [37mGET[39m [37m/wd/hub/session/1112141e-e86a-4f66-aded-07ee1f535a93/screenshot[39m
 [35m[HTTP][39m [90m{}[39m
-[35m[HTTP][39m [37m<-- GET /wd/hub/session/367c41b9-9367-4c09-b548-28ad128f8f6a/screenshot [39m[32m200[39m [90m394 ms - 130162[39m
+[35m[HTTP][39m [37m<-- GET /wd/hub/session/1112141e-e86a-4f66-aded-07ee1f535a93/screenshot [39m[32m200[39m [90m725 ms - 83740[39m
 [35m[HTTP][39m [90m[39m
-[35m[HTTP][39m [37m-->[39m [37mGET[39m [37m/wd/hub/session/367c41b9-9367-4c09-b548-28ad128f8f6a/source[39m
+[35m[HTTP][39m [37m-->[39m [37mGET[39m [37m/wd/hub/session/1112141e-e86a-4f66-aded-07ee1f535a93/source[39m
 [35m[HTTP][39m [90m{}[39m
-[35m[W3C (367c41b9)][39m Driver proxy active, passing request on via HTTP proxy
-[35m[WD Proxy][39m Replacing sessionId 66e6e96f-6341-4c07-a0bf-e8b7ceda0b29 with 367c41b9-9367-4c09-b548-28ad128f8f6a
-[35m[HTTP][39m [37m<-- GET /wd/hub/session/367c41b9-9367-4c09-b548-28ad128f8f6a/source [39m[32m200[39m [90m340 ms - 39686[39m
+[35m[W3C (1112141e)][39m Driver proxy active, passing request on via HTTP proxy
+[35m[WD Proxy][39m Replacing sessionId 4df0b3bd-84b7-4dbf-b863-29abf61a36df with 1112141e-e86a-4f66-aded-07ee1f535a93
+[35m[HTTP][39m [37m<-- GET /wd/hub/session/1112141e-e86a-4f66-aded-07ee1f535a93/source [39m[32m200[39m [90m864 ms - 17128[39m
 [35m[HTTP][39m [90m[39m
-[35m[HTTP][39m [37m-->[39m [37mGET[39m [37m/wd/hub/session/367c41b9-9367-4c09-b548-28ad128f8f6a/screenshot[39m
+[35m[HTTP][39m [37m-->[39m [37mGET[39m [37m/wd/hub/session/1112141e-e86a-4f66-aded-07ee1f535a93/screenshot[39m
 [35m[HTTP][39m [90m{}[39m
-[35m[HTTP][39m [37m<-- GET /wd/hub/session/367c41b9-9367-4c09-b548-28ad128f8f6a/screenshot [39m[32m200[39m [90m452 ms - 338376[39m
+[35m[HTTP][39m [37m<-- GET /wd/hub/session/1112141e-e86a-4f66-aded-07ee1f535a93/screenshot [39m[32m200[39m [90m768 ms - 303392[39m
 [35m[HTTP][39m [90m[39m
-[35m[HTTP][39m [37m-->[39m [37mDELETE[39m [37m/wd/hub/session/367c41b9-9367-4c09-b548-28ad128f8f6a[39m
+[35m[HTTP][39m [37m-->[39m [37mDELETE[39m [37m/wd/hub/session/1112141e-e86a-4f66-aded-07ee1f535a93[39m
 [35m[HTTP][39m [90m{}[39m
-[35m[Appium][39m Removing session 367c41b9-9367-4c09-b548-28ad128f8f6a from our master session list
-[35m[WD Proxy][39m Got an unexpected response with status undefined: {"errno":"ECONNREFUSED","code":"ECONNREFUSED","syscall":"connect","address":"127.0.0.1","port":58597}
-[35m[UiAutomator2][39m Did not get confirmation UiAutomator2 deleteSession worked; Error was: UnknownError: An unknown server-side error occurred while processing the command. Original error: Could not proxy command to remote server. Original error: Error: connect ECONNREFUSED 127.0.0.1:58597
-[35m[UiAutomator2][39m Unable to remove port forward: Error executing adbExec. Original error: 'Command 'D:\\Users\\sunitakac\\.katalon\\tools\\android_sdk\\platform-tools\\adb.exe -P 5037 -s R38M7035KNW forward --remove tcp\:58597' exited with code 1'; Stderr: 'adb.exe: error: listener 'tcp:58597' not found'; Code: '1'
+[35m[Appium][39m Removing session 1112141e-e86a-4f66-aded-07ee1f535a93 from our master session list
 [35m[UiAutomator2][39m Restoring hidden api policy to the device default configuration
-[35m[HTTP][39m [37m<-- DELETE /wd/hub/session/367c41b9-9367-4c09-b548-28ad128f8f6a [39m[32m200[39m [90m3636 ms - 14[39m
+[35m[HTTP][39m [37m<-- DELETE /wd/hub/session/1112141e-e86a-4f66-aded-07ee1f535a93 [39m[32m200[39m [90m1027 ms - 14[39m
 [35m[HTTP][39m [90m[39m
