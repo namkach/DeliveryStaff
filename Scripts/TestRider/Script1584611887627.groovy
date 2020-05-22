@@ -7,7 +7,7 @@ import com.kms.katalon.core.util.KeywordUtil
 import io.appium.java_client.AppiumDriver
 import io.appium.java_client.MobileElement
 
-def path = 'D:\\Users\\sunitakac\\Desktop\\apk\\rider_1.0.1b_uat_COD_17032020.apk'
+def path = 'D:\\Users\\sunitakac\\Desktop\\apk\\rider_uat_1.0.3i_COD_30042020.apk'
 def riderId = 'th.co.gosoft.storemobile.sevendelivery.rider:id/'
 def status = ''
 def remark = '-'
@@ -30,8 +30,8 @@ try {
     KeywordUtil.markFailed('Crashed... ' + e)
 	status = 'Fail'
 	remark = 'Cannot start application'
-	CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
-} 
+	CustomKeywords.'myPac.RiderKeywords.writeRider'(order_id, flow_type, payment_type, status, remark)
+}
 
 try {
     AppiumDriver<MobileElement> driver = MobileDriverFactory.getDriver()
@@ -45,17 +45,17 @@ try {
     KeywordUtil.logInfo('------------- new order -----------')
 	(status, remark) = CustomKeywords.'myPac.RiderKeywords.filterStoreId'(store_id, status_id)
 	if (status.equals('Fail')) {
-		return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
+		return CustomKeywords.'myPac.RiderKeywords.writeRider'(order_id, flow_type, payment_type, status, remark)
 	}
 	
 	(status, remark) = CustomKeywords.'myPac.RiderKeywords.findOrder'(order_id, store_id, payment_type, status_id)
 	if (status.equals('Fail')) {
-		return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
+		return CustomKeywords.'myPac.RiderKeywords.writeRider'(order_id, flow_type, payment_type, status, remark)
 	}
 	 
 	(status, remark) = CustomKeywords.'myPac.RiderKeywords.checkTotalProducts'(flow_type, size, status_id)
 	if (status.equals('Fail')) {
-		return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
+		return CustomKeywords.'myPac.RiderKeywords.writeRider'(order_id, flow_type, payment_type, status, remark)
 	}
 	
 	String[] productName = [product_name1, product_name2, product_name3]
@@ -71,7 +71,7 @@ try {
 						qty = productQty[j] + edit_qty
 						(status, remark, countQty, countTotalPrice) = CustomKeywords.'myPac.RiderKeywords.checkEachProduct'(edit_product, qty, productUnitPrice[j], countQty, countTotalPrice, statusProduct, status_id)
 						if (status.equals('Fail')) {
-							return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
+							return CustomKeywords.'myPac.RiderKeywords.writeRider'(order_id, flow_type, payment_type, status, remark)
 						}
 						break
 					case '3': 
@@ -82,7 +82,7 @@ try {
 			} else if (products.get(i).getText() == productName[j]) {
 				(status, remark, countQty, countTotalPrice) = CustomKeywords.'myPac.RiderKeywords.checkEachProduct'(productName[j], productQty[j], productUnitPrice[j], countQty, countTotalPrice, statusProduct, status_id)
 				if (status.equals('Fail')) {
-					return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
+					return CustomKeywords.'myPac.RiderKeywords.writeRider'(order_id, flow_type, payment_type, status, remark)
 				}
 			}
 		}
@@ -92,7 +92,7 @@ try {
 		unitPrice = edit_unit_price
 		(status, remark, countQty, countTotalPrice) = CustomKeywords.'myPac.RiderKeywords.checkEachProduct'(edit_product, qty, unitPrice, countQty, countTotalPrice, statusProduct, status_id)
 		if (status.equals('Fail')) {
-			return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
+			return CustomKeywords.'myPac.RiderKeywords.writeRider'(order_id, flow_type, payment_type, status, remark)
 		}
 	}
 	KeywordUtil.logInfo  ('countQty : ' + countQty)
@@ -109,32 +109,32 @@ try {
 	
 	(status, remark) = CustomKeywords.'myPac.RiderKeywords.checkAllProducts'(countTotalPrice, price, countQty, status_id)
 	if (status.equals('Fail')) {
-		return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
+		return CustomKeywords.'myPac.RiderKeywords.writeRider'(order_id, flow_type, payment_type, status, remark)
 	}
 	
 	(status, remark, status_id) = CustomKeywords.'myPac.RiderKeywords.confirmBtn'(order_id, status_id, payment_type, price)
 	KeywordUtil.logInfo('status_id : ' + status_id)
 	if (status.equals('Fail')) {
-		return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
+		return CustomKeywords.'myPac.RiderKeywords.writeRider'(order_id, flow_type, payment_type, status, remark)
 	}
-				
+	
 	KeywordUtil.logInfo('------------- processing -----------')
 	Mobile.tap(findTestObject('Rider/ProcessingTab'), 50)
 	(status, remark) = CustomKeywords.'myPac.RiderKeywords.filterStoreId'(store_id, status_id)
 	if (status.equals('Fail')) {
-		return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
+		return CustomKeywords.'myPac.RiderKeywords.writeRider'(order_id, flow_type, payment_type, status, remark)
 	}
 	
 	(status, remark) = CustomKeywords.'myPac.RiderKeywords.findOrder'(order_id, store_id, payment_type, status_id)
 	if (status.equals('Fail')) {
-		return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
+		return CustomKeywords.'myPac.RiderKeywords.writeRider'(order_id, flow_type, payment_type, status, remark)
 	}
 
 	(qty, unitPrice, countQty, countTotalPrice, statusProduct, size, price) = CustomKeywords.'myPac.RiderKeywords.setDefault'(total_product)
 	
 	(status, remark) = CustomKeywords.'myPac.RiderKeywords.checkTotalProducts'(flow_type, size, status_id)
 	if (status.equals('Fail')) {
-		return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
+		return CustomKeywords.'myPac.RiderKeywords.writeRider'(order_id, flow_type, payment_type, status, remark)
 	}
 	
 	products = driver.findElementsById(riderId + 'row_order_detail_tv_name')
@@ -146,7 +146,7 @@ try {
 						qty = productQty[j] + edit_qty
 						(status, remark, countQty, countTotalPrice) = CustomKeywords.'myPac.RiderKeywords.checkEachProduct'(edit_product, qty, productUnitPrice[j], countQty, countTotalPrice, statusProduct, status_id)
 						if (status.equals('Fail')) {
-							return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
+							return CustomKeywords.'myPac.RiderKeywords.writeRider'(order_id, flow_type, payment_type, status, remark)
 						}
 						break
 					case '3': 
@@ -157,7 +157,7 @@ try {
 			} else if (products.get(i).getText() == productName[j]) {
 				(status, remark, countQty, countTotalPrice) = CustomKeywords.'myPac.RiderKeywords.checkEachProduct'(productName[j], productQty[j], productUnitPrice[j], countQty, countTotalPrice, statusProduct, status_id)
 				if (status.equals('Fail')) {
-					return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
+					return CustomKeywords.'myPac.RiderKeywords.writeRider'(order_id, flow_type, payment_type, status, remark)
 				}
 			}
 		}
@@ -167,7 +167,7 @@ try {
 		unitPrice = edit_unit_price
 		(status, remark, countQty, countTotalPrice) = CustomKeywords.'myPac.RiderKeywords.checkEachProduct'(edit_product, qty, unitPrice, countQty, countTotalPrice, statusProduct, status_id)
 		if (status.equals('Fail')) {
-			return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
+			return CustomKeywords.'myPac.RiderKeywords.writeRider'(order_id, flow_type, payment_type, status, remark)
 		}
 	}
 	println ('countQty : ' + countQty)
@@ -184,32 +184,32 @@ try {
 	
 	(status, remark) = CustomKeywords.'myPac.RiderKeywords.checkAllProducts'(countTotalPrice, price, countQty, status_id)
 	if (status.equals('Fail')) {
-		return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
+		return CustomKeywords.'myPac.RiderKeywords.writeRider'(order_id, flow_type, payment_type, status, remark)
 	}
 	
 	(status, remark, status_id) = CustomKeywords.'myPac.RiderKeywords.confirmBtn'(order_id, status_id, payment_type, price)
 	KeywordUtil.logInfo('status_id : ' + status_id)
 	if (status.equals('Fail')) {
-		return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
+		return CustomKeywords.'myPac.RiderKeywords.writeRider'(order_id, flow_type, payment_type, status, remark)
 	}
 	
 	KeywordUtil.logInfo('------------- processed -----------')
 	Mobile.tap(findTestObject('Rider/ProcessedTab'), 50)
 	(status, remark) = CustomKeywords.'myPac.RiderKeywords.filterStoreId'(store_id, status_id)
 	if (status.equals('Fail')) {
-		return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
+		return CustomKeywords.'myPac.RiderKeywords.writeRider'(order_id, flow_type, payment_type, status, remark)
 	}
 	
 	(status, remark) = CustomKeywords.'myPac.RiderKeywords.findOrder'(order_id, store_id, payment_type, status_id)
 	if (status.equals('Fail')) {
-		return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
+		return CustomKeywords.'myPac.RiderKeywords.writeRider'(order_id, flow_type, payment_type, status, remark)
 	}
 	
 	(qty, unitPrice, countQty, countTotalPrice, statusProduct, size, price) = CustomKeywords.'myPac.RiderKeywords.setDefault'(total_product)
 	
 	(status, remark) = CustomKeywords.'myPac.RiderKeywords.checkTotalProducts'(flow_type, size, status_id)
 	if (status.equals('Fail')) {
-		return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
+		return CustomKeywords.'myPac.RiderKeywords.writeRider'(order_id, flow_type, payment_type, status, remark)
 	}
 	
 	products = driver.findElementsById(riderId + 'row_order_detail_tv_name')
@@ -221,7 +221,7 @@ try {
 						qty = productQty[j] + edit_qty
 						(status, remark, countQty, countTotalPrice) = CustomKeywords.'myPac.RiderKeywords.checkEachProduct'(edit_product, qty, productUnitPrice[j], countQty, countTotalPrice, statusProduct, status_id)
 						if (status.equals('Fail')) {
-							return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
+							return CustomKeywords.'myPac.RiderKeywords.writeRider'(order_id, flow_type, payment_type, status, remark)
 						}
 						break
 					case '3': 
@@ -232,7 +232,7 @@ try {
 			} else if (products.get(i).getText() == productName[j]) {
 				(status, remark, countQty, countTotalPrice) = CustomKeywords.'myPac.RiderKeywords.checkEachProduct'(productName[j], productQty[j], productUnitPrice[j], countQty, countTotalPrice, statusProduct, status_id)
 				if (status.equals('Fail')) {
-					return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
+					return CustomKeywords.'myPac.RiderKeywords.writeRider'(order_id, flow_type, payment_type, status, remark)
 				}
 			}
 		}
@@ -243,10 +243,10 @@ try {
 		unitPrice = edit_unit_price
 		(status, remark, countQty, countTotalPrice) = CustomKeywords.'myPac.RiderKeywords.checkEachProduct'(edit_product, qty, unitPrice, countQty, countTotalPrice, statusProduct, status_id)
 		if (status.equals('Fail')) {
-			return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
+			return CustomKeywords.'myPac.RiderKeywords.writeRider'(order_id, flow_type, payment_type, status, remark)
 		}
-
 	}
+
 	println ('countQty : ' + countQty)
 	println ('countTotalPrice : ' + countTotalPrice)
 	
@@ -258,19 +258,19 @@ try {
 			price = edit_total_price
 			break
 	}
-	
+
 	(status, remark) = CustomKeywords.'myPac.RiderKeywords.checkAllProducts'(countTotalPrice, price, countQty, status_id)
 	if (status.equals('Fail')) {
-		return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
+		return CustomKeywords.'myPac.RiderKeywords.writeRider'(order_id, flow_type, payment_type, status, remark)
 	}
 	
 	(status, remark) = CustomKeywords.'myPac.RiderKeywords.checkStatusId'(status_id)
 	KeywordUtil.logInfo('checkOrder : ' + checkOrder)
-	return CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
+	return CustomKeywords.'myPac.RiderKeywords.writeRider'(order_id, flow_type, payment_type, status, remark)
 }
 catch (Exception e) {
     KeywordUtil.markFailed('Crashed... ' + e)
 	status = 'Fail'
 	remark = e.toString()
-	CustomKeywords.'myPac.writeExcel.writeResult'(order_id, flow_type, payment_type, status, remark)
+	CustomKeywords.'myPac.RiderKeywords.writeRider'(order_id, flow_type, payment_type, status, remark)
 } 

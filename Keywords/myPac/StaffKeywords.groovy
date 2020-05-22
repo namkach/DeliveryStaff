@@ -7,6 +7,12 @@ import com.kms.katalon.core.util.KeywordUtil
 
 import io.appium.java_client.AppiumDriver
 import io.appium.java_client.MobileElement
+import jxl.CellType
+import jxl.Workbook
+import jxl.write.Label
+import jxl.write.WritableCell
+import jxl.write.WritableSheet
+import jxl.write.WritableWorkbook
 
 public class StaffKeywords {
 	AppiumDriver<MobileElement> driver = MobileDriverFactory.getDriver()
@@ -84,8 +90,7 @@ public class StaffKeywords {
 		List<MobileElement> prods = driver.findElementsById(staffId + 'row_order_detail_tv_name')
 		List<MobileElement> qtys = driver.findElementsById(staffId + 'row_order_detail_tv_amount')
 		List<MobileElement> prices = driver.findElementsById(staffId + 'row_order_detail_tv_price')
-		println ('unitPrice : ' + unitPrice)
-		double numPrice = 0.0
+		double totalPrice = 0.0
 		int numQty = 0
 		for (int k = 0; k <= prods.size(); k++) {
 			if (prods.get(k).getText().equals(name)) {
@@ -95,45 +100,30 @@ public class StaffKeywords {
 				switch (statusProduct) {
 					case 0 :
 						numQty = extractInt(qtys.get(k).getText())
-						numPrice = Double.parseDouble(prices.get(k).getText())
+						totalPrice = Double.parseDouble(prices.get(k).getText())
 						break
 					case 1 :
 						switch (status_id) {
 							case 2 :
-								numQty = extractInt(qtys.get(k - 1).getText())
-								break
+							numQty = extractInt(qtys.get(k - 1).getText())
+							break
 							case 3..5 :
-								numQty = extractInt(qtys.get(k).getText())
-								break
+							numQty = extractInt(qtys.get(k).getText())
+							break
 						}
-						numPrice = Double.parseDouble(prices.get(k - 1).getText())
+						totalPrice = Double.parseDouble(prices.get(k - 1).getText())
 						break
 				}
-				
-				
-//				if (statusCheck == 1 && statusProduct == 1) {
-//					switch (status_id) {
-//						case 2 :
-//						numQty = extractInt(qtys.get(k - 1).getText())
-//						break
-//						case 3..5 :
-//						numQty = extractInt(qtys.get(k).getText())
-//						break
-//					}
-//					numPrice = Double.parseDouble(prices.get(k - 1).getText())
-//				} else {
-//					numQty = extractInt(qtys.get(k).getText())
-//					numPrice = Double.parseDouble(prices.get(k).getText())
-//				}
+
 				KeywordUtil.logInfo('qty : ' + qty)
 				KeywordUtil.logInfo('numQty : ' + numQty)
 				assert numQty == qty
 
-				KeywordUtil.logInfo('numPrice : ' + numPrice)
+				KeywordUtil.logInfo('numPrice : ' + totalPrice)
 				KeywordUtil.logInfo('qty / unitPrice : ' + qty + '   /   ' + unitPrice)
-				if (numPrice.equals(qty * unitPrice)) {
+				if (totalPrice.equals(qty * unitPrice)) {
 					countQty += qty
-					countTotalPrice += numPrice
+					countTotalPrice += totalPrice
 					KeywordUtil.logInfo('countQty : ' + countQty)
 					KeywordUtil.logInfo('countTotalPrice : ' + countTotalPrice)
 					status = ''
@@ -150,10 +140,6 @@ public class StaffKeywords {
 
 	@Keyword
 	def checkAllProducts(Double countTotalPrice, Double totalPrice, Integer countQty, Integer status_id) {
-		KeywordUtil.logInfo ('countTotalPrice : ' + countTotalPrice)
-		KeywordUtil.logInfo ('totalPrice : ' + totalPrice)
-		KeywordUtil.logInfo ('countQty : ' + countQty)
-
 		MobileElement allTotalPrice = (MobileElement) driver.findElementById(staffId + 'order_detail_tv_total_price')
 		MobileElement allQty = (MobileElement) driver.findElementById(staffId + 'order_detail_tv_total_list')
 		double numAllTotalPrice = 0.00
@@ -271,29 +257,36 @@ public class StaffKeywords {
 				confirmLp.click()
 				println ('deliveryType : ' + delivery_type)
 				println ('sid : ' + status_id)
-				if (delivery_type == '1') {
-					status_id = 3
-					checkOrder = true
-				} else if (delivery_type == '2') {
-					status_id = 4
-					checkOrder = true
+				switch (delivery_type) {
+					case '1' :
+						status_id = 3
+						checkOrder = true
+						break
+					case '2' :
+						status_id = 4
+						checkOrder = true
+						break
 				}
 				break
 
 			//check payment
 			case 3..4 :
-				if (apkType == 'rider') {
+				switch (apkType) {
+					case 'rider' :
 					MobileElement confirmYes = (MobileElement) driver.findElementById(staffId + 'dialog_confirm_yes')
 					confirmYes.click()
-					checkOrder = true
-				} else if (apkType == 'cod') {
+					break
+					case 'cod' :
 					KeywordUtil.logInfo ('status id : ' + status_id)
-					checkOrder = checkPaymentType(payment_type)
+					//						checkOrder = checkPaymentType(payment_type)
+					checkPaymentType(payment_type)
+					break
 				}
 				KeywordUtil.logInfo ('delivery_type : ' + delivery_type)
 				switch (delivery_type) {
 					case '1' :
 						status_id = 5
+						checkOrder = true
 						break
 					case '2' :
 						MobileElement walk = (MobileElement) driver.findElementById(staffId + 'delivery_confirm_rd_walk')
@@ -307,6 +300,7 @@ public class StaffKeywords {
 							MobileElement confirmSignYes = (MobileElement) driver.findElementById(staffId + 'dialog_confirm_yes')
 							confirmSignYes.click()
 							status_id = 5
+							checkOrder = true
 						}
 						break
 				}
@@ -329,24 +323,25 @@ public class StaffKeywords {
 				cashTab.click()
 				break
 		}
-		switch (payment_type) {
-			case '1' :
-			case '4' :
-				println ('paymentType is : ' + payment_type)
-				MobileElement totalPrice = (MobileElement) driver.findElementById(staffId + 'txtCashPrice')
-				MobileElement payPrice = (MobileElement) driver.findElementById(staffId + 'txtCashMoney')
-				payPrice.sendKeys(totalPrice.getText())
-				MobileElement confirmPayment = (MobileElement) driver.findElementById(staffId + 'btnConfirm')
-				confirmPayment.click()
-				MobileElement btnSkip = (MobileElement) driver.findElementById(staffId + 'btnSkip')
-				btnSkip.click()
-				return true
-			case '2' :
-			//				println ('paymentType is : ' + payment_type)
-			//				MobileElement confirmYes = (MobileElement) driver.findElementById(staffId + 'dialog_confirm_yes')
-			//				confirmYes.click()
-				return true
-		}
+		//		switch (payment_type) {
+		//			case '1' :
+		//			case '4' :
+		println ('paymentType is : ' + payment_type)
+		MobileElement totalPrice = (MobileElement) driver.findElementById(staffId + 'txtCashPrice')
+		MobileElement payPrice = (MobileElement) driver.findElementById(staffId + 'txtCashMoney')
+		payPrice.sendKeys(totalPrice.getText())
+		MobileElement confirmPayment = (MobileElement) driver.findElementById(staffId + 'btnConfirm')
+		confirmPayment.click()
+		MobileElement btnSkip = (MobileElement) driver.findElementById(staffId + 'btnSkip')
+		btnSkip.click()
+		//		break
+		//				return true
+		//			case '2' :
+		//			//				println ('paymentType is : ' + payment_type)
+		//			//				MobileElement confirmYes = (MobileElement) driver.findElementById(staffId + 'dialog_confirm_yes')
+		//			//				confirmYes.click()
+		//				return true
+		//		}
 	}
 
 	@Keyword
@@ -381,7 +376,7 @@ public class StaffKeywords {
 		List<MobileElement> eachItemAmount = driver.findElementsById(staffId + 'row_order_detail_tv_amount')
 		println ('this element has : ' + eachItemAmount.size() + ' item(s)')
 
-//		RiderKeywords kw = new RiderKeywords()
+		//		RiderKeywords kw = new RiderKeywords()
 		int totalamount = extractInt(totalAmountElement.getText())
 
 		int countItem = 0
@@ -422,9 +417,9 @@ public class StaffKeywords {
 						plus.get(i).click()
 						println j
 					}
-					List<MobileElement> amount = driver.findElementsById(staffId + 'row_order_detail_tv_amount')
-					KeywordUtil.logInfo('amount : ' + amount.get(i).getText() )
-					assert Integer.parseInt(amount.get(i).getText()) == oldQty + qty
+					//					List<MobileElement> amount = driver.findElementsById(staffId + 'row_order_detail_tv_amount')
+					//					KeywordUtil.logInfo('amount : ' + amount.get(i).getText() )
+					//					assert Integer.parseInt(amount.get(i).getText()) == oldQty + qty
 				} else if (qty < 0) {
 					println 'minus'
 					List<MobileElement> minus = driver.findElementsById(staffId + 'row_order_detail_iv_minus')
@@ -432,10 +427,13 @@ public class StaffKeywords {
 						minus.get(i).click()
 						println k
 					}
-					List<MobileElement> amount = driver.findElementsById(staffId + 'row_order_detail_tv_amount')
-					KeywordUtil.logInfo('amount : ' + amount.get(i).getText())
-					assert Integer.parseInt(amount.get(i).getText()) == oldQty + qty
+					//					List<MobileElement> amount = driver.findElementsById(staffId + 'row_order_detail_tv_amount')
+					//					KeywordUtil.logInfo('amount : ' + amount.get(i).getText())
+					//					assert Integer.parseInt(amount.get(i).getText()) == oldQty + qty
 				}
+				List<MobileElement> amount = driver.findElementsById(staffId + 'row_order_detail_tv_amount')
+				KeywordUtil.logInfo('amount : ' + amount.get(i).getText())
+				assert Integer.parseInt(amount.get(i).getText()) == oldQty + qty
 				break
 			}
 		}
@@ -511,9 +509,6 @@ public class StaffKeywords {
 					case '6' :
 					size = total_product + 1
 					break
-					default :
-					size = total_product
-					break
 				}
 				break
 		}
@@ -547,5 +542,44 @@ public class StaffKeywords {
 			KeywordUtil.markFailed(remark)
 		}
 		return [status, remark]
+	}
+
+	@Keyword
+	def writeStaff(String order_id, String flow_type, String delivery_type, String payment_type, String status, String remark) {
+		def path = 'D:\\Users\\sunitakac\\Desktop\\AutoTest\\resultStaff.xls'
+		Workbook existingWorkbook = Workbook.getWorkbook(new File(path))
+		WritableWorkbook workbookCopy = Workbook.createWorkbook(new File(path), existingWorkbook)
+		WritableSheet sheetToEdit = workbookCopy.getSheet(0)
+
+		String[] header = ['Order', 'Flow Type', 'Delivery Type', 'Payment Type', 'Result', 'Remark']
+		String[] text = [order_id, flow_type, delivery_type, payment_type, status, remark]
+
+		for (int i = 0; i < header.size(); i++) {
+			WritableCell cellHeader
+			Label l = new Label(i, 0, header[i])
+			cellHeader = (WritableCell) l
+			sheetToEdit.addCell(cellHeader)
+		}
+
+		WritableCell cellText
+		def textCell
+		int row = sheetToEdit.getRows()
+		boolean isEmpty
+		for (int j = 1; j <= row + 1; j++) {
+			cellText = sheetToEdit.getCell(0, j)
+			textCell = sheetToEdit.getCell(0, j).getContents()
+			isEmpty = cellText.getType().equals(CellType.EMPTY)
+			if (isEmpty || (!isEmpty && textCell == order_id)) {
+				for (int k = 0; k < text.size(); k++) {
+					Label l = new Label(k, j, text[k])
+					cellText = (WritableCell) l
+					sheetToEdit.addCell(cellText)
+				}
+				break
+			}
+		}
+		workbookCopy.write()
+		workbookCopy.close()
+		existingWorkbook.close()
 	}
 }

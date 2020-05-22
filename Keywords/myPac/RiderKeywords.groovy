@@ -23,7 +23,7 @@ public class RiderKeywords {
 	def remark = ''
 
 	@Keyword
-	def filterStoreId(String store_id, String status_id) {
+	def filterStoreId(String store_id, Integer status_id) {
 		MobileElement filterTab = (MobileElement) driver.findElementById(riderId + 'layout_main_spinner_filter_store_tv_result')
 		KeywordUtil.logInfo (filterTab.getText())
 		filterTab.click()
@@ -65,6 +65,7 @@ public class RiderKeywords {
 	@Keyword
 	def findOrderId(String order_id, String store_id, String payment_type, Integer status_id) {
 		checkOrder = false
+		KeywordUtil.markPassed ('order : ' + order_id)
 		List<MobileElement> orders = driver.findElementsById(riderId + 'txt_order_no')
 		List<MobileElement> storeId = driver.findElementsById(riderId + 'txt_store_id')
 		for (int j = orders.size() - 1; j >= 0; j--) {
@@ -201,7 +202,7 @@ public class RiderKeywords {
 	}
 
 	@Keyword
-	def checkTotalProducts(String flow_type, Integer total_product, String status_id) {
+	def checkTotalProducts(String flow_type, Integer total_product, Integer status_id) {
 		List<MobileElement> prods = driver.findElementsById(riderId + 'row_order_detail_tv_name')
 		println ('Product size : ' + prods.size())
 		println ('Total product : ' + total_product)
@@ -224,11 +225,7 @@ public class RiderKeywords {
 	}
 
 	@Keyword
-	def checkEachProduct(String name, Integer qty, Double unitPrice, Integer countQty, Double countTotalPrice, Integer statusProduct, String status_id) {
-		KeywordUtil.logInfo ('Get countQty : ' + countQty)
-		KeywordUtil.logInfo ('Get countTotalPrice : ' + countTotalPrice)
-		KeywordUtil.logInfo ('Get statusProduct : ' + statusProduct)
-
+	def checkEachProduct(String name, Integer qty, Double unitPrice, Integer countQty, Double countTotalPrice, Integer statusProduct, Integer status_id) {
 		List<MobileElement> prods = driver.findElementsById(riderId + 'row_order_detail_tv_name')
 		List<MobileElement> qtys = driver.findElementsById(riderId + 'row_order_detail_tv_amount')
 		List<MobileElement> prices = driver.findElementsById(riderId + 'row_order_detail_tv_price')
@@ -267,12 +264,7 @@ public class RiderKeywords {
 	}
 
 	@Keyword
-	def checkAllProducts(Double countTotalPrice, Double totalPrice, Integer countQty, String status_id) {
-		checkOrder = false
-		KeywordUtil.logInfo ('countTotalPrice : ' + countTotalPrice)
-		KeywordUtil.logInfo ('totalPrice : ' + totalPrice)
-		KeywordUtil.logInfo ('countQty : ' + countQty)
-
+	def checkAllProducts(Double countTotalPrice, Double totalPrice, Integer countQty, Integer status_id) {
 		MobileElement allTotalPrice = (MobileElement) driver.findElementById(riderId + 'order_detail_tv_total_price')
 		MobileElement allQty = (MobileElement) driver.findElementById(riderId + 'order_detail_tv_total_list')
 		double numAllTotalPrice = 0.00
@@ -290,7 +282,6 @@ public class RiderKeywords {
 			status = ''
 			remark = ''
 		} else {
-			KeywordUtil.logInfo ('false')
 			status = 'Fail'
 			remark = 'Fail to Check All Products order at status_id ' + status_id
 			KeywordUtil.markFailed(remark)
@@ -357,7 +348,7 @@ public class RiderKeywords {
 	}
 
 	@Keyword
-	def writeResult(String order_id, String flow_type, String payment_type, String status, String remark) {
+	def writeRider(String order_id, String flow_type, String payment_type, String status, String remark) {
 		def path = 'D:\\Users\\sunitakac\\Desktop\\AutoTest\\resultRider.xls'
 		Workbook existingWorkbook = Workbook.getWorkbook(new File(path))
 		WritableWorkbook workbookCopy = Workbook.createWorkbook(new File(path), existingWorkbook)

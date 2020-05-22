@@ -19,8 +19,8 @@
          <combinationType>ONE</combinationType>
          <id>ea1771d3-2bdd-46ab-82d9-97a0f09a92f1</id>
          <iterationEntity>
-            <iterationType>SPECIFIC</iterationType>
-            <value>63</value>
+            <iterationType>ALL</iterationType>
+            <value>2-4,6</value>
          </iterationEntity>
          <testDataId>Data Files/Staff</testDataId>
       </testDataLink>
@@ -89,54 +89,6 @@
          <type>DATA_COLUMN</type>
          <value>Delivery_Type</value>
          <variableId>cdf1b0ff-239a-4ac2-8142-2356c0a0d485</variableId>
-      </variableLink>
-      <variableLink>
-         <testDataLinkId></testDataLinkId>
-         <type>DEFAULT</type>
-         <value></value>
-         <variableId>8131439d-7bed-463b-93fe-7525c69b638d</variableId>
-      </variableLink>
-      <variableLink>
-         <testDataLinkId></testDataLinkId>
-         <type>DEFAULT</type>
-         <value></value>
-         <variableId>23829672-ed54-4dd9-b4ad-cea9be1c902e</variableId>
-      </variableLink>
-      <variableLink>
-         <testDataLinkId></testDataLinkId>
-         <type>DEFAULT</type>
-         <value></value>
-         <variableId>013c57c7-ffc9-47a7-ae8c-0b5fca4a744e</variableId>
-      </variableLink>
-      <variableLink>
-         <testDataLinkId></testDataLinkId>
-         <type>DEFAULT</type>
-         <value></value>
-         <variableId>e2ec37a3-6e92-414d-8a37-d9cf180d4ef5</variableId>
-      </variableLink>
-      <variableLink>
-         <testDataLinkId></testDataLinkId>
-         <type>DEFAULT</type>
-         <value></value>
-         <variableId>d17f4dd3-212d-4e73-83ee-78eeb59b63b8</variableId>
-      </variableLink>
-      <variableLink>
-         <testDataLinkId></testDataLinkId>
-         <type>DEFAULT</type>
-         <value></value>
-         <variableId>723e9370-fd88-46ae-9711-5342c0129f0d</variableId>
-      </variableLink>
-      <variableLink>
-         <testDataLinkId></testDataLinkId>
-         <type>DEFAULT</type>
-         <value></value>
-         <variableId>fac96be2-7f0c-4850-8b25-000e829a9b7e</variableId>
-      </variableLink>
-      <variableLink>
-         <testDataLinkId></testDataLinkId>
-         <type>DEFAULT</type>
-         <value></value>
-         <variableId>6abc511a-f891-4b28-b700-6dc884bb0ca8</variableId>
       </variableLink>
       <variableLink>
          <testDataLinkId>ea1771d3-2bdd-46ab-82d9-97a0f09a92f1</testDataLinkId>
