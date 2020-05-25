@@ -210,9 +210,10 @@ public class StaffKeywords {
 		println ('------ btn : ' + btnName)
 
 		MobileElement confirmOrder = (MobileElement) driver.findElementById(staffId + 'order_detail_bt_confirm')
-		println confirmOrder.getText()
+		KeywordUtil.logInfo('confirmOrder btn : ' + confirmOrder.getText())
 		assert confirmOrder.getText().equals(btnName)
 		confirmOrder.click()
+
 		(status_id, checkOrder) = confirmPayment(payment_type, status_id, apkType, delivery_type)
 		if (checkOrder) {
 			status = ''
@@ -227,12 +228,14 @@ public class StaffKeywords {
 
 	@Keyword
 	def confirmPayment(String payment_type, Integer status_id, String apkType, String delivery_type) {
+		KeywordUtil.logInfo('-- confirmPayment --')
 		checkOrder = false
 		switch (status_id) {
 			case 1 :
 				status_id = 2
 				println ('sid : ' + status_id)
 				checkOrder = true
+				KeywordUtil.logInfo('checkOrder : ' + checkOrder)
 				break
 
 			//confirm LP
@@ -267,6 +270,7 @@ public class StaffKeywords {
 						checkOrder = true
 						break
 				}
+				KeywordUtil.logInfo('checkOrder : ' + checkOrder)
 				break
 
 			//check payment
@@ -304,6 +308,7 @@ public class StaffKeywords {
 						}
 						break
 				}
+				KeywordUtil.logInfo('checkOrder : ' + checkOrder)
 				break
 		}
 		return [status_id, checkOrder]

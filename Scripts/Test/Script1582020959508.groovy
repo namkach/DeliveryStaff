@@ -26,7 +26,15 @@ try {
     //	Mobile.startApplication(path, true)
     Mobile.startApplication('D:\\Users\\sunitakac\\Desktop\\apk\\rider_1.0.1b_uat_COD_17032020.apk', true)
 
-    AppiumDriver<WebElement> driver = MobileDriverFactory.getDriver()
+    Mobile.tap(findTestObject('Staff/PackingTab'), 0)
+
+    Mobile.tap(findTestObject('null'), 0)
+
+    Mobile.tap(findTestObject('null'), 0)
+
+    Mobile.closeApplication()
+
+    AppiumDriver<MobileElement> driver = MobileDriverFactory.getDriver()
 
     Mobile.delay(5)
 
@@ -36,11 +44,11 @@ try {
 
     cpBtn.click()
 
-    Mobile.setText(findTestObject('3/android.widget.EditText0'), 'sunitakac', 0)
+    Mobile.setText(findTestObject('null'), 'sunitakac', 0)
 
-    Mobile.setText(findTestObject('3/android.widget.EditText0 (1)'), 'nazoru504', 0)
+    Mobile.setText(findTestObject('null'), 'nazoru504', 0)
 
-    Mobile.tap(findTestObject('3/android.widget.Button0 - Logon'), 0)
+    Mobile.tap(findTestObject('null'), 0)
 
     MobileElement pin1 = ((driver.findElementById(staffId + 'pin_1')) as MobileElement)
 
