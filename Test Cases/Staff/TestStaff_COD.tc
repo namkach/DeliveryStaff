@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestCaseEntity>
    <description></description>
-   <name>TestStaff</name>
+   <name>TestStaff_COD</name>
    <tag></tag>
    <comment></comment>
    <testCaseGuid>fc933880-5e07-4312-8b7e-25603119cd55</testCaseGuid>

@@ -26,7 +26,7 @@ try {
     //	Mobile.startApplication(path, true)
     Mobile.startApplication('D:\\Users\\sunitakac\\Desktop\\apk\\rider_1.0.1b_uat_COD_17032020.apk', true)
 
-    Mobile.tap(findTestObject('Staff/PackingTab'), 0)
+    Mobile.tap(findTestObject('null'), 0)
 
     Mobile.tap(findTestObject('null'), 0)
 
@@ -67,7 +67,7 @@ catch (Exception e) {
 
     status = 'Fail'
 
-    remark = 'Cannot start application' //	CustomKeywords.'myPac.StaffKeywords.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
+    remark = 'Cannot start application' //	CustomKeywords.'myPac.StaffKeywords_COD.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
 } 
 
 Mobile.setText(findTestObject('Staff/StoreId'), '00151', 0)
