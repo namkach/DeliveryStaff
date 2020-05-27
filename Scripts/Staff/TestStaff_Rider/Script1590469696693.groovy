@@ -7,7 +7,7 @@ import com.kms.katalon.core.util.KeywordUtil
 import io.appium.java_client.AppiumDriver
 import io.appium.java_client.MobileElement
 
-def path = 'D:\\Users\\sunitakac\\Desktop\\apk\\staff_uat_1.6.0.a_RIDER_22052020.apk'
+def path = 'D:\\Users\\sunitakac\\Desktop\\apk\\staff_uat_1.6.0.b_RIDER_26052020.apk'
 def staffId = 'th.co.gosoft.storemobile.sevendelivery.staff:id/'
 try {
 	Mobile.startApplication(path, true)
@@ -44,7 +44,7 @@ try {
 	int oldQty = 0
 	def remark = '-'
 	def status = ''
-	def apkType = ''
+//	def apkType = ''
 	int status_id = 1
 	int size = total_product
 	def name = ''
@@ -55,61 +55,62 @@ try {
 	int statusCheck = 0
 	int statusProduct = 0
 	
-	if (path.contains('COD')) {
-		apkType = 'cod'
-	} else if (path.contains('RIDER')) {
-		apkType = 'rider'
-	}
-	KeywordUtil.logInfo('apkType : ' + apkType)
+//	if (path.contains('COD')) {
+//		apkType = 'cod'
+//	} else if (path.contains('RIDER')) {
+//		apkType = 'rider'
+//	}
+//	KeywordUtil.logInfo('apkType : ' + apkType)
 	
 	String[] productName = [product_name1, product_name2, product_name3]
 	Integer[] productQty = [qty1, qty2, qty3]
 	Double[] productUnitPrice = [unit_price1, unit_price2, unit_price3]
 	
-	KeywordUtil.logInfo('------------- new order -----------')
-	(status, remark) = CustomKeywords.'myPac.StaffKeywords_Rider.findOrder'(order_id, status_id)
-	if (status.equals('Fail')) {
-		return CustomKeywords.'myPac.StaffKeywords_Rider.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
-	}
+//	KeywordUtil.logInfo('------------- new order -----------')
+//	(status, remark) = CustomKeywords.'myPac.StaffKeywords_Rider.findOrder'(order_id, status_id)
+//	if (status.equals('Fail')) {
+//		return CustomKeywords.'myPac.StaffKeywords_Rider.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
+//	}
+//	
+//	(status, remark, size) = CustomKeywords.'myPac.StaffKeywords_Rider.checkTotalProducts'(flow_type, size, status_id, statusCheck)
+//	if (status.equals('Fail')) {
+//		return CustomKeywords.'myPac.StaffKeywords_Rider.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
+//	}
+//	
+//	for(int i = 0; i < size; i++) {
+//		KeywordUtil.logInfo ('qty : ' + productQty[i])
+//		(status, remark, countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeywords_Rider.checkEachProduct'(productName[i], productQty[i], productUnitPrice[i], countQty, countTotalPrice, statusProduct, status_id)
+//		if (status.equals('Fail')) {
+//			return CustomKeywords.'myPac.StaffKeywords_Rider.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
+//		}
+//		println ('countQty : ' + countQty)
+//		println ('countTotalPrice : ' + countTotalPrice)
+//	}
+//	(status, remark) = CustomKeywords.'myPac.StaffKeywords_Rider.checkAllProducts'(countTotalPrice, total_price, countQty, status_id)
+//	if (status.equals('Fail')) {
+//		return CustomKeywords.'myPac.StaffKeywords_Rider.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
+//	}
+//	
+//	switch (flow_type) {
+//		//new order
+//		case '1' :
+//			(status, remark) = CustomKeywords.'myPac.StaffKeywords_Rider.cancelBtn'(flow_type, status_id)
+//			if (status.equals('Fail')) {
+//				return CustomKeywords.'myPac.StaffKeywords_Rider.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
+//			}
+//			status_id = 6
+//			break
+//		//new order
+//		default:
+////			(status, remark, status_id) = CustomKeywords.'myPac.StaffKeywords_Rider.confirmBtn'(status_id, payment_type, apkType, delivery_type, rider_name)
+//			(status, remark, status_id) = CustomKeywords.'myPac.StaffKeywords_Rider.confirmBtn'(status_id, payment_type, delivery_type, rider_name)
+//			if (status.equals('Fail')) {
+//				return CustomKeywords.'myPac.StaffKeywords_Rider.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
+//			}
+//			break
+//	}
 	
-	(status, remark, size) = CustomKeywords.'myPac.StaffKeywords_Rider.checkTotalProducts'(flow_type, size, status_id, statusCheck)
-	if (status.equals('Fail')) {
-		return CustomKeywords.'myPac.StaffKeywords_Rider.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
-	}
-	
-	for(int i = 0; i < size; i++) {
-		KeywordUtil.logInfo ('qty : ' + productQty[i])
-		(status, remark, countQty, countTotalPrice) = CustomKeywords.'myPac.StaffKeywords_Rider.checkEachProduct'(productName[i], productQty[i], productUnitPrice[i], countQty, countTotalPrice, statusProduct, status_id)
-		if (status.equals('Fail')) {
-			return CustomKeywords.'myPac.StaffKeywords_Rider.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
-		}
-		println ('countQty : ' + countQty)
-		println ('countTotalPrice : ' + countTotalPrice)
-	}
-	(status, remark) = CustomKeywords.'myPac.StaffKeywords_Rider.checkAllProducts'(countTotalPrice, total_price, countQty, status_id)
-	if (status.equals('Fail')) {
-		return CustomKeywords.'myPac.StaffKeywords_Rider.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
-	}
-	
-	switch (flow_type) {
-		//new order
-		case '1' :
-			(status, remark) = CustomKeywords.'myPac.StaffKeywords_Rider.cancelBtn'(flow_type, status_id)
-			if (status.equals('Fail')) {
-				return CustomKeywords.'myPac.StaffKeywords_Rider.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
-			}
-			status_id = 6
-			break
-		//new order
-		default:
-			(status, remark, status_id) = CustomKeywords.'myPac.StaffKeywords_Rider.confirmBtn'(status_id, payment_type, apkType, delivery_type, rider_name)
-			if (status.equals('Fail')) {
-				return CustomKeywords.'myPac.StaffKeywords_Rider.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
-			}
-			break
-	}
-	
-//	status_id = 2
+	status_id = 2
 	
 	KeywordUtil.logInfo('------------- process -----------')
 	if (flow_type != '1') {
@@ -236,18 +237,24 @@ try {
 						break
 				}
 				
-				if (delivery_type == '1') {
-					(status, remark, status_id) = CustomKeywords.'myPac.StaffKeywords_Rider.confirmBtn'(status_id, payment_type, apkType, delivery_type, rider_name)
+//				if (delivery_type == '1') {
+//					(status, remark, status_id) = CustomKeywords.'myPac.StaffKeywords_Rider.confirmBtn'(status_id, payment_type, apkType, delivery_type, rider_name)
+					
+				KeywordUtil.logInfo('status_id : ' + status_id)
+				KeywordUtil.logInfo('payment_type : ' + payment_type)
+				KeywordUtil.logInfo('delivery_type : ' + delivery_type)
+				KeywordUtil.logInfo('rider_name : ' + rider_name)
+					(status, remark, status_id) = CustomKeywords.'myPac.StaffKeywords_Rider.confirmBtn'(status_id, payment_type, delivery_type, rider_name)
 					if (status.equals('Fail')) {
 						return CustomKeywords.'myPac.StaffKeywords_Rider.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
 					}
-				}
+//				}
 				break
 		}
 	}
 	
 //	Mobile.delay(8)
-	if (delivery_type == '1') {
+
 		KeywordUtil.logInfo('------------- shipping -----------')
 		MobileElement shippingTab = (MobileElement) driver.findElementById(staffId + 'navigation_for_shipping')
 		shippingTab.click()
@@ -320,32 +327,30 @@ try {
 					}
 					break
 			}
-		
-			switch (flow_type) {
-				case '3'..'4' :
-					(status, remark) = CustomKeywords.'myPac.StaffKeywords_Rider.cancelBtn'(flow_type, status_id)
-					if (status.equals('Fail')) {
-						return CustomKeywords.'myPac.StaffKeywords_Rider.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
-					}
-					status_id = 6
-					break
-				case '0' :
-				case '5'..'7' :
-					(status, remark, status_id) = CustomKeywords.'myPac.StaffKeywords_Rider.confirmBtn'(status_id, payment_type, apkType, delivery_type, rider_name)
-					if (status.equals('Fail')) {
-						return CustomKeywords.'myPac.StaffKeywords_Rider.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
-					}
-					break
+			
+			if (delivery_type == '1') {
+				switch (flow_type) {
+					case '3'..'4' :
+						(status, remark) = CustomKeywords.'myPac.StaffKeywords_Rider.cancelBtn'(flow_type, status_id)
+						if (status.equals('Fail')) {
+							return CustomKeywords.'myPac.StaffKeywords_Rider.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
+						}
+						status_id = 6
+						break
+					case '0' :
+					case '5'..'7' :
+//						(status, remark, status_id) = CustomKeywords.'myPac.StaffKeywords_Rider.confirmBtn'(status_id, payment_type, apkType, delivery_type, rider_name)
+						(status, remark, status_id) = CustomKeywords.'myPac.StaffKeywords_Rider.confirmBtn'(status_id, payment_type, delivery_type, rider_name)
+						if (status.equals('Fail')) {
+							return CustomKeywords.'myPac.StaffKeywords_Rider.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
+						}
+						break
+				}
 			}
 		}
-		
+	if (delivery_type == '1') {
 		KeywordUtil.logInfo('------------- Check final -----------')
 		switch (status_id) {
-			case 3 :
-				////
-				// check card text = 'กำลังจัดส่ง'
-				////
-				break
 			case 5..6 :
 				MobileElement deliveryTab = (MobileElement) driver.findElementById(staffId + 'navigation_for_delivery')
 				deliveryTab.click()

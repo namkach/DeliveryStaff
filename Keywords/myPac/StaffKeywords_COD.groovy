@@ -46,6 +46,27 @@ public class StaffKeywords_COD {
 		List<MobileElement> orders = driver.findElementsById(staffId + 'txt_order_no')
 		for (int j = orders.size() - 1; j >= 0; j--) {
 			if (orders.get(j).getText().equals(order_id)) {
+				MobileElement statusText = (MobileElement) driver.findElementById(staffId + 'txt_order_time')
+				switch (status_id) {
+					case 1 :
+						assert statusText.getText().contains('รอรับออเดอร์')
+						break
+					case 2 :
+						assert statusText.getText().contains('กำลังจัดของ')
+						break
+					case 3 :
+						assert statusText.getText().contains('จัดของเสร็จแล้ว')
+						break
+					case 4 :
+						assert statusText.getText().contains('กำลังจัดส่ง')
+						break
+					case 5 :
+						assert statusText.getText().contains('เสร็จสมบูรณ์')
+						break
+					case 6 :
+						assert statusText.getText().contains('ยกเลิกออเดอร์')
+						break
+				}
 				orders.get(j).click()
 				MobileElement orderNo = (MobileElement) driver.findElementById(staffId + 'main_toolbar_tv_order')
 				assert orderNo.getText().equals(order_id)
@@ -277,13 +298,13 @@ public class StaffKeywords_COD {
 			case 3..4 :
 				switch (apkType) {
 					case 'rider' :
-						MobileElement confirmYes = (MobileElement) driver.findElementById(staffId + 'dialog_confirm_yes')
-						confirmYes.click()
-						break
+					MobileElement confirmYes = (MobileElement) driver.findElementById(staffId + 'dialog_confirm_yes')
+					confirmYes.click()
+					break
 					case 'cod' :
-						KeywordUtil.logInfo ('status id : ' + status_id)
-						checkPaymentType(payment_type)
-						break
+					KeywordUtil.logInfo ('status id : ' + status_id)
+					checkPaymentType(payment_type)
+					break
 				}
 				KeywordUtil.logInfo ('delivery_type : ' + delivery_type)
 				switch (delivery_type) {
