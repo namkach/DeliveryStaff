@@ -47,7 +47,7 @@ public class StaffKeywords_Rider {
 		for (int j = orders.size() - 1; j >= 0; j--) {
 			if (orders.get(j).getText().equals(order_id)) {
 				List<MobileElement> statusText = driver.findElementsById(staffId + 'txt_order_time')
-//				MobileElement statusText = (MobileElement) driver.findElementById(staffId + 'txt_order_time')
+				//				MobileElement statusText = (MobileElement) driver.findElementById(staffId + 'txt_order_time')
 				switch (status_id) {
 					case 1 :
 						assert statusText.get(j).getText().contains('รอรับออเดอร์')
@@ -61,12 +61,12 @@ public class StaffKeywords_Rider {
 					case 4 :
 						assert statusText.get(j).getText().contains('กำลังจัดส่ง')
 						break
-					case 5 :
-						assert statusText.get(j).getText().contains('เสร็จสมบูรณ์')
-						break
-					case 6 :
-						assert statusText.get(j).getText().contains('ยกเลิกออเดอร์')
-						break
+//					case 5 :
+//						assert statusText.get(j).getText().contains('เสร็จสมบูรณ์')
+//						break
+//					case 6 :
+//						assert statusText.get(j).getText().contains('ยกเลิกออเดอร์')
+//						break
 				}
 				orders.get(j).click()
 				MobileElement orderNo = (MobileElement) driver.findElementById(staffId + 'main_toolbar_tv_order')
@@ -397,9 +397,9 @@ public class StaffKeywords_Rider {
 			if (names.get(j).getText().equals(rider_name)) {
 				List<MobileElement> radioBtns = driver.findElementsById(staffId + 'dialog_select_item_rbtn')
 				// bug -- have to double click to select rider's name
-//				for (int i = 0; i < 2; i++) {
-					radioBtns.get(j).click()
-//				}
+				//				for (int i = 0; i < 2; i++) {
+				radioBtns.get(j).click()
+				//				}
 				return true
 			}
 		}

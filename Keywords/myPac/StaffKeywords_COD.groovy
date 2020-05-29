@@ -46,27 +46,29 @@ public class StaffKeywords_COD {
 		List<MobileElement> orders = driver.findElementsById(staffId + 'txt_order_no')
 		for (int j = orders.size() - 1; j >= 0; j--) {
 			if (orders.get(j).getText().equals(order_id)) {
-				MobileElement statusText = (MobileElement) driver.findElementById(staffId + 'txt_order_time')
+				KeywordUtil.logInfo("j : " + j)
+				KeywordUtil.logInfo("orders.get(j).getText() : " + orders.get(j).getText())
+				KeywordUtil.logInfo("order_id : " + order_id)
+				List<MobileElement> statusText = driver.findElementsById(staffId + 'txt_order_time')
 				switch (status_id) {
 					case 1 :
-						assert statusText.getText().contains('รอรับออเดอร์')
+						assert statusText.get(j).getText().contains('รอรับออเดอร์')
 						break
 					case 2 :
-						assert statusText.getText().contains('กำลังจัดของ')
+						assert statusText.get(j).getText().contains('กำลังจัดของ')
 						break
 					case 3 :
-						assert statusText.getText().contains('จัดของเสร็จแล้ว')
+						assert statusText.get(j).getText().contains('จัดของเสร็จแล้ว')
 						break
 					case 4 :
-					//						assert statusText.getText().contains('กำลังจัดส่ง')
-						assert statusText.getText().contains('จัดของเสร็จแล้ว')
+						assert statusText.get(j).getText().contains('กำลังจัดส่ง')
 						break
-					case 5 :
-						assert statusText.getText().contains('เสร็จสมบูรณ์')
-						break
-					case 6 :
-						assert statusText.getText().contains('ยกเลิกออเดอร์')
-						break
+//					case 5 :
+//						assert statusText.get(j).getText().contains('เสร็จสมบูรณ์')
+//						break
+//					case 6 :
+//						assert statusText.get(j).getText().contains('ยกเลิกออเดอร์')
+//						break
 				}
 				orders.get(j).click()
 				MobileElement orderNo = (MobileElement) driver.findElementById(staffId + 'main_toolbar_tv_order')
@@ -306,8 +308,8 @@ public class StaffKeywords_COD {
 			//					confirmYes.click()
 			//					break
 			//					case 'cod' :
-				KeywordUtil.logInfo ('status id : ' + status_id)
-				checkPaymentType(payment_type)
+				KeywordUtil.logInfo ('payment_type : ' + payment_type)
+				checkPaymentType(payment_type, delivery_type)
 			//					break
 			//				}
 				KeywordUtil.logInfo ('delivery_type : ' + delivery_type)
@@ -339,14 +341,17 @@ public class StaffKeywords_COD {
 	}
 
 	@Keyword
-	def checkPaymentType(String payment_type) {
+	def checkPaymentType(String payment_type, String delivery_type) {
 		KeywordUtil.logInfo('--- checkPaymentType ---')
+		KeywordUtil.logInfo ('payment_type : ' + payment_type)
 		switch (payment_type) {
 			case '1' :
+				KeywordUtil.logInfo ('-- payment_type 1')
 				MobileElement cashTab = (MobileElement) driver.findElementById(staffId + 'rdoCash')
 				assert cashTab.getAttribute("checked")
 				break
 			case '4' :
+				KeywordUtil.logInfo ('-- payment_type 4')
 				MobileElement tmwTab = (MobileElement) driver.findElementById(staffId + 'rdoTMW')
 				assert tmwTab.getAttribute("checked")
 				MobileElement cashTab = (MobileElement) driver.findElementById(staffId + 'rdoCash')
@@ -366,11 +371,15 @@ public class StaffKeywords_COD {
 				btnSkip.click()
 				break
 				return true
-			//			case '2' :
-			//				println ('paymentType is : ' + payment_type)
-			//				MobileElement confirmYes = (MobileElement) driver.findElementById(staffId + 'dialog_confirm_yes')
-			//				confirmYes.click()
-			//				return true
+			///////////////////////
+			case '2' :
+				if (delivery_type == '1') {
+					KeywordUtil.logInfo ('-- delivery_type = 1 //// payment_type = 2')
+					MobileElement confirmYes = (MobileElement) driver.findElementById(staffId + 'dialog_confirm_yes')
+					confirmYes.click()
+				}
+				return true
+			//////////////////////
 		}
 	}
 

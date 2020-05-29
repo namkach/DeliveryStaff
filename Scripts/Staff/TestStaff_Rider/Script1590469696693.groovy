@@ -247,11 +247,11 @@ try {
 //	Mobile.delay(8)
 //	status_id = 3
 
-		KeywordUtil.logInfo('------------- shipping -----------')
-		MobileElement shippingTab = (MobileElement) driver.findElementById(staffId + 'navigation_for_shipping')
-		shippingTab.click()
-		
 		if (flow_type != '1' && flow_type != '2') {
+			KeywordUtil.logInfo('------------- shipping -----------')
+			MobileElement shippingTab = (MobileElement) driver.findElementById(staffId + 'navigation_for_shipping')
+			shippingTab.click()
+			
 			(status, remark) = CustomKeywords.'myPac.StaffKeywords_Rider.findOrder'(order_id, status_id)
 			if (status.equals('Fail')) {
 				return CustomKeywords.'myPac.StaffKeywords_Rider.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
@@ -350,15 +350,15 @@ try {
 				
 //			}
 		}
+	KeywordUtil.logInfo('----- status_id : ' + status_id)
+	switch (status_id) {
+		case 5..6 :
+			MobileElement deliveryTab = (MobileElement) driver.findElementById(staffId + 'navigation_for_delivery')
+			deliveryTab.click()
+			break
+	}
 	if (delivery_type == '1') {
 		KeywordUtil.logInfo('------------- Check final -----------')
-		switch (status_id) {
-			case 5..6 :
-				MobileElement deliveryTab = (MobileElement) driver.findElementById(staffId + 'navigation_for_delivery')
-				deliveryTab.click()
-				break
-		}
-		
 		(status, remark) = CustomKeywords.'myPac.StaffKeywords_Rider.findOrder'(order_id, status_id)
 		if (status.equals('Fail')) {
 			return CustomKeywords.'myPac.StaffKeywords_Rider.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
@@ -426,6 +426,7 @@ try {
 				break
 		}
 	}
+	KeywordUtil.logInfo('status_id : ' + status_id)
 	switch (status_id) {
 		case 3 :
 			status = 'Pass'
