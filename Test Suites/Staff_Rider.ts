@@ -19,8 +19,8 @@
          <combinationType>ONE</combinationType>
          <id>9328592e-8f9a-41df-be1d-8897b24bd751</id>
          <iterationEntity>
-            <iterationType>SPECIFIC</iterationType>
-            <value>57</value>
+            <iterationType>RANGE</iterationType>
+            <value>1-48</value>
          </iterationEntity>
          <testDataId>Data Files/Staff</testDataId>
       </testDataLink>

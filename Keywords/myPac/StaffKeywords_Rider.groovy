@@ -46,30 +46,32 @@ public class StaffKeywords_Rider {
 		List<MobileElement> orders = driver.findElementsById(staffId + 'txt_order_no')
 		for (int j = orders.size() - 1; j >= 0; j--) {
 			if (orders.get(j).getText().equals(order_id)) {
-				MobileElement statusText = (MobileElement) driver.findElementById(staffId + 'txt_order_time')
+				List<MobileElement> statusText = driver.findElementsById(staffId + 'txt_order_time')
+//				MobileElement statusText = (MobileElement) driver.findElementById(staffId + 'txt_order_time')
 				switch (status_id) {
 					case 1 :
-						assert statusText.getText().contains('รอรับออเดอร์')
+						assert statusText.get(j).getText().contains('รอรับออเดอร์')
 						break
 					case 2 :
-						assert statusText.getText().contains('กำลังจัดของ')
+						assert statusText.get(j).getText().contains('กำลังจัดของ')
 						break
 					case 3 :
-						assert statusText.getText().contains('จัดของเสร็จแล้ว')
+						assert statusText.get(j).getText().contains('จัดของเสร็จแล้ว')
 						break
 					case 4 :
-						assert statusText.getText().contains('กำลังจัดส่ง')
+						assert statusText.get(j).getText().contains('กำลังจัดส่ง')
 						break
 					case 5 :
-						assert statusText.getText().contains('เสร็จสมบูรณ์')
+						assert statusText.get(j).getText().contains('เสร็จสมบูรณ์')
 						break
 					case 6 :
-						assert statusText.getText().contains('ยกเลิกออเดอร์')
+						assert statusText.get(j).getText().contains('ยกเลิกออเดอร์')
 						break
 				}
 				orders.get(j).click()
 				MobileElement orderNo = (MobileElement) driver.findElementById(staffId + 'main_toolbar_tv_order')
 				assert orderNo.getText().equals(order_id)
+				Mobile.delay(2)
 				return true
 			}
 		}
@@ -228,24 +230,25 @@ public class StaffKeywords_Rider {
 					KeywordUtil.logInfo('countItem : ' + countItem)
 				}
 				break
-			case 3..4 :
+			//			case 3..4 :
+			case 3 :
 				println ('payment : ' + payment_type)
-				switch (delivery_type) {
-					case '1' :
-						btnName = 'ยืนยันการส่งสินค้า'
-						break
-//					case '1' :
-//						switch (payment_type) {
-//							case '1' :
-//							case '4' :
-//							btnName = 'ชำระเงิน'
-//							break
-//							case '2' :
-//							btnName = 'ยืนยันการส่งสินค้า'
-//							break
-//						}
-//						break
-				}
+			//				switch (delivery_type) {
+			//					case '1' :
+				btnName = 'ยืนยันการส่งสินค้า'
+			//						break
+			//					case '1' :
+			//						switch (payment_type) {
+			//							case '1' :
+			//							case '4' :
+			//							btnName = 'ชำระเงิน'
+			//							break
+			//							case '2' :
+			//							btnName = 'ยืนยันการส่งสินค้า'
+			//							break
+			//						}
+			//						break
+			//				}
 
 			//				println ('payment : ' + payment_type)
 			//				switch (apkType) {
@@ -292,6 +295,7 @@ public class StaffKeywords_Rider {
 		//	def confirmPayment(String payment_type, Integer status_id, String apkType, String delivery_type, String rider_name) {
 		KeywordUtil.logInfo('-- confirmPayment --')
 		checkOrder = false
+		KeywordUtil.logInfo ('status_id : ' + status_id)
 		switch (status_id) {
 			case 1 :
 				status_id = 2
@@ -324,6 +328,7 @@ public class StaffKeywords_Rider {
 				println ('sid : ' + status_id)
 				switch (delivery_type) {
 					case '1' :
+						checkOrder = true
 						status_id = 3
 						break
 					case '2' :
@@ -390,8 +395,11 @@ public class StaffKeywords_Rider {
 		for (int j = names.size() - 1; j >= 0; j--) {
 			KeywordUtil.logInfo('rider name : ' + names.get(j).getText())
 			if (names.get(j).getText().equals(rider_name)) {
-				MobileElement name = (MobileElement) driver.findElementById(staffId + 'dialog_select_rb_iv_content')
-				name.click()
+				List<MobileElement> radioBtns = driver.findElementsById(staffId + 'dialog_select_item_rbtn')
+				// bug -- have to double click to select rider's name
+//				for (int i = 0; i < 2; i++) {
+					radioBtns.get(j).click()
+//				}
 				return true
 			}
 		}
@@ -579,6 +587,21 @@ public class StaffKeywords_Rider {
 		}
 		return [status, remark]
 	}
+
+	@Keyword
+	def checkRider(String rider_name) {
+		MobileElement riderText = (MobileElement) driver.findElementById(staffId + 'order_detail_tv_rider_name')
+		KeywordUtil.logInfo('rider_name : ' + rider_name)
+		KeywordUtil.logInfo('riderText : ' + riderText.getText())
+		if (riderText.getText().equals(rider_name)) {
+			status = ''
+			remark = ''
+		} else {
+			status = 'Fail'
+			remark = 'Fail to check rider name'
+			KeywordUtil.markFailed(remark)
+		}
+		return [status, remark]}
 
 	@Keyword
 	def writeStaff(String order_id, String flow_type, String delivery_type, String payment_type, String status, String remark) {

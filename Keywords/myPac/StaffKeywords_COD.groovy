@@ -24,10 +24,10 @@ public class StaffKeywords_COD {
 
 	@Keyword
 	def findOrder(String order_id, Integer status_id) {
-		checkOrder = findOrderId(order_id)
+		checkOrder = findOrderId(order_id, status_id)
 		while(!checkOrder) {
 			swipeUp()
-			checkOrder = findOrderId(order_id)
+			checkOrder = findOrderId(order_id, status_id)
 			KeywordUtil.logInfo('checkOrder : ' + checkOrder)
 		}
 		if (checkOrder) {
@@ -42,7 +42,7 @@ public class StaffKeywords_COD {
 	}
 
 	@Keyword
-	def findOrderId(String order_id) {
+	def findOrderId(String order_id, Integer status_id) {
 		List<MobileElement> orders = driver.findElementsById(staffId + 'txt_order_no')
 		for (int j = orders.size() - 1; j >= 0; j--) {
 			if (orders.get(j).getText().equals(order_id)) {
@@ -58,7 +58,8 @@ public class StaffKeywords_COD {
 						assert statusText.getText().contains('จัดของเสร็จแล้ว')
 						break
 					case 4 :
-						assert statusText.getText().contains('กำลังจัดส่ง')
+					//						assert statusText.getText().contains('กำลังจัดส่ง')
+						assert statusText.getText().contains('จัดของเสร็จแล้ว')
 						break
 					case 5 :
 						assert statusText.getText().contains('เสร็จสมบูรณ์')
@@ -187,7 +188,8 @@ public class StaffKeywords_COD {
 	}
 
 	@Keyword
-	def confirmBtn(Integer status_id, String payment_type, String apkType, String delivery_type) {
+	def confirmBtn(Integer status_id, String payment_type, String delivery_type) {
+		//		def confirmBtn(Integer status_id, String payment_type, String apkType, String delivery_type) {
 		def btnName = ''
 		//get delivery type
 		MobileElement deliveryTypeElement = (MobileElement) driver.findElementById(staffId + 'order_detail_tv_pickup_method')
@@ -210,22 +212,22 @@ public class StaffKeywords_COD {
 				break
 			case 3..4 :
 				println ('payment : ' + payment_type)
-				switch (apkType) {
-					case 'rider' :
+			//				switch (apkType) {
+			//					case 'rider' :
+			//						btnName = 'ยืนยันการส่งสินค้า'
+			//						break
+			//					case 'cod' :
+				switch (payment_type) {
+					case '1' :
+					case '4' :
+						btnName = 'ชำระเงิน'
+						break
+					case '2' :
 						btnName = 'ยืนยันการส่งสินค้า'
 						break
-					case 'cod' :
-						switch (payment_type) {
-							case '1' :
-							case '4' :
-							btnName = 'ชำระเงิน'
-							break
-							case '2' :
-							btnName = 'ยืนยันการส่งสินค้า'
-							break
-						}
-						break
 				}
+			//						break
+			//				}
 				break
 		}
 		println ('------ btn : ' + btnName)
@@ -235,7 +237,8 @@ public class StaffKeywords_COD {
 		assert confirmOrder.getText().equals(btnName)
 		confirmOrder.click()
 
-		(status_id, checkOrder) = confirmPayment(payment_type, status_id, apkType, delivery_type)
+		//		(status_id, checkOrder) = confirmPayment(payment_type, status_id, apkType, delivery_type)
+		(status_id, checkOrder) = confirmPayment(payment_type, status_id, delivery_type)
 		if (checkOrder) {
 			status = ''
 			remark = ''
@@ -248,7 +251,8 @@ public class StaffKeywords_COD {
 	}
 
 	@Keyword
-	def confirmPayment(String payment_type, Integer status_id, String apkType, String delivery_type) {
+	def confirmPayment(String payment_type, Integer status_id, String delivery_type) {
+		//	def confirmPayment(String payment_type, Integer status_id, String apkType, String delivery_type) {
 		KeywordUtil.logInfo('-- confirmPayment --')
 		checkOrder = false
 		switch (status_id) {
@@ -296,16 +300,16 @@ public class StaffKeywords_COD {
 
 			//check payment
 			case 3..4 :
-				switch (apkType) {
-					case 'rider' :
-					MobileElement confirmYes = (MobileElement) driver.findElementById(staffId + 'dialog_confirm_yes')
-					confirmYes.click()
-					break
-					case 'cod' :
-					KeywordUtil.logInfo ('status id : ' + status_id)
-					checkPaymentType(payment_type)
-					break
-				}
+			//				switch (apkType) {
+			//					case 'rider' :
+			//					MobileElement confirmYes = (MobileElement) driver.findElementById(staffId + 'dialog_confirm_yes')
+			//					confirmYes.click()
+			//					break
+			//					case 'cod' :
+				KeywordUtil.logInfo ('status id : ' + status_id)
+				checkPaymentType(payment_type)
+			//					break
+			//				}
 				KeywordUtil.logInfo ('delivery_type : ' + delivery_type)
 				switch (delivery_type) {
 					case '1' :
@@ -336,6 +340,7 @@ public class StaffKeywords_COD {
 
 	@Keyword
 	def checkPaymentType(String payment_type) {
+		KeywordUtil.logInfo('--- checkPaymentType ---')
 		switch (payment_type) {
 			case '1' :
 				MobileElement cashTab = (MobileElement) driver.findElementById(staffId + 'rdoCash')
@@ -348,25 +353,25 @@ public class StaffKeywords_COD {
 				cashTab.click()
 				break
 		}
-		//		switch (payment_type) {
-		//			case '1' :
-		//			case '4' :
-		println ('paymentType is : ' + payment_type)
-		MobileElement totalPrice = (MobileElement) driver.findElementById(staffId + 'txtCashPrice')
-		MobileElement payPrice = (MobileElement) driver.findElementById(staffId + 'txtCashMoney')
-		payPrice.sendKeys(totalPrice.getText())
-		MobileElement confirmPayment = (MobileElement) driver.findElementById(staffId + 'btnConfirm')
-		confirmPayment.click()
-		MobileElement btnSkip = (MobileElement) driver.findElementById(staffId + 'btnSkip')
-		btnSkip.click()
-		//		break
-		//				return true
-		//			case '2' :
-		//			//				println ('paymentType is : ' + payment_type)
-		//			//				MobileElement confirmYes = (MobileElement) driver.findElementById(staffId + 'dialog_confirm_yes')
-		//			//				confirmYes.click()
-		//				return true
-		//		}
+		switch (payment_type) {
+			case '1' :
+			case '4' :
+				println ('paymentType is : ' + payment_type)
+				MobileElement totalPrice = (MobileElement) driver.findElementById(staffId + 'txtCashPrice')
+				MobileElement payPrice = (MobileElement) driver.findElementById(staffId + 'txtCashMoney')
+				payPrice.sendKeys(totalPrice.getText())
+				MobileElement confirmPayment = (MobileElement) driver.findElementById(staffId + 'btnConfirm')
+				confirmPayment.click()
+				MobileElement btnSkip = (MobileElement) driver.findElementById(staffId + 'btnSkip')
+				btnSkip.click()
+				break
+				return true
+			//			case '2' :
+			//				println ('paymentType is : ' + payment_type)
+			//				MobileElement confirmYes = (MobileElement) driver.findElementById(staffId + 'dialog_confirm_yes')
+			//				confirmYes.click()
+			//				return true
+		}
 	}
 
 	@Keyword

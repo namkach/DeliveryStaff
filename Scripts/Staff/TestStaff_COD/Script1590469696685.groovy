@@ -7,7 +7,6 @@ import com.kms.katalon.core.util.KeywordUtil
 import io.appium.java_client.AppiumDriver as AppiumDriver
 import io.appium.java_client.MobileElement
 
-//def path = 'D:\\Users\\sunitakac\\Desktop\\apk\\staff_uat_1.6.0.a_RIDER_22052020.apk'
 def path = 'D:\\Users\\sunitakac\\Desktop\\apk\\staff_uat_1.6.0.a_COD_22052020.apk'
 def staffId = 'th.co.gosoft.storemobile.sevendelivery.staff:id/'
 try {
@@ -45,7 +44,7 @@ try {
 	int oldQty = 0
 	def remark = '-'
 	def status = ''
-	def apkType = ''
+//	def apkType = ''
 	int status_id = 1
 	int size = total_product
 	def name = ''
@@ -56,12 +55,12 @@ try {
 	int statusCheck = 0
 	int statusProduct = 0
 	
-	if (path.contains('COD')) {
-		apkType = 'cod'
-	} else if (path.contains('RIDER')) {
-		apkType = 'rider'
-	}
-	KeywordUtil.logInfo('apkType : ' + apkType)
+//	if (path.contains('COD')) {
+//		apkType = 'cod'
+//	} else if (path.contains('RIDER')) {
+//		apkType = 'rider'
+//	}
+//	KeywordUtil.logInfo('apkType : ' + apkType)
 	
 	String[] productName = [product_name1, product_name2, product_name3]
 	Integer[] productQty = [qty1, qty2, qty3]
@@ -103,7 +102,8 @@ try {
 			break
 		//new order
 		default:
-			(status, remark, status_id) = CustomKeywords.'myPac.StaffKeywords_COD.confirmBtn'(status_id, payment_type, apkType, delivery_type)
+			(status, remark, status_id) = CustomKeywords.'myPac.StaffKeywords_COD.confirmBtn'(status_id, payment_type, delivery_type)
+//			(status, remark, status_id) = CustomKeywords.'myPac.StaffKeywords_COD.confirmBtn'(status_id, payment_type, apkType, delivery_type)
 			if (status.equals('Fail')) {
 				return CustomKeywords.'myPac.StaffKeywords_COD.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
 			}
@@ -235,7 +235,8 @@ try {
 						}
 						break
 				}
-				(status, remark, status_id) = CustomKeywords.'myPac.StaffKeywords_COD.confirmBtn'(status_id, payment_type, apkType, delivery_type)
+//				(status, remark, status_id) = CustomKeywords.'myPac.StaffKeywords_COD.confirmBtn'(status_id, payment_type, apkType, delivery_type)
+				(status, remark, status_id) = CustomKeywords.'myPac.StaffKeywords_COD.confirmBtn'(status_id, payment_type, delivery_type)
 				if (status.equals('Fail')) {
 					return CustomKeywords.'myPac.StaffKeywords_COD.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
 				}
@@ -327,7 +328,8 @@ try {
 				break
 			case '0' :
 			case '5'..'7' :
-				(status, remark, status_id) = CustomKeywords.'myPac.StaffKeywords_COD.confirmBtn'(status_id, payment_type, apkType, delivery_type)
+//				(status, remark, status_id) = CustomKeywords.'myPac.StaffKeywords_COD.confirmBtn'(status_id, payment_type, apkType, delivery_type)
+				(status, remark, status_id) = CustomKeywords.'myPac.StaffKeywords_COD.confirmBtn'(status_id, payment_type, delivery_type)
 				if (status.equals('Fail')) {
 					return CustomKeywords.'myPac.StaffKeywords_COD.writeStaff'(order_id, flow_type, delivery_type, payment_type, status, remark)
 				}
